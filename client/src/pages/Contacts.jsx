@@ -3,119 +3,78 @@ import axios from "axios";
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    company: "",
-  });
-
-  const fetchContacts = async () => {
-    const res = await axios.get("http://localhost:5000/api/contacts");
-    setContacts(res.data);
-  };
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await axios.post("http://localhost:5000/api/contacts", form);
-    setForm({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      company: "",
-    });
-    fetchContacts();
-  };
 
   useEffect(() => {
+    const fetchContacts = async () => {
+      const res = await axios.get("http://localhost:5000/api/contacts");
+      setContacts(res.data);
+    };
     fetchContacts();
   }, []);
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold mb-4">Contacts</h2>
-
-      {/* Form */}
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 bg-white shadow p-4 rounded max-w-md"
-      >
-        <input
-          type="text"
-          name="firstName"
-          value={form.firstName}
-          onChange={handleChange}
-          placeholder="First Name"
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="text"
-          name="lastName"
-          value={form.lastName}
-          onChange={handleChange}
-          placeholder="Last Name"
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          placeholder="Email"
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="text"
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-          placeholder="Phone"
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="text"
-          name="company"
-          value={form.company}
-          onChange={handleChange}
-          placeholder="Company"
-          className="w-full border p-2 rounded"
-          required
-        />
-        <button
-          type="submit"
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          Add Contact
-        </button>
-      </form>
-
-      {/* Contacts List */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {contacts.map((contact) => (
-          <div
-            key={contact._id}
-            className="border p-4 rounded shadow bg-white"
-          >
-            <h3 className="font-semibold text-lg">
-              {contact.firstName} {contact.lastName}
-            </h3>
-            <p>Email: {contact.email}</p>
-            <p>Phone: {contact.phone}</p>
-            <p>Company: {contact.company}</p>
+    <div className="px-1">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row items-center justify-between mb-2">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">contacts</h1>
+          <div className="flex items-center space-x-4 mt-2">
+            <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
+              {contacts.length} contacts
+            </span>
+            <span className="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">
+              0 Lost contacts - 0.00%
+            </span>
           </div>
-        ))}
-      </div>
-    </div>
+        </div>
+
+         
+
+      {/* Table */}
+      <div className="w-full overflow-visible">
+        <table className="w-full divide-y divide-gray-200 text-xs">
+          <thead className="bg-gray-50 sticky top-0 z-10">
+            <tr>
+              <th className="px-2 py-1"></th>
+              <th className="px-2 py-1 text-left">ACCOUNT ID</th>
+              <th className="px-2 py-1 text-left">Name</th>
+              <th className="px-2 py-1 text-left">Email</th>
+              <th className="px-2 py-1 text-left">Phone</th>
+              <th className="px-2 py-1 text-left">Company</th>
+              <th className="px-2 py-1 text-left">Status</th>
+              <th className="px-2 py-1 text-left">Source</th>
+              <th className="px-2 py-1 text-left">Assigned</th>
+              <th className="px-2 py-1 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {contacts.map((contacts) => (
+              <tr key={contacts._id} className="hover:bg-gray-50 cursor-pointer transition-colors">            
+                <td className="px-2 py-1 break-words">{contacts.accountId}</td>
+                <td className="px-2 py-1 break-words">{contacts.name}</td>
+                <td className="px-2 py-1 break-words">{contacts.emailAddress}</td>
+                <td className="px-2 py-1">{contacts.phone}</td>
+                <td className="px-2 py-1 text-gray-600">{contacts.company}</td>
+                <td className="px-2 py-1 text-gray-600">{contacts.status}</td>
+                <td className="px-2 py-1 text-gray-600">{contacts.source}</td>
+                <td className="px-2 py-1 text-gray-600">{contacts.assigned}</td>
+                <td className="px-2 py-1" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center gap-2">
+                    <button className="bg-orange-500 hover:bg-orange-600 text-white p-1 rounded">
+                      <Edit className="h-4 w-4" />
+                    </button>
+                    <button className="bg-green-700 hover:bg-green-800 text-white p-1 rounded">
+                      <MessageSquare className="h-4 w-4" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+ </div>
+  </div>
+   </div>
   );
 };
 

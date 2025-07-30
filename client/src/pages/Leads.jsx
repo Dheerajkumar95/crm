@@ -1,66 +1,186 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { Edit, MessageSquare, Plus, Upload } from 'lucide-react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Leads = () => {
   const [leads, setLeads] = useState([]);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", source: "",status: "New" });
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [leadsPerPage] = useState(15);
+  const [selectedLeadIds, setSelectedLeadIds] = useState([]);
 
-  const fetchLeads = async () => {
-    const res = await axios.get("http://localhost:5000/api/leads");
+const handleConvert = async () => {
+ console.log('Converting leads:', selectedLeadIds);
+  try {
+    await axios.post('http://localhost:7000/api/leads/convert', {
+      leadIds: selectedLeadIds,
+    });
+
+    // Refresh leads after conversion
+    const res = await axios.get('http://localhost:7000/api/leads');
     setLeads(res.data);
-  };
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-   alert("done");
-    e.preventDefault();
-    await axios.post("http://localhost:5000/api/leads", form);
-    setForm({ name: "", email: "", phone: "", source: "",status: "New", });
-    fetchLeads();
-  };
+    setSelectedLeadIds([]);
+    alert('Leads converted successfully!');
+  } catch (err) {
+    console.error('Conversion error:', err);
+    alert('Lead conversion failed');
+  }
+};
 
   useEffect(() => {
+    const fetchLeads = async () => {
+      try {
+        const res = await axios.get('http://localhost:7000/api/leads');
+        setLeads(res.data);
+      } catch (err) {
+        console.error('Error fetching leads:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchLeads();
   }, []);
 
+  const indexOfLastLead = currentPage * leadsPerPage;
+  const indexOfFirstLead = indexOfLastLead - leadsPerPage;
+  const currentLeads = leads.slice(indexOfFirstLead, indexOfLastLead);
+  const totalPages = Math.ceil(leads.length / leadsPerPage);
+
+  const handlePrevious = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+
+  // Select handler
+  const handleCheckboxChange = (leadId) => {
+    setSelectedLeadIds((prev) =>
+      prev.includes(leadId)
+        ? prev.filter((id) => id !== leadId)
+        : [...prev, leadId]
+    );
+  };
+
+
+
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold mb-4">Leads</h2>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white shadow p-4 rounded max-w-md">
-        <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="Name" className="w-full border p-2 rounded" required />
-        <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="Email" className="w-full border p-2 rounded" required />
-        <input type="text" name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" className="w-full border p-2 rounded" required />
-        <input type="text" name="source" value={form.source} onChange={handleChange} placeholder="Source" className="w-full border p-2 rounded" required />
-        <select
-        name="status"
-        value={form.status}
-        onChange={handleChange}
-        className="w-full border rounded p-2 mb-3"
-      >
-        <option value="New">New</option>
-        <option value="Contacted">Contacted</option>
-        <option value="Qualified">Qualified</option>
-        <option value="Converted">Converted</option>
-      </select>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Add Lead</button>
-      </form>
-
-      {/* Leads List */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {leads.map((lead) => (
-          <div key={lead._id} className="border p-4 rounded shadow bg-white">
-            <h3 className="font-semibold text-lg">{lead.name}</h3>
-            <p>Email: {lead.email}</p>
-            <p>Phone: {lead.phone}</p>
-            <p>Source: {lead.source}</p>
-            <p>Status: <span className="font-medium">{lead.status}</span></p>
+    <div className="px-1">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row items-center justify-between mb-2">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Leads</h1>
+          <div className="flex items-center space-x-4 mt-2">
+            <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
+              {leads.length} Customers
+            </span>
+            <span className="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">
+              0 Lost Leads - 0.00%
+            </span>
           </div>
-        ))}
+        </div>
+
+        <div className="flex items-center space-x-2 mb-1">
+          {selectedLeadIds.length > 0 && (
+            <button
+              onClick={handleConvert}
+              className="flex items-center px-4 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+            >
+              Convert
+            </button>
+          )}
+          <Link
+            to="/newleads"
+            className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Lead
+          </Link>
+          <button className="flex items-center px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition">
+            <Upload className="w-4 h-4 mr-2" />
+            Import Leads
+          </button>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="w-full overflow-visible">
+        <table className="w-full divide-y divide-gray-200 text-xs">
+          <thead className="bg-gray-50 sticky top-0 z-10">
+            <tr>
+              <th className="px-2 py-1"></th>
+              <th className="px-2 py-1 text-left">ACCOUNT ID</th>
+              <th className="px-2 py-1 text-left">Name</th>
+              <th className="px-2 py-1 text-left">Email</th>
+              <th className="px-2 py-1 text-left">Phone</th>
+              <th className="px-2 py-1 text-left">Company</th>
+              <th className="px-2 py-1 text-left">Status</th>
+              <th className="px-2 py-1 text-left">Source</th>
+              <th className="px-2 py-1 text-left">Assigned</th>
+              <th className="px-2 py-1 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {currentLeads.map((lead) => (
+              <tr key={lead._id} className="hover:bg-gray-50 cursor-pointer transition-colors">
+                <td className="px-2 py-1" onClick={(e) => e.stopPropagation()}>
+                  <input
+                    type="checkbox"
+                    checked={selectedLeadIds.includes(lead._id)}
+                    onChange={() => handleCheckboxChange(lead._id)}
+                    className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded cursor-pointer"
+                  />
+                </td>
+                <td className="px-2 py-1 break-words">{lead.accountId}</td>
+                <td className="px-2 py-1 break-words">{lead.name}</td>
+                <td className="px-2 py-1 break-words">{lead.emailAddress}</td>
+                <td className="px-2 py-1">{lead.phone}</td>
+                <td className="px-2 py-1 text-gray-600">{lead.company}</td>
+                <td className="px-2 py-1 text-gray-600">{lead.status}</td>
+                <td className="px-2 py-1 text-gray-600">{lead.source}</td>
+                <td className="px-2 py-1 text-gray-600">{lead.assigned}</td>
+                <td className="px-2 py-1" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center gap-2">
+                    <button className="bg-orange-500 hover:bg-orange-600 text-white p-1 rounded">
+                      <Edit className="h-4 w-4" />
+                    </button>
+                    <button className="bg-green-700 hover:bg-green-800 text-white p-1 rounded">
+                      <MessageSquare className="h-4 w-4" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Pagination */}
+        <div className="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <span className="mx-2 text-sm text-gray-600">Showing</span>
+              <span className="font-medium text-sm">
+                {indexOfFirstLead + 1} - {Math.min(indexOfLastLead, leads.length)}
+              </span>
+              <span className="mx-2 text-sm text-gray-600">of {leads.length} results</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                <button
+                  onClick={handlePrevious}
+                  disabled={currentPage === 1}
+                  className="px-2 py-1 rounded-l-md border bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={handleNext}
+                  disabled={currentPage === totalPages}
+                  className="px-2 py-1 rounded-r-md border bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

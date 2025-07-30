@@ -1,53 +1,50 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Leads from "./pages/Leads";
-import Contacts from "./pages/Contacts";
-import Opportunities from "./pages/Opportunities";
-import Cases from "./pages/Cases";
-import Contracts from "./pages/Contracts";
-import Dashboard from "./pages/Dashboard";
-const App = () => {
-  return (
-    <Router>
-      <div className="flex min-h-screen">
-        {/* Sidebar */}
-        <nav className="w-48 p-4 bg-gray-100">
-          <ul className="space-y-4">
-            <li>
-              <Link to="/dashboard" className="text-blue-600 hover:underline">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/" className="text-blue-600 hover:underline">Leads</Link>
-            </li>
-            <li>
-              <Link to="/contacts" className="text-blue-600 hover:underline">Contacts</Link>
-            </li>
-            <li>
-              <Link to="/opportunities" className="text-blue-600 hover:underline">Opportunities</Link>
-            </li>
-            <li>
-              <Link to="/cases" className="text-blue-600 hover:underline">Cases</Link>
-            </li>
-            <li>
-              <Link to="/contracts" className="text-blue-600 hover:underline">Contracts</Link>
-            </li>
-          </ul>
-        </nav>
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import CustomersPage from './pages/Customers';
+import DashboardPage from './pages/Dashboard';
+import ProposalPage from './pages/Proposal';
+import NewProposalPage from './pages/NewProposal';
+import Estimate from './pages/Estimates';
+import Opportunities from './pages/Opportunities';
+import Leads from './pages/Leads';
+import NewLeads from './pages/NewLeads';
+import Account from './pages/Accounts';
+import AccountDetails from "./pages/AccountDetails";
+import{ Toaster } from 'react-hot-toast';
+function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-        {/* Main Content */}
-        <main className="p-6 flex-1">
-          <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/" element={<Leads />} />
-            <Route path="/contacts" element={<Contacts />} />
-            <Route path="/opportunities" element={<Opportunities />} />
-            <Route path="/cases" element={<Cases />} />
-            <Route path="/contracts" element={<Contracts />} />
-          </Routes>
-        </main>
+  return ( 
+  <>
+    <Router>
+      <div className="flex h-screen">
+        <Sidebar isOpen={sidebarOpen} />
+        <div className="flex flex-col flex-1">
+          <Header setSidebarOpen={setSidebarOpen} />
+          <main className="flex-1 p-6 bg-gray-100 overflow-y-auto">
+            <Routes>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/leads" element={<Leads />} />
+              <Route path="/newleads" element={<NewLeads />} />
+              <Route path="/customers" element={<CustomersPage />} />
+              <Route path="/proposal" element={<ProposalPage />} />
+              <Route path="/newproposal" element={<NewProposalPage />} />
+              <Route path="/estimates" element={<Estimate />} />
+              <Route path="/opportunities" element={<Opportunities />} />
+              <Route path="/account" element={<Account />} />
+              <Route path="/account/:id" element={<AccountDetails />} />
+               
+
+            </Routes>
+          </main>
+        </div>
       </div>
     </Router>
+    <Toaster />
+   </>
   );
-};
+}
 
 export default App;

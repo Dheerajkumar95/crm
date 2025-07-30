@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 const contactSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
-  email: String,
+  accountId: String,
   phone: String,
-  company: String,
+  emailAddress: String,
+  name: String,
 });
 module.exports = mongoose.model("Contact", contactSchema);

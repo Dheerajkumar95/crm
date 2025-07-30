@@ -1,9 +1,11 @@
-const express = require("express");
+import express from "express";
+import {
+  createLead,
+  getLeads,
+  convertLeads,
+} from "../controllers/leadController.js";
 const router = express.Router();
-const leadController = require("../controllers/leadController");
-router.post("/", leadController.createLead);
-router.get("/", leadController.getLeads);
-router.put("/:id", leadController.updateLead);
-router.delete("/:id", leadController.deleteLead);
-
-module.exports = router;
+router.post("/", createLead);
+router.get("/", getLeads);
+router.post("/convert", convertLeads);
+export default router;

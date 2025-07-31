@@ -1,15 +1,15 @@
 // src/routes/accountRoutes.js
-
-const express = require("express");
-const router = express.Router();
-const {
+import express from "express";
+import {
   getAccount,
   getAccountById,
-} = require("../controllers/accountController"); // ✅ check path
+  updateAccountById,
+} from "../controllers/accountController.js";
+
+const router = express.Router();
 
 router.get("/", getAccount);
 router.get("/:id", getAccountById);
+router.patch("/:id", updateAccountById);
 
-module.exports = router;
-y6 01dfskjl.3;
- śśĀZz FSLDzt
+export default router;

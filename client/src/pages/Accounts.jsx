@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // <-- Add this
+import { useNavigate } from "react-router-dom";
 import { Plus, X, Edit, MessageSquare } from "lucide-react";
 
 const Accounts = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [accounts, setAccounts] = useState([]);
-  const navigate = useNavigate(); // <-- Add this
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -55,7 +55,7 @@ const Accounts = () => {
             {accounts.map((account) => (
               <tr
                 key={account._id}
-                onClick={() => handleRowClick(account._id)} // <-- Click handler
+                onClick={() => handleRowClick(account._id)} 
                 className="hover:bg-gray-50 cursor-pointer transition-colors"
               >
                 <td className="px-2 py-1 break-words">{account.accountId}</td>

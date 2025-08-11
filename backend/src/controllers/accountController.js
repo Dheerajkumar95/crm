@@ -1,4 +1,3 @@
-// src/controllers/accountController.js
 import Account from "../models/Account.js";
 
 export const getAccount = async (req, res) => {

@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Edit, MessageSquare } from "lucide-react";  // Or use any icon library you prefer
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
     const fetchContacts = async () => {
-      const res = await axios.get("http://localhost:5000/api/contacts");
-      setContacts(res.data);
+      try {
+        // Replace the URL below with your actual backend API endpoint
+        const res = await axios.get("http://localhost:7000/api/contacts");
+        setContacts(res.data || []);
+      } catch (error) {
+        console.error("Error fetching related contacts:", error);
+      }
     };
     fetchContacts();
   }, []);
@@ -27,37 +33,37 @@ const Contacts = () => {
             </span>
           </div>
         </div>
-
-         
+      </div>
 
       {/* Table */}
       <div className="w-full overflow-visible">
         <table className="w-full divide-y divide-gray-200 text-xs">
           <thead className="bg-gray-50 sticky top-0 z-10">
             <tr>
-              <th className="px-2 py-1"></th>
               <th className="px-2 py-1 text-left">ACCOUNT ID</th>
+              <th className="px-2 py-1 text-left">Company</th>
               <th className="px-2 py-1 text-left">Name</th>
               <th className="px-2 py-1 text-left">Email</th>
               <th className="px-2 py-1 text-left">Phone</th>
-              <th className="px-2 py-1 text-left">Company</th>
-              <th className="px-2 py-1 text-left">Status</th>
+
               <th className="px-2 py-1 text-left">Source</th>
               <th className="px-2 py-1 text-left">Assigned</th>
               <th className="px-2 py-1 text-left">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {contacts.map((contacts) => (
-              <tr key={contacts._id} className="hover:bg-gray-50 cursor-pointer transition-colors">            
-                <td className="px-2 py-1 break-words">{contacts.accountId}</td>
-                <td className="px-2 py-1 break-words">{contacts.name}</td>
-                <td className="px-2 py-1 break-words">{contacts.emailAddress}</td>
-                <td className="px-2 py-1">{contacts.phone}</td>
-                <td className="px-2 py-1 text-gray-600">{contacts.company}</td>
-                <td className="px-2 py-1 text-gray-600">{contacts.status}</td>
-                <td className="px-2 py-1 text-gray-600">{contacts.source}</td>
-                <td className="px-2 py-1 text-gray-600">{contacts.assigned}</td>
+            {contacts.map((contact) => (
+              <tr
+                key={contact._id}
+                className="hover:bg-gray-50 cursor-pointer transition-colors"
+              >
+                <td className="px-2 py-1 break-words">{contact.accountId}</td>
+                <td className="px-2 py-1 break-words">{contact.company}</td>
+                <td className="px-2 py-1 break-words">{contact.name}</td>
+                <td className="px-2 py-1">{contact.emailAddress}</td>
+                <td className="px-2 py-1 text-gray-600">{contact.phone}</td>
+                <td className="px-2 py-1 text-gray-600">{contact.source}</td>
+                <td className="px-2 py-1 text-gray-600">{contact.assigned}</td>
                 <td className="px-2 py-1" onClick={(e) => e.stopPropagation()}>
                   <div className="flex items-center gap-2">
                     <button className="bg-orange-500 hover:bg-orange-600 text-white p-1 rounded">
@@ -72,9 +78,8 @@ const Contacts = () => {
             ))}
           </tbody>
         </table>
- </div>
-  </div>
-   </div>
+      </div>
+    </div>
   );
 };
 

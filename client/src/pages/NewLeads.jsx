@@ -83,9 +83,7 @@ const NewLeads = () => {
           {activeTab === 'Profile' && (
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Left Column */}
                 <div className="space-y-4">
-                  {/* Status, Source, Assigned */}
                   {['status', 'source', 'assigned'].map((key) => (
                     <div key={key}>
                       <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">
@@ -100,9 +98,12 @@ const NewLeads = () => {
                         >
                           {key === 'status' && <>
                             <option>Nothing selected</option>
-                            <option>New</option>
-                            <option>Contacted</option>
-                            <option>Qualified</option>
+                            <option>Prospect</option>
+                            <option>Qualify</option>
+                            <option>Secure</option>
+                            <option>Contracted</option>
+                            <option>Closed Won</option>
+                            <option>Closed Lost</option>
                           </>}
                           {key === 'source' && <>
                             <option>Nothing selected</option>

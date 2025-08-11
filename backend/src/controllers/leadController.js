@@ -2,21 +2,37 @@ import Lead from "../models/Lead.js";
 import Account from "../models/Account.js";
 import Contact from "../models/Contact.js";
 import Opportunity from "../models/Opportunity.js";
-const generateAccountId = () => {
-  const prefix = "ACC";
-  const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  const randomNum = Math.floor(1000 + Math.random() * 9000);
-  return `${prefix}-${date}-${randomNum}`;
+export const generateAccountId = async () => {
+  const prefix = "L";
+  const now = new Date();
+  const dd = String(now.getDate()).padStart(2, "0");
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const yy = String(now.getFullYear()).slice(-2);
+  const dateStr = `${dd}${mm}${yy}`;
+
+  // Find latest lead for today
+  const regex = new RegExp(`^${prefix}-${dateStr}-(\\d{3})$`);
+  const latestLead = await Lead.findOne({ accountId: { $regex: regex } }).sort({
+    accountId: -1,
+  });
+
+  let serial = 1;
+  if (latestLead && latestLead.accountId) {
+    const parts = latestLead.accountId.split("-");
+    serial = parseInt(parts[2], 10) + 1;
+  }
+
+  const serialStr = String(serial).padStart(3, "0");
+  return `${prefix}-${dateStr}-${serialStr}`;
 };
 
 export const createLead = async (req, res) => {
   try {
-    const accountId = generateAccountId();
+    const accountId = await generateAccountId();
     const lead = new Lead({
       ...req.body,
       accountId,
     });
-
     await lead.save();
     res.status(201).json({ message: "Lead created successfully", lead });
   } catch (error) {
@@ -33,8 +49,6 @@ export const getLeads = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
-
-import mongoose from "mongoose"; // Make sure this is imported at the top
 
 export const convertLeads = async (req, res) => {
   try {
@@ -71,17 +85,22 @@ export const convertLeads = async (req, res) => {
 
       // Create Contact
       const contact = await Contact.create({
+        company: lead.company,
         accountId: lead.accountId,
         phone: lead.phone,
         emailAddress: lead.emailAddress,
         name: lead.name,
+        source: lead.source,
+        website: lead.website,
+        assigned: lead.assigned,
       });
 
       // Create Opportunity
       await Opportunity.create({
         accountId: lead.accountId,
-        source: lead.source,
-        website: lead.website,
+        company: lead.company,
+        leadValue: lead.leadValue,
+        status: lead.status,
       });
     }
 

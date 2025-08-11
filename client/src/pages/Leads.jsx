@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Edit, MessageSquare, Plus, Upload } from 'lucide-react';
 import axios from 'axios';
+import { toast } from "react-hot-toast";
 import { Link } from 'react-router-dom';
 
 const Leads = () => {
@@ -11,20 +12,17 @@ const Leads = () => {
   const [selectedLeadIds, setSelectedLeadIds] = useState([]);
 
 const handleConvert = async () => {
- console.log('Converting leads:', selectedLeadIds);
   try {
     await axios.post('http://localhost:7000/api/leads/convert', {
       leadIds: selectedLeadIds,
     });
-
-    // Refresh leads after conversion
     const res = await axios.get('http://localhost:7000/api/leads');
     setLeads(res.data);
     setSelectedLeadIds([]);
-    alert('Leads converted successfully!');
+    toast.success('Leads converted successfully!');
   } catch (err) {
     console.error('Conversion error:', err);
-    alert('Lead conversion failed');
+    toast.error('Lead conversion failed');
   }
 };
 
@@ -61,7 +59,13 @@ const handleConvert = async () => {
 
 
 
-  return (
+return (
+  loading ? (
+    <div className="flex justify-center items-center h-40">
+      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      <span className="ml-2 text-gray-600 text-sm">Loading leads...</span>
+    </div>
+  ) : (
     <div className="px-1">
       {/* Header */}
       <div className="flex flex-col md:flex-row items-center justify-between mb-2">
@@ -81,7 +85,7 @@ const handleConvert = async () => {
           {selectedLeadIds.length > 0 && (
             <button
               onClick={handleConvert}
-              className="flex items-center px-4 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+              className="flex items-center px-4 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition cursor-pointer"
             >
               Convert
             </button>
@@ -166,14 +170,14 @@ const handleConvert = async () => {
                 <button
                   onClick={handlePrevious}
                   disabled={currentPage === 1}
-                  className="px-2 py-1 rounded-l-md border bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+                  className="px-2 py-1 rounded-l-md border bg-white text-sm hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
                 >
                   Previous
                 </button>
                 <button
                   onClick={handleNext}
                   disabled={currentPage === totalPages}
-                  className="px-2 py-1 rounded-r-md border bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+                  className="px-2 py-1 rounded-r-md border bg-white text-sm hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
                 >
                   Next
                 </button>
@@ -183,7 +187,8 @@ const handleConvert = async () => {
         </div>
       </div>
     </div>
-  );
+  )
+);
 };
 
 export default Leads;

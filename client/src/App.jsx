@@ -6,12 +6,15 @@ import CustomersPage from './pages/Customers';
 import DashboardPage from './pages/Dashboard';
 import ProposalPage from './pages/Proposal';
 import NewProposalPage from './pages/NewProposal';
-import Estimate from './pages/Estimates';
-import Opportunities from './pages/Opportunities';
+import Estimate from './pages/Estimates'; 
 import Leads from './pages/Leads';
 import NewLeads from './pages/NewLeads';
 import Account from './pages/Accounts';
+import Contact from './pages/Contacts';
 import AccountDetails from "./pages/AccountDetails";
+import AccountView from "./pages/AccountView";
+import OpportunitiesList from './pages/OpportunitiesList'; 
+import OpportunitiesView from './pages/OpportunitiesView';
 import{ Toaster } from 'react-hot-toast';
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -28,15 +31,14 @@ function App() {
               <Route path="/" element={<DashboardPage />} />
               <Route path="/leads" element={<Leads />} />
               <Route path="/newleads" element={<NewLeads />} />
-              <Route path="/customers" element={<CustomersPage />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/proposal" element={<ProposalPage />} />
               <Route path="/newproposal" element={<NewProposalPage />} />
               <Route path="/estimates" element={<Estimate />} />
-              <Route path="/opportunities" element={<Opportunities />} />
-              <Route path="/account" element={<Account />} />
-              <Route path="/account/:id" element={<AccountDetails />} />
-               
-
+              <Route path="/opportunitieslist" element={<OpportunitiesList />} />
+              <Route path="/account" element={<Account />} /> 
+              <Route path="/account/:id" element={<AccountView />} />
+              <Route path="/opportunities/:id" element={<OpportunitiesView />} />
             </Routes>
           </main>
         </div>

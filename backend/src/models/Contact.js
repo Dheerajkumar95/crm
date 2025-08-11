@@ -1,8 +1,12 @@
 const mongoose = require("mongoose");
 const contactSchema = new mongoose.Schema({
+  company: String,
   accountId: String,
   phone: String,
   emailAddress: String,
   name: String,
+  source: String,
+  website: String,
+  assigned: String,
 });
 module.exports = mongoose.model("Contact", contactSchema);

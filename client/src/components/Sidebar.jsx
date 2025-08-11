@@ -40,8 +40,8 @@ const Sidebar = ({ isOpen }) => {
             <SubMenu items={[
               {label:'Leads', to:'/leads'},
               {label:'Account', to:'/account'},
-              { label: 'Contact', to: '/customers' },
-              { label: 'Opportunities', to: '/opportunities' },
+              { label: 'Contact', to: '/contact' },
+              { label: 'Opportunities', to: '/opportunitieslist' },
               { label: 'Proposals', to: '/proposal' },
               { label: 'Estimates', to: '/estimates' },
               { label: 'Invoices' },

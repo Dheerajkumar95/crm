@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Edit, MessageSquare } from "lucide-react";  // Or use any icon library you prefer
+import { useNavigate } from "react-router-dom";
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        // Replace the URL below with your actual backend API endpoint
         const res = await axios.get("http://localhost:7000/api/contacts");
         setContacts(res.data || []);
       } catch (error) {
-        console.error("Error fetching related contacts:", error);
+        console.error("Error fetching contacts:", error);
       }
     };
     fetchContacts();
@@ -45,41 +45,33 @@ const Contacts = () => {
               <th className="px-2 py-1 text-left">Name</th>
               <th className="px-2 py-1 text-left">Email</th>
               <th className="px-2 py-1 text-left">Phone</th>
-
+              <th className="px-2 py-1 text-left">Website</th>
               <th className="px-2 py-1 text-left">Source</th>
               <th className="px-2 py-1 text-left">Assigned</th>
-              <th className="px-2 py-1 text-left">Actions</th>
+              
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {contacts.map((contact) => (
               <tr
                 key={contact._id}
+                 onClick={() => navigate(`/contacts/${contact._id}`)}
                 className="hover:bg-gray-50 cursor-pointer transition-colors"
               >
                 <td className="px-2 py-1 break-words">{contact.accountId}</td>
-                <td className="px-2 py-1 break-words">{contact.company}</td>
-                <td className="px-2 py-1 break-words">{contact.name}</td>
-                <td className="px-2 py-1">{contact.emailAddress}</td>
-                <td className="px-2 py-1 text-gray-600">{contact.phone}</td>
+                <td className="px-2 py-1 break-words">{contact.Company}</td>
+                <td className="px-2 py-1 break-words">{contact.Name}</td>
+                <td className="px-2 py-1">{contact.Email}</td>
+                <td className="px-2 py-1 text-gray-600">{contact.Phone}</td>
+                <td className="px-2 py-1 text-gray-600">{contact.website}</td>
                 <td className="px-2 py-1 text-gray-600">{contact.source}</td>
                 <td className="px-2 py-1 text-gray-600">{contact.assigned}</td>
-                <td className="px-2 py-1" onClick={(e) => e.stopPropagation()}>
-                  <div className="flex items-center gap-2">
-                    <button className="bg-orange-500 hover:bg-orange-600 text-white p-1 rounded">
-                      <Edit className="h-4 w-4" />
-                    </button>
-                    <button className="bg-green-700 hover:bg-green-800 text-white p-1 rounded">
-                      <MessageSquare className="h-4 w-4" />
-                    </button>
-                  </div>
-                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
+      </div>
   );
 };
 

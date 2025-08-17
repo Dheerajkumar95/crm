@@ -4,7 +4,7 @@ import { X, ChevronDown} from 'lucide-react';
 import { useAuthStore } from "../store/useAuthStore";
 
 const NewLeads = () => {
-  const { Lead } = useAuthStore();
+  const { createAccount } = useAuthStore();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('Profile');
@@ -35,8 +35,8 @@ const NewLeads = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await Lead(formData);
-      navigate('/leads');
+      await createAccount(formData);
+      navigate('/account');
       setIsOpen(false);
     } catch (err) {
       console.error("Unexpected error:", err);
@@ -48,9 +48,9 @@ const NewLeads = () => {
       {isOpen && (
         <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl">
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-800">Add New Lead</h2>
+            <h2 className="text-xl font-semibold text-gray-800">Add New Account</h2>
             <button 
-              onClick={() => { setIsOpen(false); navigate('/leads'); }} 
+              onClick={() => { setIsOpen(false); navigate('/account'); }} 
               className="p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
             >
               <X className="w-5 h-5 text-gray-600" />
@@ -88,7 +88,7 @@ const NewLeads = () => {
                         name={key}
                         value={formData[key]}
                         onChange={handleChange}
-                        className="appearance-none w-full p-2 border border-gray-300 bg-white rounded-md focus:outline-none  pr-10 text-gray-700"
+                        className="appearance-none w-full p-2 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10 text-gray-700"
                       >
                         {key === 'status' && <>
                           <option>Nothing selected</option>
@@ -141,7 +141,7 @@ const NewLeads = () => {
                       name="Name"
                       value={formData.Name}
                       onChange={handleChange}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -155,7 +155,7 @@ const NewLeads = () => {
                       name="Email"
                       value={formData.Email}
                       onChange={handleChange}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -171,7 +171,7 @@ const NewLeads = () => {
                       name="Phone"
                       value={formData.Phone}
                       onChange={handleChange}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -187,7 +187,7 @@ const NewLeads = () => {
                       name="Position"
                       value={formData.Position}
                       onChange={handleChange}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
@@ -202,7 +202,7 @@ const NewLeads = () => {
                       name="Company"
                       value={formData.Company}
                       onChange={handleChange}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   
@@ -217,7 +217,7 @@ const NewLeads = () => {
                       name="website"
                       value={formData.website}
                       onChange={handleChange}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
@@ -231,7 +231,7 @@ const NewLeads = () => {
                       name="Description"
                       value={formData.Description}
                       onChange={handleChange}
-                      className="w-212 p-2 border border-gray-300 rounded-md focus:outline-none  resize-y"
+                      className="w-212 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
                     ></textarea>
                   </div>
                 </div>
@@ -250,7 +250,7 @@ const NewLeads = () => {
                       name="leadValue"
                       value={formData.leadValue}
                       onChange={handleChange}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                    
@@ -265,7 +265,7 @@ const NewLeads = () => {
                       name="Address"
                       value={formData.Address}
                       onChange={handleChange}
-                      className="w-full h-10 border border-gray-300 rounded-md focus:outline-none  resize-y"
+                      className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
                     ></textarea>
                   </div>
                   
@@ -280,7 +280,7 @@ const NewLeads = () => {
                       name="City"
                       value={formData.City}
                       onChange={handleChange}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
@@ -295,7 +295,7 @@ const NewLeads = () => {
                       name="State"
                       value={formData.State}
                       onChange={handleChange}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   
@@ -310,7 +310,7 @@ const NewLeads = () => {
                         name="Country"
                         value={formData.Country}
                         onChange={handleChange}
-                        className="appearance-none w-full p-2 border border-gray-300 bg-white rounded-md focus:outline-none  pr-10 text-gray-700" 
+                        className="appearance-none w-full p-2 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10 text-gray-700" 
                       >
                         <option>Nothing selected</option>
                         <option>India</option>
@@ -332,7 +332,7 @@ const NewLeads = () => {
                       name="ZipCode"
                       value={formData.ZipCode}
                       onChange={handleChange}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -342,7 +342,7 @@ const NewLeads = () => {
               <div className="flex justify-end p-4 border-t border-gray-200 space-x-3 mt-6">
                 <button
                   type="button"
-                  onClick={() => { setIsOpen(false); navigate('/leads'); }}
+                  onClick={() => { setIsOpen(false); navigate('/account'); }}
                   className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition-colors shadow-sm cursor-pointer"
                 >
                   Close

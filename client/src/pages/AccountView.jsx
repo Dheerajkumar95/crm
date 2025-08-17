@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft,
         FileText, 
-        Users,
+        User,
         ArrowDownToLine,
         Trash2,
         Eye, 
@@ -143,7 +143,7 @@ const AccountView = () => {
                 : "text-gray-600 hover:text-blue-600"
             }`}
           >
-            <Users size={18} />
+            <User size={18} />
             Related Info
           </button>
           <button
@@ -177,26 +177,27 @@ const AccountView = () => {
               <div className="p-4 text-sm text-slate-700 space-y-4">
                 {relatedContacts.length > 0 ? (
                   relatedContacts.map((contact, index) => (
-                    <div key={index}>
+                    <div key={index}
+                    onClick={() => navigate(`/contacts/${contact._id}`)}>
                       <p className="text-blue-600 hover:underline cursor-pointer">
-                        {contact.name}
+                        {contact.Name}
                       </p>
                       <p>
                         Email:{" "}
                         <a
-                          href={`mailto:${contact.emailAddress}`}
+                          href={`mailto:${contact.Email}`}
                           className="text-blue-600"
                         >
-                          {contact.emailAddress}
+                          {contact.Email}
                         </a>
                       </p>
                       <p>
                         Phone:{" "}
                         <a
-                          href={`tel:${contact.phone}`}
+                          href={`tel:${contact.Phone}`}
                           className="text-blue-600"
                         >
-                          {contact.phone}
+                          {contact.Phone}
                         </a>
                       </p>
                     </div>
@@ -247,7 +248,7 @@ const AccountView = () => {
             <div className="border rounded-b-lg bg-gray-50">
               <div className="flex justify-between items-center p-3 border-b bg-gray-100">
                 <h2 className="font-semibold text-sm text-slate-700">
-                  Cases (2)
+                  Support Request (2)
                 </h2>
                 <button className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100">
                   New

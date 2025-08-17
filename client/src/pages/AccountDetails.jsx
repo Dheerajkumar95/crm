@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from "react";
+// AccountDetails.jsx
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Pencil } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const AccountDetails = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [account, setAccount] = useState(null);
   const [editingField, setEditingField] = useState(null);
   const [fieldValue, setFieldValue] = useState("");
+
+  // Create a ref for the input element
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -16,10 +21,20 @@ const AccountDetails = () => {
         setAccount(res.data);
       } catch (error) {
         console.error("Error fetching account:", error);
+        toast.error("Failed to fetch account details.");
       }
     };
     fetchAccount();
   }, [id]);
+
+  // Use useEffect to focus the input and set the cursor position
+  useEffect(() => {
+    if (editingField && inputRef.current) {
+      inputRef.current.focus();
+      // Set cursor position to the end of the text
+      inputRef.current.setSelectionRange(fieldValue.length, fieldValue.length);
+    }
+  }, [editingField, fieldValue]);
 
   const handleEditClick = (fieldName, currentValue) => {
     setEditingField(fieldName);
@@ -29,17 +44,17 @@ const AccountDetails = () => {
   const handleSave = async () => {
     if (!editingField) return;
     try {
-      const res = await axios.patch(`http://localhost:7000/api/accounts/${id}`, {
+      await axios.patch(`http://localhost:7000/api/accounts/${id}`, {
         [editingField]: fieldValue,
       });
       setAccount((prev) => ({ ...prev, [editingField]: fieldValue }));
       setEditingField(null);
+      toast.success("Account updated successfully!");
     } catch (err) {
       console.error("Error updating field:", err);
+      toast.error("Failed to update account.");
     }
   };
-
-
 
   if (!account) return <div className="p-6 text-center">Loading account details...</div>;
 
@@ -51,6 +66,7 @@ const AccountDetails = () => {
           <>
             <input
               type="text"
+              ref={inputRef} // Attach the ref here
               value={fieldValue}
               onChange={(e) => setFieldValue(e.target.value)}
               className="border p-1 text-sm rounded mr-2 flex-1"
@@ -88,7 +104,7 @@ const AccountDetails = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
           <div className="space-y-0.5">
-            
+
             <div>
               <p className="text-sm font-medium text-gray-800 mt-4">Account ID</p>
               <div className="border p-2 rounded-md bg-gray-100">
@@ -96,11 +112,10 @@ const AccountDetails = () => {
               </div>
             </div>
 
-            <EditableField label="Name" field="name" value={account.name} />
-            <EditableField label="Email Address" field="emailAddress" value={account.emailAddress} />
-            <EditableField label="Phone" field="phone" value={account.phone} />
-            <EditableField label="Company" field="company" value={account.company} />
-            <EditableField label="Status" field="status" value={account.status} />
+            <EditableField label="Name" field="name" value={account.Name} />
+            <EditableField label="Email Address" field="emailAddress" value={account.Email} />
+            <EditableField label="Phone" field="phone" value={account.Phone} />
+            <EditableField label="Company" field="company" value={account.Company} />
             <EditableField label="Source" field="source" value={account.source} />
             <EditableField label="Assigned" field="assigned" value={account.assigned} />
             <EditableField label="Website" field="website" value={account.website} />
@@ -108,15 +123,13 @@ const AccountDetails = () => {
 
           {/* Right Column */}
           <div className="space-y-4">
-            <EditableField label="Address" field="address" value={account.address} />
-            <EditableField label="City" field="city" value={account.city} />
-            <EditableField label="State" field="state" value={account.state} />
-            <EditableField label="Country" field="country" value={account.country} />
-            <EditableField label="Zip Code" field="zipCode" value={account.zipCode} />
-            <EditableField label="Position" field="position" value={account.position} />
-            <EditableField label="Lead Value" field="leadValue" value={account.leadValue} isCurrency />
-            <EditableField label="Default Language" field="defaultLanguage" value={account.defaultLanguage} />
-            <EditableField label="Description" field="description" value={account.description} />
+            <EditableField label="Address" field="address" value={account.Address} />
+            <EditableField label="City" field="city" value={account.City} />
+            <EditableField label="State" field="state" value={account.State} />
+            <EditableField label="Country" field="country" value={account.Country} />
+            <EditableField label="Zip Code" field="zipCode" value={account.ZipCode} />
+            <EditableField label="Position" field="position" value={account.Position} />
+            <EditableField label="Description" field="description" value={account.Description} />
             <div className="mt-6 grid grid-cols-2 gap-4 border-t pt-4">
               <div>
                 <p className="text-sm font-semibold text-gray-800">Created At</p>

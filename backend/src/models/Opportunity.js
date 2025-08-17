@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const opportunitySchema = new mongoose.Schema(
   {
     accountId: { type: String, required: true },
     leadValue: { type: String, default: 0 },
-    company: { type: String, default: "" },
+    Company: { type: String, default: "" },
     opportunityName: { type: String, default: "" },
     source: { type: String, default: "" },
     expectedRevenue: { type: Number, default: 0 },
@@ -13,4 +13,6 @@ const opportunitySchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-module.exports = mongoose.model("Opportunity", opportunitySchema);
+
+const Opportunity = mongoose.model("Opportunity", opportunitySchema);
+export default Opportunity;

@@ -2,8 +2,27 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import { toast } from "react-hot-toast";
-export const useAuthStore = create(() => ({
-  // Lead
+
+export const useAuthStore = create((set) => ({
+  user: null,
+  authenticated: false,
+
+  // ✅ Check if user is logged in
+  checkAuth: async () => {
+    try {
+      const res = await axiosInstance.get("/auth/check", {
+        withCredentials: true,
+      });
+      set({ user: res.data.user, authenticated: true });
+      return true;
+    } catch (error) {
+      set({ user: null, authenticated: false });
+      return false;
+    }
+  },
+
+  // ------------------
+  // Leads
   Lead: async (formData) => {
     try {
       await axiosInstance.post("/leads", formData);
@@ -13,17 +32,27 @@ export const useAuthStore = create(() => ({
     }
   },
 
-  // Contact
+  // Accounts
+  createAccount: async (accountData) => {
+    try {
+      await axiosInstance.post("/accounts", accountData);
+      toast.success("Account Created!");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Account creation failed");
+    }
+  },
+
+  // Contacts
   Contact: async (contact) => {
     try {
       await axiosInstance.post("/contacts/", contact);
       toast.success("Contact Created!");
     } catch (error) {
-      alert(error.response?.data?.message || "Error creating contact");
+      toast.error(error.response?.data?.message || "Error creating contact");
     }
   },
 
-  // Opportunity
+  // Opportunities
   Opportunity: async (opportunity) => {
     try {
       await axiosInstance.post("/opportunities/", opportunity);
@@ -35,7 +64,7 @@ export const useAuthStore = create(() => ({
     }
   },
 
-  // Task
+  // Tasks
   Task: async (task) => {
     try {
       await axiosInstance.post("/tasks/", task);
@@ -45,7 +74,7 @@ export const useAuthStore = create(() => ({
     }
   },
 
-  // Invoice
+  // Invoices
   Invoice: async (invoice) => {
     try {
       await axiosInstance.post("/invoices/", invoice);
@@ -55,7 +84,7 @@ export const useAuthStore = create(() => ({
     }
   },
 
-  // Billing
+  // Billings
   Billing: async (billing) => {
     try {
       await axiosInstance.post("/billings/", billing);

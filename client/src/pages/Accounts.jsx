@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Plus, X, Edit, MessageSquare } from "lucide-react";
+import { Plus,Upload } from "lucide-react";
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
@@ -39,6 +39,19 @@ const Accounts = () => {
             </span>
           </div>
         </div>
+        <div className="flex items-center space-x-2 mb-1">
+          <button
+            onClick={() => navigate("/newaccount")}
+            className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition cursor-pointer"    
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Account
+          </button>
+          <button to="/leadaccount" className="flex items-center px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition cursor-pointer">
+            <Upload className="w-4 h-4 mr-2" />
+            Import Accounts
+          </button>
+        </div>
       </div>
 
       {/* Table */}
@@ -59,8 +72,8 @@ const Accounts = () => {
                 className="hover:bg-gray-100 cursor-pointer transition"
               >
                 <td className="px-4 py-2 break-all font-mono text-blue-700">{account.accountId}</td>
-                <td className="px-4 py-2 text-gray-700">{account.company}</td>
-                <td className="px-4 py-2 text-gray-700">{account.name}</td>
+                <td className="px-4 py-2 text-gray-700">{account.Company}</td>
+                <td className="px-4 py-2 text-gray-700">{account.Name}</td>
               </tr>
             ))}
           </tbody>

@@ -1,12 +1,14 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const contactSchema = new mongoose.Schema({
-  company: String,
   accountId: String,
-  phone: String,
-  emailAddress: String,
-  name: String,
+  Company: String,
+  Phone: String,
+  Email: String,
+  Name: String,
   source: String,
-  website: String,
   assigned: String,
+  website: String,
 });
-module.exports = mongoose.model("Contact", contactSchema);
+
+const Contact = mongoose.model("Contact", contactSchema);
+export default Contact;

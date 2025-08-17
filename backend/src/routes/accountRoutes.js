@@ -5,6 +5,7 @@ import {
   getAccount,
   getAccountById,
   updateAccountById,
+  createAccount,
 } from "../controllers/accountController.js";
 import Contact from "../models/Contact.js";
 import Account from "../models/Account.js";
@@ -13,7 +14,7 @@ import Opportunity from "../models/Opportunity.js";
 router.get("/", getAccount);
 router.get("/:id", getAccountById);
 router.patch("/:id", updateAccountById);
-
+router.post("/", createAccount);
 router.get("/:accountMongoId/contact", async (req, res) => {
   try {
     const { accountMongoId } = req.params;

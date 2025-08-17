@@ -2,6 +2,8 @@ import Lead from "../models/Lead.js";
 import Account from "../models/Account.js";
 import Contact from "../models/Contact.js";
 import Opportunity from "../models/Opportunity.js";
+import * as XLSX from "xlsx";
+
 export const generateAccountId = async () => {
   const prefix = "L";
   const now = new Date();
@@ -10,28 +12,29 @@ export const generateAccountId = async () => {
   const yy = String(now.getFullYear()).slice(-2);
   const dateStr = `${dd}${mm}${yy}`;
 
-  // Find latest lead for today
-  const regex = new RegExp(`^${prefix}-${dateStr}-(\\d{3})$`);
-  const latestLead = await Lead.findOne({ accountId: { $regex: regex } }).sort({
-    accountId: -1,
-  });
+  let randomStr;
+  let accountId;
+  let exists = true;
 
-  let serial = 1;
-  if (latestLead && latestLead.accountId) {
-    const parts = latestLead.accountId.split("-");
-    serial = parseInt(parts[2], 10) + 1;
+  // Keep generating until a unique ID is found
+  while (exists) {
+    randomStr = String(Math.floor(100 + Math.random() * 900)); // Random 3-digit number
+    accountId = `${prefix}-${dateStr}-${randomStr}`;
+
+    // Check if this accountId already exists
+    const existingLead = await Lead.findOne({ accountId });
+    if (!existingLead) {
+      exists = false;
+    }
   }
 
-  const serialStr = String(serial).padStart(3, "0");
-  return `${prefix}-${dateStr}-${serialStr}`;
+  return accountId;
 };
 
 export const createLead = async (req, res) => {
   try {
-    const accountId = await generateAccountId();
     const lead = new Lead({
       ...req.body,
-      accountId,
     });
     await lead.save();
     res.status(201).json({ message: "Lead created successfully", lead });
@@ -49,7 +52,45 @@ export const getLeads = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+export const getSingleLead = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const lead = await Lead.findById(id);
 
+    if (!lead) {
+      return res.status(404).json({ message: "Lead not found" });
+    }
+
+    res.status(200).json(lead);
+  } catch (error) {
+    console.error("Error fetching single lead:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
+// Function to update an existing lead
+export const updateLead = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedLead = await Lead.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedLead) {
+      return res.status(404).json({ message: "Lead not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Lead updated successfully", lead: updatedLead });
+  } catch (error) {
+    console.error("Error updating lead:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to update lead", error: error.message });
+  }
+};
 export const convertLeads = async (req, res) => {
   try {
     const { leadIds } = req.body;
@@ -57,48 +98,47 @@ export const convertLeads = async (req, res) => {
     const leads = await Lead.find({ _id: { $in: leadIds } });
 
     for (const lead of leads) {
+      // Generate new Account ID for each converted lead
+      const newAccountId = await generateAccountId();
+
       // Create Account
       const account = await Account.create({
-        accountId: lead.accountId,
-        name: lead.name,
-        emailAddress: lead.emailAddress,
-        phone: lead.phone,
-        company: lead.company,
+        accountId: newAccountId,
+        Name: lead.Name,
+        Email: lead.Email,
+        Phone: lead.Phone,
+        Company: lead.Company,
         status: lead.status,
         source: lead.source,
         assigned: lead.assigned,
         website: lead.website,
-        address: lead.address,
-        city: lead.city,
-        state: lead.state,
-        country: lead.country,
-        zipCode: lead.zipCode,
-        position: lead.position,
+        Address: lead.Address,
+        City: lead.City,
+        State: lead.State,
+        Country: lead.Country,
+        ZipCode: lead.ZipCode,
+        Position: lead.Position,
         leadValue: lead.leadValue,
-        assigned: lead.assigned,
-        defaultLanguage: lead.defaultLanguage,
-        description: lead.description,
-        isPublic: lead.isPublic,
-        contactedToday: lead.contactedToday,
+        Description: lead.Description,
         createdAt: lead.createdAt,
       });
 
       // Create Contact
       const contact = await Contact.create({
-        company: lead.company,
-        accountId: lead.accountId,
-        phone: lead.phone,
-        emailAddress: lead.emailAddress,
-        name: lead.name,
+        accountId: newAccountId,
+        Company: lead.Company,
+        Phone: lead.Phone,
+        Email: lead.Email,
+        Name: lead.Name,
         source: lead.source,
-        website: lead.website,
         assigned: lead.assigned,
+        website: lead.website,
       });
 
       // Create Opportunity
       await Opportunity.create({
-        accountId: lead.accountId,
-        company: lead.company,
+        accountId: newAccountId,
+        Company: lead.Company,
         leadValue: lead.leadValue,
         status: lead.status,
       });
@@ -107,9 +147,137 @@ export const convertLeads = async (req, res) => {
     // Delete converted leads
     await Lead.deleteMany({ _id: { $in: leadIds } });
 
-    res.status(200).json({ message: "Leads converted successfully" });
+    res
+      .status(200)
+      .json({ message: "Leads converted successfully with new Account IDs" });
   } catch (error) {
     console.error("Error in convertLeads:", error);
     res.status(500).json({ error: error.message });
+  }
+};
+
+// Import Leads API
+export const importLeads = async (req, res) => {
+  try {
+    if (!req.file || !req.file.buffer) {
+      return res
+        .status(400)
+        .json({ message: "No file uploaded or file is empty" });
+    }
+
+    const { status, source, assigned } = req.body; // Read Excel/CSV from buffer
+
+    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+      defval: "",
+    });
+
+    let importedCount = 0;
+    let duplicateCount = 0;
+    let errorMessages = [];
+
+    for (let row of sheetData) {
+      if (!row.Name || !row.Email || !row.Phone) {
+        errorMessages.push(
+          `Skipped row due to missing required fields (Name, Email, Phone): ${JSON.stringify(
+            row
+          )}`
+        );
+        continue;
+      } // Check duplicate by email
+
+      const exists = await Lead.findOne({ Email: row.Email });
+      if (exists) {
+        duplicateCount++;
+        continue;
+      } // Save new lead
+
+      try {
+        await Lead.create({
+          ...row,
+          status,
+          source,
+          assigned,
+        });
+        importedCount++;
+      } catch (dbError) {
+        console.error("Error creating lead from import:", dbError);
+        errorMessages.push(
+          `Failed to save lead for email ${row.Email}: ${dbError.message}`
+        );
+      }
+    }
+
+    return res.status(200).json({
+      message: "Import completed",
+      importedCount,
+      duplicateCount,
+      errors: errorMessages,
+    });
+  } catch (error) {
+    console.error("Error importing leads:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
+  }
+};
+
+// Simulate Import API
+export const simulateImport = async (req, res) => {
+  try {
+    if (!req.file || !req.file.buffer) {
+      return res
+        .status(400)
+        .json({ message: "No file uploaded or file is empty" });
+    }
+
+    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+      defval: "",
+    });
+
+    let validCount = 0;
+    let issueCount = 0;
+    let sampleIssues = [];
+    const maxSampleIssues = 5;
+
+    for (let row of sheetData) {
+      // Check for missing required fields
+      if (!row.Name || !row.Email || !row.Phone) {
+        issueCount++;
+        if (sampleIssues.length < maxSampleIssues) {
+          sampleIssues.push(
+            `Row ${
+              sheetData.indexOf(row) + 2
+            }: Missing required fields (Name, Email, or Phone).`
+          );
+        }
+        continue;
+      } // Check for duplicate email
+
+      const exists = await Lead.findOne({ Email: row.Email });
+      if (exists) {
+        issueCount++;
+        if (sampleIssues.length < maxSampleIssues) {
+          sampleIssues.push(
+            `Row ${sheetData.indexOf(row) + 2}: Duplicate email '${
+              row.Email
+            }' already exists.`
+          );
+        }
+        continue;
+      }
+
+      validCount++;
+    }
+
+    return res.status(200).json({ validCount, issueCount, sampleIssues });
+  } catch (error) {
+    console.error("Error simulating import:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };

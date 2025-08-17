@@ -2,33 +2,24 @@ import mongoose from "mongoose";
 
 const leadSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    emailAddress: { type: String, required: true },
-    phone: String,
-    company: String,
-    status: String,
-    source: String,
-    address: String,
-    city: String,
-    state: String,
-    country: String,
-    zipCode: String,
-    position: String,
+    Name: { type: String, required: true },
+    Email: { type: String, required: true, unique: true },
+    Phone: { type: String, required: true },
+    Position: String,
+    Company: String,
     website: String,
-    leadValue: Number,
-    assigned: String,
-    defaultLanguage: String,
-    description: String,
-    isPublic: Boolean,
-    contactedToday: Boolean,
-    accountId: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+    leadValue: String,
+    Description: String,
+    Country: String,
+    ZipCode: String,
+    City: String,
+    State: String,
+    Address: String,
+    status: { type: String, default: "" },
+    source: { type: String, default: "" },
+    assigned: { type: String, default: "" },
   },
   { timestamps: true }
 );
 
-const Lead = mongoose.model("Lead", leadSchema);
-export default Lead;
+export default mongoose.model("Lead", leadSchema);

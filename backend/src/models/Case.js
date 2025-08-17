@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const caseSchema = new mongoose.Schema({
   subject: String,
   description: String,

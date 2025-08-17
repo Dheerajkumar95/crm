@@ -1,30 +1,25 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 const accountSchema = new mongoose.Schema(
   {
-    accountId: { type: String, required: true },
-    name: { type: String },
-    emailAddress: { type: String },
-    phone: { type: String },
-    company: { type: String },
-    status: { type: String },
-    source: { type: String },
-    assigned: { type: String },
-    website: { type: String },
-    address: { type: String },
-    city: { type: String },
-    state: { type: String },
-    country: { type: String },
-    zipCode: { type: String },
-    position: { type: String },
-    leadValue: { type: String },
-    defaultLanguage: { type: String },
-    description: { type: String },
-    isPublic: { type: Boolean, default: false },
-    contactedToday: { type: Boolean, default: false },
+    accountId: String,
+    Name: String,
+    Email: String,
+    Phone: String,
+    Company: String,
+    source: String,
+    assigned: String,
+    website: String,
+    Address: String,
+    City: String,
+    State: String,
+    Country: String,
+    ZipCode: String,
+    Position: String,
+    Description: String,
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Account", accountSchema);
+const Account = mongoose.model("Account", accountSchema);
+export default Account;

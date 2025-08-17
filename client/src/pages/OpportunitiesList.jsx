@@ -11,7 +11,6 @@ const OpportunitiesList = () => {
     const fetchopps = async () => {
       try {
         const res = await axios.get("http://localhost:7000/api/opportunities");
-        console.log("Fetched opps:", res.data);
         setopps(res.data);
       } catch (err) {
         console.error("Error fetching opps:", err);
@@ -51,7 +50,7 @@ const OpportunitiesList = () => {
                 className="hover:bg-gray-100 cursor-pointer transition"
               >
                 <td className="px-4 py-2 break-all font-mono text-blue-700">{opp.accountId}</td>
-                <td className="px-4 py-2 text-gray-700">{opp.company}</td>
+                <td className="px-4 py-2 text-gray-700">{opp.Company}</td>
                 <td className="px-4 py-2 text-gray-700">{opp.status}</td>
               </tr>
             ))}

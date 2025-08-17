@@ -43,7 +43,7 @@ const Sidebar = ({ isOpen }) => {
               { label: 'Contact', to: '/contact' },
               { label: 'Opportunities', to: '/opportunitieslist' },
               { label: 'Proposals', to: '/proposal' },
-              { label: 'Estimates', to: '/estimates' },
+              { label: 'Contract', to: '/estimates' },
               { label: 'Invoices' },
               { label: 'Payments' },
               { label: 'Credit Notes' },
@@ -72,7 +72,6 @@ const Sidebar = ({ isOpen }) => {
           <MenuItem icon={<FaUsersCog />} label="HR Payroll" expandable open={openMenu === 'payroll'} onClick={() => toggleMenu('payroll')} />
           <MenuItem icon={<FaTasks />} label="Tasks" />
           <MenuItem icon={<FaLifeRing />} label="Support" />
-          <MenuItem icon={<FaChartBar />} label="Leads" />
           <MenuItem icon={<FaFileAlt />} label="Estimate Request" />
           <MenuItem icon={<FaQuestionCircle />} label="Knowledge Base" />
 

@@ -12,8 +12,11 @@ import fileRoutes from "./controllers/fileController.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import activityRoutes from "./routes/activityRoutes.js";
+import caseRoutes from "./routes/caseRoutes.js";
 import opportunityActivitiesRoutes from "./routes/oppActivitiesRoutes.js";
-
+import productRoutes from "./routes/productRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import opportunityProductsRoutes from "./routes/opportunityProductRoutes.js";
 dotenv.config();
 const app = express();
 
@@ -38,7 +41,11 @@ app.use("/api/opportunities", opportunityRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/activities", activityRoutes);
+app.use("/api/cases", caseRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
 app.use("/api/opportunitiesactivities", opportunityActivitiesRoutes);
+app.use("/api/opportunityProducts", opportunityProductsRoutes);
 app.use("/api/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 const PORT = process.env.PORT || 7000;

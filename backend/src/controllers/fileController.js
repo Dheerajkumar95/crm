@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import { gfs, gridFSBucket, upload } from "../lib/db.js";
 
 const fileRoutes = (app) => {
-  // Upload file with accountId in metadata
   app.post(
     "/api/files/upload/:accountId",
     upload.single("file"),
@@ -13,7 +12,6 @@ const fileRoutes = (app) => {
     }
   );
 
-  // List files by accountId
   app.get("/api/files/account/:accountId", async (req, res) => {
     try {
       const files = await gfs.files
@@ -35,7 +33,6 @@ const fileRoutes = (app) => {
     }
   });
 
-  // View file
   app.get("/api/files/:accountId/:filename", async (req, res) => {
     try {
       const file = await gfs.files.findOne({
@@ -52,7 +49,6 @@ const fileRoutes = (app) => {
     }
   });
 
-  // Download file
   app.get("/api/files/:accountId/:filename/download", async (req, res) => {
     try {
       const file = await gfs.files.findOne({
@@ -69,7 +65,6 @@ const fileRoutes = (app) => {
     }
   });
 
-  // Delete file
   app.delete("/api/files/:accountId/:id", async (req, res) => {
     try {
       const file = await gfs.files.findOne({

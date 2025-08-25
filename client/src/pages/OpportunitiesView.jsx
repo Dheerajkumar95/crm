@@ -11,6 +11,7 @@ export default function App() {
 
     const [account, setAccount] = useState(null);
     const [relatedContacts, setRelatedContacts] = useState([]);
+    const [relatedProducts, setRelatedProducts] = useState([]);
     const [leadData, setLeadData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isComplete, setIsComplete] = useState(false);
@@ -51,7 +52,16 @@ export default function App() {
                 console.error("Error fetching related contacts:", error);
             }
         };
+        const fetchProducts = async () => {
+                    try {
+                        const res = await axios.get(`http://localhost:7000/api/opportunityProducts/${id}`);
+                        setRelatedProducts(res.data || []);
+                    } catch (error) {
+                        console.error("Error fetching related products:", error);
+                    }
+                    };
 
+        fetchProducts();
         fetchAccount();
         fetchContacts();
         fetchData();
@@ -235,7 +245,7 @@ export default function App() {
                 <div className="flex items-center space-x-4 p-5 h-10 text-zinc-800">
                     <BadgeDollarSign size={28} className="text-zinc-500" />
                     <div>
-                        <span className="block text-sm text-zinc-500">Lead Value</span>
+                        <span className="block text-sm text-zinc-500">Potential Revenue</span>
                         <span className="block font-semibold text-lg">{leadData.leadValue}</span>
                     </div>
                 </div>
@@ -302,66 +312,109 @@ export default function App() {
                 </div>
                 </div>
 
-                {/* TAB CONTENT */}
                 <div className="bg-white min-h-[300px] mt-0 rounded-b-2xl">
-                {activeTab === "relate" && (
-                    <div className="space-y-6 p-4">
-                    {/* Related Contacts */}
+              {activeTab === "relate" && (
+                <div className="space-y-6 p-4">
                     <div className="border rounded-b-lg bg-gray-50">
-                        <div className="flex justify-between items-center p-3 border-b bg-gray-100">
+                    <div className="flex justify-between items-center p-3 border-b bg-gray-100">
                         <h2 className="font-semibold text-sm text-slate-700">
-                            Contacts ({relatedContacts?.length || 0})
+                        Contacts ({relatedContacts?.length || 0})
                         </h2>
-                        <button className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100">
-                            New
+                        <button 
+                        onClick={() => navigate(`/contacts/new/${account._id}`)}
+                        className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100">
+                        New
                         </button>
-                        </div>
-                        <div className="p-4 text-sm text-slate-700 space-y-4">
+                    </div>
+                    <div className="p-4 text-sm text-slate-700">
                         {relatedContacts?.length > 0 ? (
-                            relatedContacts.map((contact, index) => (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {relatedContacts.map((contact, index) => (
                             <div
                                 key={index}
                                 onClick={() => navigate(`/contacts/${contact._id}`)}
-                                className="p-2 border-b last:border-0 rounded"
+                                className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer"
                             >
-                                <p className="text-blue-600 hover:underline cursor-pointer">
+                                <p className="text-blue-600 font-medium hover:underline">
                                 {contact.Name}
                                 </p>
                                 <p>
                                 Email:{" "}
-                                <a href={`mailto:${contact.Email}`} className="text-blue-600">
+                                <a
+                                    href={`mailto:${contact.Email}`}
+                                    className="text-blue-600"
+                                >
                                     {contact.Email}
                                 </a>
                                 </p>
                                 <p>
                                 Phone:{" "}
-                                <a href={`tel:${contact.Phone}`} className="text-blue-600">
+                                <a
+                                    href={`tel:${contact.Phone}`}
+                                    className="text-blue-600"
+                                >
                                     {contact.Phone}
                                 </a>
                                 </p>
                             </div>
-                            ))
+                            ))}
+                        </div>
                         ) : (
-                            <p>No contacts found.</p>
+                        <p>No contacts found.</p>
                         )}
-                        </div>
-                        <div className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer">
-                        View All
-                        </div>
                     </div>
-                    </div>
-                )}
 
+                    <div className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer">
+                        View All
+                    </div>
+                    
+                    </div>
+                    
+                    <div className="border rounded-b-lg bg-gray-50">
+                    <div className="flex justify-between items-center p-3 border-b bg-gray-100">
+                        <h2 className="font-semibold text-sm text-slate-700">
+                        Product ({relatedProducts?.length || 0})
+                        </h2>
+                        <button 
+                        onClick={() => navigate(`/productlist/${account._id}`)}
+                        className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100">
+                        Add
+                        </button>
+                    </div>
+                   <div className="p-4 text-sm text-slate-700">
+                    {relatedProducts?.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {relatedProducts.map((product, index) => (
+                            <div
+                            key={index}
+                            className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer"
+                            >
+                            <p className="text-blue-600 font-medium hover:underline">
+                                {product.productName}
+                            </p>
+                            <p className="text-gray-600 text-sm">Category: {product.category}</p>
+                            <p className="text-gray-500 text-xs">ID: {product.productId}</p>
+                            </div>
+                        ))}
+                        </div>
+                    ) : (
+                        <p>No Products found.</p>
+                    )}
+                    </div>
+
+                    <div className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer">
+                        View All
+                    </div>
+                 </div>
+                </div>
+                )}
                 {activeTab === "activity" && (
                     <div className="space-y-6 p-4">
                     <ActivityButtons />
                     </div>
                 )}
-
                 {activeTab === "details" && <OpportunitiesDetails leadData={leadData} />}
                 </div>
-
-           
             <div
                 className={`fixed bottom-8 left-1/2 -translate-x-1/2 p-2 rounded-xl shadow-2xl transition-transform duration-500 ease-out z-50 ${
                     message ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
@@ -370,8 +423,6 @@ export default function App() {
                 <CheckCircle size={20} />
                 <span>{message}</span>
             </div>
-
-            {/* CLOSE STATUS MODAL */}
             <CloseStatusModal
                 isOpen={isCloseModalOpen}
                 onClose={() => setIsCloseModalOpen(false)}

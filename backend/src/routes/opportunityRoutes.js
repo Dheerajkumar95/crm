@@ -52,17 +52,25 @@ router.patch("/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to update opportunity" });
   }
 });
-// Create opportunity (optional)
 router.post("/", async (req, res) => {
   try {
+    const { accountId, Company, opportunityName, ExpectedRevenue } = req.body;
+
+    if (!accountId || !Company || !opportunityName || !ExpectedRevenue) {
+      return res.status(400).json({ message: "Required fields are missing" });
+    }
+
     const newOpp = new Opportunity(req.body);
     await newOpp.save();
-    res.status(201).json(newOpp);
+
+    res
+      .status(201)
+      .json({ message: "Opportunity created successfully", newOpp });
   } catch (error) {
-    res.status(500).json({ message: "Error creating opportunity" });
+    console.error("Error creating opportunity:", error);
+    res.status(500).json({ message: "Error creating opportunity", error });
   }
 });
-
 // Delete opportunity (optional)
 router.delete("/:id", async (req, res) => {
   try {
@@ -92,7 +100,6 @@ router.get("/:opportunitiesMongoId/account", async (req, res) => {
   }
 });
 
-// ✅ Get Contacts related to Opportunity's Account
 router.get("/:opportunitiesMongoId/contact", async (req, res) => {
   try {
     const opportunity = await Opportunity.findById(

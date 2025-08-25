@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Plus, X, Edit, MessageSquare } from "lucide-react";
 
 const OpportunitiesList = () => {
   const [opps, setopps] = useState([]);

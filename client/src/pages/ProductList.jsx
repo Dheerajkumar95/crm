@@ -1,0 +1,314 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate,useParams } from "react-router-dom";
+import { Plus } from "lucide-react";
+import { toast } from "react-hot-toast";
+const categoryColors = [
+  "bg-green-400",
+  "bg-purple-600",
+  "bg-green-600",
+  "bg-teal-300",
+  "bg-pink-600",
+  "bg-blue-500",
+  "bg-orange-500",
+];
+
+const ProductList = () => {
+  const { id } = useParams(); 
+  const navigate = useNavigate();
+  const [activeCategory, setActiveCategory] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [startDate, setStartDate] = useState("");
+  const [deliveryDate, setDeliveryDate] = useState("");
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get("http://localhost:7000/api/categories");
+      const fetched = res.data.map((cat, index) => ({
+        name: cat.name,
+        color: categoryColors[index % categoryColors.length], // rotate colors
+      }));
+      setCategories(fetched);
+      if (fetched.length > 0) setActiveCategory(fetched[0].name); // set default
+    } catch (error) {
+      console.error("Error fetching categories", error);
+    }
+  };
+
+  const fetchProducts = async (category) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:7000/api/products/category?category=${category}`
+      );
+      setProducts(res.data);
+    } catch (error) {
+      console.error("Error fetching products", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (activeCategory) fetchProducts(activeCategory);
+  }, [activeCategory]);
+
+  const handleToggleStatus = async (productId, currentStatus) => {
+    try {
+      const res = await axios.put(
+        `http://localhost:7000/api/products/${productId}/status`,
+        {
+          status: currentStatus === "Active" ? false : true,
+        }
+      );
+      setProducts((prev) =>
+        prev.map((p) =>
+          p._id === productId ? { ...p, status: res.data.status } : p
+        )
+      );
+    } catch (error) {
+      console.error("Error updating status", error);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      await axios.post("http://localhost:7000/api/opportunityProducts", {
+        opportunityId: id,
+        productId: selectedProduct._id,
+        productName: selectedProduct.productName,
+        category: selectedProduct.category,
+        quantity,
+        price: selectedProduct.price,
+        currency: selectedProduct.currency,
+        startDate,
+        deliveryDate,
+      });
+      setIsModalOpen(false);
+      toast.success("Product added successfully!");
+    } catch (error) {
+       if (error.response?.data?.error) {
+      toast.success(error.response.data.error);
+    } else {
+      toast.error("Failed to save product");
+    }
+    }
+  };
+
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6 flex-wrap">
+        <div className="flex gap-4 flex-wrap">
+          {categories.map((cat) => (
+            <button
+              key={cat.name}
+              onClick={() => setActiveCategory(cat.name)}
+              className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
+                ${
+                  activeCategory === cat.name
+                    ? `${cat.color} text-white`
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+        <div>
+          <button
+            onClick={() => navigate("/addproduct")}
+            className="flex items-center px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition cursor-pointer"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add New Product
+          </button>
+        </div>
+      </div>
+      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+        <table className="w-full border-collapse">
+          <thead className="bg-gray-50 text-black text-sm">
+            <tr>
+              <th className="p-3 text-left">Product ID</th>
+              <th className="p-1 text-left">Product Name</th>
+              <th className="p-1 text-left">Product Quality</th>
+              <th className="p-1 text-left">Price</th>
+              <th className="p-1 text-left">Status</th>
+              <th className="p-1 text-left">Add</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.length > 0 ? (
+              products.map((product) => (
+                <tr
+                  key={product._id}
+                  className="border-b-gray-600 border-t hover:bg-gray-50 transition"
+                >
+                  <td className="px-3 font-semibold">{product.productId}</td>
+                  <td className="p-1">{product.productName}</td>
+                  <td className="p-1">{product.productQuality}</td>
+                  <td className="p-1">{product.price}</td>
+                  <td className="p-1">
+                    <button
+                      onClick={() =>
+                        handleToggleStatus(product._id, product.status)
+                      }
+                      className={`relative inline-flex h-5 w-14 items-center rounded-full transition cursor-pointer ${
+                        product.status === "Active"
+                          ? "bg-green-500"
+                          : "bg-gray-400"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                          product.status === "Active"
+                            ? "translate-x-9"
+                            : "translate-x-1"
+                        }`}
+                      />
+                    </button>
+                  </td>
+                <td className="p-1">
+            <button
+              onClick={() => {
+                if (!id) {
+                  toast.error("Please select an account first.");
+                  return;
+                }
+                setSelectedProduct(product);
+                setQuantity(1);
+                setIsModalOpen(true);
+              }}
+              disabled={!id} 
+              className={`flex items-center justify-center w-8 h-8 rounded-full border text-gray-700 transition cursor-pointer
+                ${id ? "border-gray-800 bg-white hover:bg-gray-100" : "border-gray-300 bg-gray-100 cursor-not-allowed"}`}
+            >
+              <Plus size={16} />
+            </button>
+          </td>
+
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="p-6 text-center text-gray-500">
+                  Product not available in {activeCategory} category.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      {isModalOpen && selectedProduct && (
+  <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div
+      className="absolute inset-0 bg-black opacity-50"
+      onClick={() => setIsModalOpen(false)}
+    ></div>
+
+    <div className="bg-white rounded-lg shadow-lg z-10 p-6 w-[600px] max-h-[90vh] overflow-y-auto">
+      <h2 className="text-lg font-bold mb-4">Product Details</h2>
+      <div className="flex gap-4 mb-4">
+        <img
+          src={selectedProduct.productImage}
+          alt={selectedProduct.productName}
+          className="w-32 h-32 object-cover rounded border"
+        />
+        <div>
+          <p className="text-xl font-semibold">{selectedProduct.productName}</p>
+          <p className="text-gray-600 text-sm">{selectedProduct.productDescription}</p>
+          <p className="text-sm mt-1">
+            <span className="font-semibold">Category:</span> {selectedProduct.category}
+          </p>
+          <p className="text-sm">
+            <span className="font-semibold">Brand:</span> {selectedProduct.brand}
+          </p>
+          <p className="text-sm">
+            <span className="font-semibold">Status:</span>{" "}
+            <span
+              className={`px-2 py-0.5 rounded text-xs ${
+                selectedProduct.status === "Active"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {selectedProduct.status}
+            </span>
+          </p>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4 text-sm">
+        <p><span className="font-semibold">Product ID:</span> {selectedProduct.productId}</p>
+        <p><span className="font-semibold">Quality:</span> {selectedProduct.productQuality}</p>
+        <p><span className="font-semibold">Unit:</span> {selectedProduct.unitOfMeasure}</p>
+        <p><span className="font-semibold">HSN Code:</span> {selectedProduct.hsnCode}</p>
+        <p><span className="font-semibold">Price:</span> {selectedProduct.price} {selectedProduct.currency}</p>
+        <p><span className="font-semibold">Cost Price:</span> {selectedProduct.costPrice} {selectedProduct.currency}</p>
+        <p><span className="font-semibold">Selling Price:</span> {selectedProduct.sellingPrice} {selectedProduct.currency}</p>
+        <p><span className="font-semibold">Stock Qty:</span> {selectedProduct.stockQuantity}</p>
+        <p><span className="font-semibold">Warehouse:</span> {selectedProduct.warehouse}</p>
+        <p><span className="font-semibold">Supplier:</span> {selectedProduct.supplier}</p>
+      </div>
+      <div className="mt-4">
+        <label className="block text-sm font-medium mb-1">Quantity</label>
+        <input
+          type="number"
+          min="1"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+     <div className="flex  sm:flex-row justify-start gap-2 mt-4">
+  <div className="flex-1">
+    <label className="block text-sm font-medium mb-1">
+      Starting Date
+    </label>
+    <input
+      type="date"
+      value={startDate}
+      onChange={(e) => setStartDate(e.target.value)}
+      className="w-full p-2.5 border  rounded  outline-none transition"
+    />
+  </div>
+
+  <div className="flex-1">
+    <label className="block text-sm font-medium mb-1">
+      Delivery Date
+    </label>
+    <input
+      type="date"
+      value={deliveryDate}
+      onChange={(e) => setDeliveryDate(e.target.value)}
+      className="w-full p-2.5 border  rounded  outline-none transition"
+    />
+  </div>
+</div>
+      <div className="flex justify-end gap-2 mt-6">
+        <button
+          onClick={() => setIsModalOpen(false)}
+          className="px-3 py-1 border rounded hover:bg-gray-100"
+        >
+          Cancel
+        </button>
+        <button
+           onClick={handleSave}
+          className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
+    </div>
+    
+  );
+};
+
+export default ProductList;

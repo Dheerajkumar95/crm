@@ -16,9 +16,8 @@ export const generateAccountId = async () => {
   let accountId;
   let exists = true;
 
-  // Keep generating until a unique ID is found
   while (exists) {
-    randomStr = String(Math.floor(100 + Math.random() * 900)); // Random 3-digit number
+    randomStr = String(Math.floor(100 + Math.random() * 900));
     accountId = `${prefix}-${dateStr}-${randomStr}`;
 
     // Check if this accountId already exists
@@ -93,7 +92,7 @@ export const updateLead = async (req, res) => {
 };
 export const convertLeads = async (req, res) => {
   try {
-    const { leadIds } = req.body;
+    const { leadIds, accountData, contactData, opportunityData } = req.body;
 
     const leads = await Lead.find({ _id: { $in: leadIds } });
 
@@ -101,55 +100,58 @@ export const convertLeads = async (req, res) => {
       // Generate new Account ID for each converted lead
       const newAccountId = await generateAccountId();
 
-      // Create Account
+      // ✅ Account create with overwrite fields
       const account = await Account.create({
         accountId: newAccountId,
-        Name: lead.Name,
+        Name: accountData?.accountName || lead.Name,
         Email: lead.Email,
         Phone: lead.Phone,
         Company: lead.Company,
         status: lead.status,
         source: lead.source,
         assigned: lead.assigned,
-        website: lead.website,
-        Address: lead.Address,
+        website: accountData?.website || lead.website,
+        Address: accountData?.address || lead.Address,
         City: lead.City,
         State: lead.State,
         Country: lead.Country,
         ZipCode: lead.ZipCode,
         Position: lead.Position,
-        leadValue: lead.leadValue,
+        ExpectedRevenue: lead.ExpectedRevenue,
         Description: lead.Description,
         createdAt: lead.createdAt,
       });
 
-      // Create Contact
+      // ✅ Contact create with overwrite fields
       const contact = await Contact.create({
         accountId: newAccountId,
         Company: lead.Company,
         Phone: lead.Phone,
         Email: lead.Email,
-        Name: lead.Name,
+        Name: contactData?.contactName || lead.Name,
         source: lead.source,
         assigned: lead.assigned,
         website: lead.website,
       });
 
-      // Create Opportunity
-      await Opportunity.create({
-        accountId: newAccountId,
-        Company: lead.Company,
-        leadValue: lead.leadValue,
-        status: lead.status,
-      });
+      // ✅ Opportunity create if data provided
+      if (opportunityData) {
+        await Opportunity.create({
+          accountId: newAccountId,
+          Company: lead.Company,
+          ExpectedRevenue: lead.ExpectedRevenue,
+          status: lead.status,
+          opportunityName: opportunityData.opportunityName,
+        });
+      }
     }
 
     // Delete converted leads
     await Lead.deleteMany({ _id: { $in: leadIds } });
 
-    res
-      .status(200)
-      .json({ message: "Leads converted successfully with new Account IDs" });
+    res.status(200).json({
+      message: "Leads converted successfully with overwritten fields",
+    });
   } catch (error) {
     console.error("Error in convertLeads:", error);
     res.status(500).json({ error: error.message });

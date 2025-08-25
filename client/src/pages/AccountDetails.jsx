@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Pencil } from "lucide-react";
+import { Pencil,X  } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 const AccountDetails = () => {
@@ -58,42 +58,49 @@ const AccountDetails = () => {
 
   if (!account) return <div className="p-6 text-center">Loading account details...</div>;
 
-  const EditableField = ({ label, field, value, isCurrency = false }) => (
-    <div>
-      <p className="text-sm font-medium text-gray-800 mt-4">{label}</p>
-      <div className="flex items-center justify-between border p-2 rounded-md bg-gray-50">
-        {editingField === field ? (
-          <>
-            <input
-              type="text"
-              ref={inputRef} // Attach the ref here
-              value={fieldValue}
-              onChange={(e) => setFieldValue(e.target.value)}
-              className="border p-1 text-sm rounded mr-2 flex-1"
-            />
-            <button
-              onClick={handleSave}
-              className="text-blue-600 text-sm font-semibold cursor-pointer"
-            >
-              Save
-            </button>
-          </>
-        ) : (
-          <>
-            <span className="text-sm text-gray-700">
-              {isCurrency && value ? `$${parseFloat(value).toLocaleString()}` : value || "-"}
-            </span>
-            <button
-              onClick={() => handleEditClick(field, value)}
-              className="ml-2 text-gray-800 hover:text-blue-600"
-            >
-              <Pencil className="h-4 w-4 cursor-pointer" />
-            </button>
-          </>
-        )}
-      </div>
+const EditableField = ({ label, field, value, isCurrency = false }) => (
+  <div>
+    <p className="text-sm font-medium text-gray-800 mt-4">{label}</p>
+    <div className="flex items-center justify-between border p-2 rounded-md bg-gray-50">
+      {editingField === field ? (
+        <>
+          <input
+            type="text"
+            ref={inputRef}
+            value={fieldValue}
+            onChange={(e) => setFieldValue(e.target.value)}
+            className="border p-1 text-sm rounded mr-2 flex-1"
+          />
+          <button
+            onClick={handleSave}
+            className="text-blue-600 text-sm font-semibold cursor-pointer"
+          >
+            Save
+          </button>
+          <button
+            onClick={() => setEditingField(null)}
+            className="ml-2 text-gray-500 hover:text-red-500 transition cursor-pointer"
+          >
+            <X size={18} />
+          </button>
+        </>
+      ) : (
+        <>
+          <span className="text-sm text-gray-700">
+            {isCurrency && value ? `$${parseFloat(value).toLocaleString()}` : value || "-"}
+          </span>
+          <button
+            onClick={() => handleEditClick(field, value)}
+            className="ml-2 text-gray-800 hover:text-blue-600"
+          >
+            <Pencil className="h-4 w-4 cursor-pointer" />
+          </button>
+        </>
+      )}
     </div>
-  );
+  </div>
+);
+
 
   return (
     <div className="min-h-screen font-inter antialiased flex justify-center">

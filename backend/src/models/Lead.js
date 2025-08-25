@@ -8,7 +8,7 @@ const leadSchema = new mongoose.Schema(
     Position: String,
     Company: String,
     website: String,
-    leadValue: String,
+    ExpectedRevenue: String,
     Description: String,
     Country: String,
     ZipCode: String,

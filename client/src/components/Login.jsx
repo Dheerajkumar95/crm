@@ -1,31 +1,33 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
-
-
+import { useAuthStore } from "../store/useAuthStore";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+ const navigate = useNavigate();
+  const location = useLocation();
+  const setAuth = useAuthStore((state) => state.setAuth);
 
-  const handleLogin = async () => {
+  // Agar user kisi protected route se aya tha to wahi redirect ho
+  const from = location.state?.from?.pathname || "/";
+ const handleLogin = async () => {
     try {
       const res = await axios.post(
         "http://localhost:7000/api/auth/login",
         { username, password },
         { withCredentials: true }
       );
-      toast.success(res.data.message);
 
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
+      toast.success(res.data.message);
+      setAuth(res.data.user);
+      navigate(from, { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
     }
   };
-
-  const handleForgotPassword = () => {
+ const handleForgotPassword = () => {
     navigate("/forgot-password");
   };
 

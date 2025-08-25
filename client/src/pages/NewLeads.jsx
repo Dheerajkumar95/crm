@@ -15,7 +15,7 @@ const NewLeads = () => {
     Position: '',
     Company: '',
     website: '',
-    leadValue: '',
+    ExpectedRevenue: '',
     Description: '',
     Country: 'Nothing selected',
     ZipCode: '',
@@ -239,16 +239,16 @@ const NewLeads = () => {
                 {/* Right Column */}
                 <div className="space-y-4">
 
-                  {/* Lead Value */}
+                
                   <div>
-                    <label htmlFor="leadValue" className="block text-sm font-medium text-gray-700 mb-1">
-                      Lead Value
+                    <label htmlFor="ExpectedRevenue" className="block text-sm font-medium text-gray-700 mb-1">
+                      ExpectedRevenue
                     </label>
                     <input
                       type="text"
-                      id="leadValue"
-                      name="leadValue"
-                      value={formData.leadValue}
+                      id="ExpectedRevenue"
+                      name="ExpectedRevenue"
+                      value={formData.ExpectedRevenue}
                       onChange={handleChange}
                       className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
                     />

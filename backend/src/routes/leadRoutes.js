@@ -22,10 +22,7 @@ router.post("/messages/send", upload.array("attachments"), async (req, res) => {
     const { from, to, cc, bcc, subject, html, leadId, relatedId, relatedType } =
       req.body;
 
-    // Configure transporter (example: Gmail OAuth2 or SMTP)
-    const transporter = nodemailer.createTransport({
-      // your SMTP config
-    });
+    const transporter = nodemailer.createTransport({});
 
     const attachments = (req.files || []).map((f) => ({
       filename: f.originalname,

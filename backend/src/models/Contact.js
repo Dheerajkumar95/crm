@@ -8,6 +8,7 @@ const contactSchema = new mongoose.Schema({
   source: String,
   assigned: String,
   website: String,
+  createdAt: { type: Date, default: Date.now },
 });
 
 const Contact = mongoose.model("Contact", contactSchema);

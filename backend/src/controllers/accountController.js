@@ -66,7 +66,7 @@ export const createAccount = async (req, res) => {
 
 export const getAccount = async (req, res) => {
   try {
-    const accounts = await Account.find();
+    const accounts = await Account.find().sort({ createdAt: -1 });
     res.status(200).json(accounts);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch accounts", error });

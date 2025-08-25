@@ -3,13 +3,14 @@ import { Edit, MessageSquare, Plus, Upload,ListTodo } from 'lucide-react';
 import axios from 'axios';
 import { toast } from "react-hot-toast";
 import {Link,useNavigate } from 'react-router-dom';
-
+import ConvertLeadModal from "./ConvertLeadModal";
 const Leads = () => {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [leadsPerPage] = useState(15);
   const [selectedLeadIds, setSelectedLeadIds] = useState([]);
+  const [showConvertModal, setShowConvertModal] = useState(false);
 const navigate = useNavigate();
 const handleConvert = async () => {
   try {
@@ -25,7 +26,10 @@ const handleConvert = async () => {
     toast.error('Lead conversion failed');
   }
 };
-
+const handleConvertClick = () => {
+  if (selectedLeadIds.length === 0) return;
+  setShowConvertModal(true);
+};
   useEffect(() => {
     const fetchLeads = async () => {
       try {
@@ -84,7 +88,7 @@ return (
         <div className="flex items-center space-x-2 mb-1">
           {selectedLeadIds.length > 0 && (
             <button
-              onClick={handleConvert}
+              onClick={handleConvertClick}
               className="flex items-center px-4 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition cursor-pointer"
             >
               Convert
@@ -195,7 +199,18 @@ return (
           </div>
         </div>
       </div>
+      <ConvertLeadModal
+  open={showConvertModal}
+  onClose={() => setShowConvertModal(false)}
+  selectedLeadIds={selectedLeadIds}
+  refreshLeads={async () => {
+    const res = await axios.get("http://localhost:7000/api/leads");
+    setLeads(res.data);
+    setSelectedLeadIds([]);
+  }}
+/>
     </div>
+    
   )
 );
 };

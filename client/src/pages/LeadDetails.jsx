@@ -134,12 +134,18 @@ const LeadDetails = () => {
                 className="border p-1 text-sm rounded mr-2 flex-1"
               />
             )}
-            <button
-              onClick={handleSave}
-              className="text-blue-600 text-sm font-semibold cursor-pointer"
-            >
+             <button
+               onClick={handleSave}
+               className="text-blue-600 text-sm font-semibold cursor-pointer"
+               >
               Save
-            </button>
+              </button>
+              <button
+              onClick={() => setEditingField(null)}
+              className="ml-2 text-gray-500 hover:text-red-500 transition cursor-pointer"
+              >
+              <X size={18} />
+              </button>
           </>
         ) : (
           <>

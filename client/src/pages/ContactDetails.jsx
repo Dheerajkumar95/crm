@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { Pencil } from "lucide-react";
+import { Pencil, ArrowLeft, X } from "lucide-react";
 
 const ContactDetails = () => {
   const { id } = useParams();
@@ -43,10 +43,17 @@ const ContactDetails = () => {
   if (!contact) return <div className="p-4">Loading...</div>;
 
   return (
-    <div className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6">
-      <h1 className="text-xl font-bold mb-4">Contact Details</h1>
+    <div className="w-full mx-auto bg-white shadow-sm rounded-xl p-6">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center mb-6 text-blue-600 hover:underline font-medium cursor-pointer"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+      </button>
 
-      <div className="space-y-4">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800">Contact Details</h1>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {[
           "accountId",
           "Company",
@@ -56,52 +63,57 @@ const ContactDetails = () => {
           "website",
           "source",
           "assigned",
-        ].map((field) => (
-          <div key={field}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              {field}
-            </label>
-            <div className="flex items-center border rounded px-2 py-1 bg-gray-50">
-              {editingField === field ? (
-                <>
-                  <input
-                    type="text"
-                    value={tempValue}
-                    onChange={(e) => setTempValue(e.target.value)}
-                    className="flex-1 border px-2 py-1 rounded"
-                  />
-                  <button
-                    onClick={() => handleSave(field)}
-                    className="ml-2 text-blue-600 font-medium cursor-pointer"
-                  >
-                    Save
-                  </button>
-                </>
-              ) : (
-                <>
-                  <span className="flex-1 text-gray-800">
+        ].map((field) => {
+          const isNonEditable = field === "accountId" || field === "Company";
+
+          return (
+            <div key={field}>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                {field}
+              </label>
+              <div className="flex items-center border rounded-lg px-3 py-2 bg-gray-50 hover:bg-gray-100 transition">
+                {isNonEditable ? (
+                  <span className="flex-1 text-gray-900 font-medium">
                     {contact[field] || "—"}
                   </span>
-                  <button
-                    onClick={() => handleEdit(field)}
-                    className="text-gray-700 hover:text-gray-800 cursor-pointer"
-                  >
-                    <Pencil size={16} />
-                  </button>
-                </>
-              )}
+                ) : editingField === field ? (
+                  <>
+                    <input
+                      type="text"
+                      value={tempValue}
+                      onChange={(e) => setTempValue(e.target.value)}
+                      className="flex-1 border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                    <button
+                      onClick={() => handleSave(field)}
+                      className="ml-2 py-1 text-blue-600 text-sm font-semibold cursor-pointer"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setEditingField(null)}
+                      className="ml-2 text-gray-500 hover:text-red-500 transition cursor-pointer"
+                    >
+                      <X size={18} />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <span className="flex-1 text-gray-900">
+                      {contact[field] || "—"}
+                    </span>
+                    <button
+                      onClick={() => handleEdit(field)}
+                      className="text-gray-500 hover:text-blue-600 transition cursor-pointer"
+                    >
+                      <Pencil size={16} />
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="bg-gray-700 text-white px-4 py-2 rounded cursor-pointer"
-        >
-          Back
-        </button>
+          );
+        })}
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ import {
   Route,
   Navigate,
   useLocation,
-  useNavigate,
 } from "react-router-dom";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
@@ -28,34 +27,46 @@ import ContactDetails from "./pages/ContactDetails";
 import AccountView from "./pages/AccountView";
 import OpportunitiesList from "./pages/OpportunitiesList";
 import OpportunitiesView from "./pages/OpportunitiesView";
+import OpportunityForm from "./pages/OpportunityForm";
+import ContactsForm from "./pages/ContactForm";
+import Cases from "./pages/CaseList";
+import CaseForm from "./pages/CaseForm";
+import CaseDetail from "./pages/CaseDetail";
+import Contracts from "./pages/Contracts";
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/useAuthStore";
+import AddProduct from "./pages/AddProduct";
+import ProductList from "./pages/ProductList";
 
-
+// 🔐 Protected Route wrapper
 function ProtectedRoute({ element }) {
   const authenticated = useAuthStore((state) => state.authenticated);
-  const loading = useAuthStore((state) => state.loading); // optional if you add loading state
+  const loading = useAuthStore((state) => state.loading);
+  const location = useLocation();
 
-  if (loading) return <div>Loading...</div>;
-  return authenticated ? element : <Navigate to="/login" replace />;
+  if (loading) return <div className="p-10 text-center">Loading...</div>;
+
+  if (!authenticated) {
+    // agar user login nahi hai to /login bhejo aur current location save karo
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  return element;
 }
-
 
 function AppRoutes() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const checkAuth = useAuthStore((state) => state.checkAuth);
-  const authenticated = useAuthStore((state) => state.authenticated);
+  const setLoading = useAuthStore((state) => state.setLoading);
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
-      const isAuth = await checkAuth();
-      if (!isAuth && location.pathname !== "/login") {
-        navigate("/login");
-      }
+      setLoading(true); // ✅ loading start
+      await checkAuth(); // backend se cookie check
+      setLoading(false); // ✅ loading finish
     })();
-  }, [checkAuth, navigate, location.pathname]);
+  }, [checkAuth, setLoading, location.pathname]);
 
   const isLoginPage = location.pathname === "/login";
 
@@ -67,12 +78,7 @@ function AppRoutes() {
         <main className="flex-1 p-6 bg-gray-100 overflow-y-auto">
           <Routes>
             {/* Public Route */}
-            <Route
-              path="/login"
-              element={
-                authenticated ? <Navigate to="/" replace /> : <Login />
-              }
-            />
+            <Route path="/login" element={<Login />} />
 
             {/* Protected Routes */}
             <Route path="/" element={<ProtectedRoute element={<DashboardPage />} />} />
@@ -84,7 +90,7 @@ function AppRoutes() {
             <Route path="/messages/:leadId" element={<ProtectedRoute element={<MessagePage />} />} />
             <Route path="/leadimport" element={<ProtectedRoute element={<LeadImport />} />} />
             <Route path="/contact" element={<ProtectedRoute element={<Contact />} />} />
-            <Route path="/contacts/:id" element={<ContactDetails />} />
+            <Route path="/contacts/:id" element={<ProtectedRoute element={<ContactDetails />} />} />
             <Route path="/proposal" element={<ProtectedRoute element={<ProposalPage />} />} />
             <Route path="/newproposal" element={<ProtectedRoute element={<NewProposalPage />} />} />
             <Route path="/estimates" element={<ProtectedRoute element={<Estimate />} />} />
@@ -93,6 +99,14 @@ function AppRoutes() {
             <Route path="/account/:id" element={<ProtectedRoute element={<AccountView />} />} />
             <Route path="/newaccount" element={<ProtectedRoute element={<NewAccount />} />} />
             <Route path="/opportunities/:id" element={<ProtectedRoute element={<OpportunitiesView />} />} />
+            <Route path="/opportunities/new/:accountId" element={<ProtectedRoute element={<OpportunityForm />} />} />
+            <Route path="/contacts/new/:accountId" element={<ProtectedRoute element={<ContactsForm />} />} />
+            <Route path="/cases" element={<ProtectedRoute element={<Cases />} />} />
+            <Route path="/cases/new" element={<ProtectedRoute element={<CaseForm />} />} />
+            <Route path="/case/:id" element={<ProtectedRoute element={<CaseDetail />} />} />
+            <Route path="/addproduct" element={<ProtectedRoute element={<AddProduct />} />} />
+            <Route path="/productlist" element={<ProtectedRoute element={<ProductList />} />} />
+            <Route path="/productlist/:id" element={<ProtectedRoute element={<ProductList />} />} />
           </Routes>
         </main>
       </div>

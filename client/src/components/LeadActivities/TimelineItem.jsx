@@ -33,7 +33,7 @@ export default function TimelineItem({
           {dueDate && <p><span className="font-medium">Due Date:</span> {dueDate}</p>}
           {startDateTime && <p><span className="font-medium">Start:</span> {new Date(startDateTime).toLocaleString()}</p>}
           {endDateTime && <p><span className="font-medium">End:</span> {new Date(endDateTime).toLocaleString()}</p>}
-          {location && <p><span className="font-medium">Location:</span> {location}</p>}
+          {location && <p><span className="font-medium">Location/Link:</span> {location}</p>}
           <p><span className="font-medium">Created By:</span> {createdBy}</p>
           <p><span className="font-medium">Created Date:</span> {time}</p>
         </div>

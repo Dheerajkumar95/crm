@@ -3,12 +3,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft,
-        FileText, 
-        User,
-        ArrowDownToLine,
-        Trash2,
-        Eye, 
+import {
+  ArrowLeft,
+  FileText,
+  User,
+  ArrowDownToLine,
+  Trash2,
+  Eye,
 } from "lucide-react";
 import AccountDetails from "./AccountDetails";
 
@@ -20,27 +21,49 @@ const AccountView = () => {
   const [activeTab, setActiveTab] = useState("relate");
   const [relatedContacts, setRelatedContacts] = useState([]);
   const [relatedOpportunities, setRelatedOpportunities] = useState([]);
-
-  // ---- File states ----
-  const [file, setFile] = useState(null);
   const [files, setFiles] = useState([]);
+ const [file, setFile] = useState(null);
+  // Toggle view more
+  const [showAllContacts, setShowAllContacts] = useState(false);
+  const [showAllOpportunities, setShowAllOpportunities] = useState(false);
+  const [showAllCases, setShowAllCases] = useState(false);
+  const [showAllFiles, setShowAllFiles] = useState(false);
+  const [caseData, setCaseData] =  useState([]);
   const apiBase = "http://localhost:7000/api/files";
 
   useEffect(() => {
     fetchAccount();
     fetchContacts();
     fetchOpportunities();
-    fetchFiles();  
+    fetchFiles();
   }, [id]);
 
-  const fetchAccount = async () => {
-    try {
-      const res = await axios.get(`http://localhost:7000/api/accounts/${id}`);
-      setAccount(res.data);
-    } catch (error) {
-      console.error("Error fetching account:", error);
+ const fetchCases = async (accountId) => {
+  try {
+    const res = await axios.get(`http://localhost:7000/api/cases/account/${accountId}`);
+    setCaseData(res.data);
+  } catch (error) {
+    toast.error("Error fetching case details");
+  }
+};
+
+const fetchAccount = async () => {
+  try {
+    const res = await axios.get(`http://localhost:7000/api/accounts/${id}`);
+    setAccount(res.data);
+    if (res.data.accountId) {
+      fetchCases(res.data.accountId);
     }
-  };
+  } catch (error) {
+    console.error("Error fetching account:", error);
+  }
+};
+
+useEffect(() => {
+  if (id) {
+    fetchAccount();
+  }
+}, [id]);
 
   const fetchContacts = async () => {
     try {
@@ -64,50 +87,54 @@ const AccountView = () => {
     }
   };
 
-  // ---- File functions ----
+
+
+
   const fetchFiles = async () => {
-  try {
-    const res = await axios.get(`${apiBase}/account/${id}`);
-    setFiles(res.data);
-  } catch (err) {
-    console.error(err);
-  }
-};
+    try {
+      const res = await axios.get(`${apiBase}/account/${id}`);
+      setFiles(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+ 
 
   const handleUpload = async (e) => {
-  e.preventDefault();
-  if (!file) return toast.error("Select a file");
-  
-  const formData = new FormData();
-  formData.append("file", file);
+    e.preventDefault();
+    if (!file) return toast.error("Select a file");
 
-  try {
-    await axios.post(`${apiBase}/upload/${id}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    setFile(null);
-    fetchFiles();
-    toast.success("File uploaded successfully");
-  } catch (err) {
-    console.error(err);
-    toast.error("Upload failed");
-  }
-};
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      await axios.post(`${apiBase}/upload/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setFile(null);
+      fetchFiles();
+      toast.success("File uploaded successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Upload failed");
+    }
+  };
 
   const handleDelete = async (filename) => {
-  try {
-    await axios.delete(`${apiBase}/${id}/${filename}`);
-    fetchFiles();
-    toast.success("File deleted successfully");
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to delete file");
-  }
-};;
+    try {
+      await axios.delete(`${apiBase}/${id}/${filename}`);
+      fetchFiles();
+      toast.success("File deleted successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete file");
+    }
+  };
+
 
   return (
     <div className="p-4 bg-white rounded-lg from-slate-100 to-white min-h-screen">
-      {/* Header */}
       <div className="mb-3 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <button
@@ -168,114 +195,132 @@ const AccountView = () => {
             <div className="border rounded-b-lg bg-gray-50">
               <div className="flex justify-between items-center p-3 border-b bg-gray-100">
                 <h2 className="font-semibold text-sm text-slate-700">
-                  Contacts ({relatedContacts?.length || 0})
+                  Contacts ({relatedContacts.length})
                 </h2>
-                <button className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100">
+                <button
+                  onClick={() => navigate(`/contacts/new/${account._id}`)} 
+                  className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100 cursor-pointer"
+                >
                   New
                 </button>
               </div>
-              <div className="p-4 text-sm text-slate-700 space-y-4">
-                {relatedContacts.length > 0 ? (
-                  relatedContacts.map((contact, index) => (
-                    <div key={index}
-                    onClick={() => navigate(`/contacts/${contact._id}`)}>
-                      <p className="text-blue-600 hover:underline cursor-pointer">
-                        {contact.Name}
-                      </p>
-                      <p>
-                        Email:{" "}
-                        <a
-                          href={`mailto:${contact.Email}`}
-                          className="text-blue-600"
-                        >
-                          {contact.Email}
-                        </a>
-                      </p>
-                      <p>
-                        Phone:{" "}
-                        <a
-                          href={`tel:${contact.Phone}`}
-                          className="text-blue-600"
-                        >
-                          {contact.Phone}
-                        </a>
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p>No contacts found.</p>
-                )}
+                 <div className="p-4 text-sm text-slate-700 grid grid-cols-1 md:grid-cols-4 gap-4">
+            {(showAllContacts
+              ?  relatedContacts
+              :  relatedContacts.slice(0, 2) 
+            ).map((contact, index) => (
+              <div key={index} onClick={() =>  navigate(`/contacts/${contact._id}`)}
+               className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer">
+                <p
+                  className="text-blue-600 hover:underline cursor-pointer font-medium"
+                >
+                  {contact.Name}
+                </p>
+                <p>Email: {contact.Email}</p>
+                <p>Phone: {contact.Phone}</p>
               </div>
-              <div className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer">
-                View All
-              </div>
+            ))}
+
+            {relatedContacts.length === 0 && (
+              <p className="col-span-2">No Contact found.</p>
+            )}
+          </div>
+
+          {showAllContacts.length > 2 && (
+            <div
+              onClick={() => setShowAllContacts(!showAllContacts)}
+              className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer"
+            >
+              {showAllContacts  ? "Show Less" : "View All"}
+            </div>
+          )}
+             
             </div>
 
             {/* Opportunities */}
             <div className="border rounded-b-lg bg-gray-50">
               <div className="flex justify-between items-center p-3 border-b bg-gray-100">
                 <h2 className="font-semibold text-sm text-slate-700">
-                  Opportunities ({relatedOpportunities?.length || 0})
+                  Opportunities ({relatedOpportunities.length})
                 </h2>
-                <button className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100">
+                <button
+                  onClick={() => navigate(`/opportunities/new/${account._id}`)}
+                  className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100 cursor-pointer"
+                >
                   New
                 </button>
               </div>
-              <div className="p-4 text-sm text-slate-700 space-y-4">
-                {relatedOpportunities.length > 0 ? (
-                  relatedOpportunities.map((opp, index) => (
-                    <div key={index}>
-                      <p
-                        className="text-blue-600 hover:underline cursor-pointer"
-                        onClick={() => navigate(`/opportunities/${opp._id}`)}
-                      >
-                        {opp.accountId}
-                      </p>
-                      <p>Amount: {opp.leadValue}</p>
-                      <p>Status: {opp.status}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p>No opportunities found.</p>
-                )}
+              <div className="p-4 text-sm text-slate-700 grid grid-cols-1 md:grid-cols-4 gap-4">
+            {(showAllOpportunities
+              ? relatedOpportunities
+              : relatedOpportunities.slice(0, 4) 
+            ).map((opp, index) => (
+              <div key={index} onClick={() => navigate(`/opportunities/${opp._id}`)}
+               className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer">
+                <p
+                  className="text-blue-600 hover:underline cursor-pointer font-medium"
+                >
+                  {opp.opportunityName}
+                </p>
+                <p>Amount: {opp.ExpectedRevenue}</p>
+                <p>Status: {opp.status}</p>
               </div>
-              <div className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer">
-                View All
-              </div>
+            ))}
+
+            {relatedOpportunities.length === 0 && (
+              <p className="col-span-2">No opportunities found.</p>
+            )}
+          </div>
+
+          {relatedOpportunities.length > 4 && (
+            <div
+              onClick={() => setShowAllOpportunities(!showAllOpportunities)}
+              className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer"
+            >
+              {showAllOpportunities ? "Show Less" : "View All"}
+            </div>
+          )}
+
             </div>
 
-            {/* Cases (Static Example) */}
-            <div className="border rounded-b-lg bg-gray-50">
-              <div className="flex justify-between items-center p-3 border-b bg-gray-100">
-                <h2 className="font-semibold text-sm text-slate-700">
-                  Support Request (2)
-                </h2>
-                <button className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100">
-                  New
-                </button>
-              </div>
-              <div className="p-4 text-sm text-slate-700 grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-blue-600 hover:underline cursor-pointer">
-                    00001019
-                  </p>
-                  <p>Contact Name: Jack Rogers</p>
-                  <p>Subject: Structural failure of generator base</p>
-                  <p>Priority: High</p>
-                </div>
-                <div>
-                  <p className="text-blue-600 hover:underline cursor-pointer">
-                    00001020
-                  </p>
-                  <p>Contact Name: Jack Rogers</p>
-                  <p>Subject: Power generation below stated level</p>
-                  <p>Priority: Medium</p>
-                </div>
-              </div>
-              <div className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer">
-                View All
-              </div>
-            </div>
+           
+             <div className="border rounded-b-lg bg-gray-50">
+      <div className="flex justify-between items-center p-3 border-b bg-gray-100">
+        <h2 className="font-semibold text-sm text-slate-700">
+          Support Requests ({caseData.length})
+        </h2>
+        <button
+          onClick={() => navigate("/cases/new")}
+          className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100 cursor-pointer"
+        >
+          New
+        </button>
+      </div>
+
+      <div className="p-4 text-sm text-slate-700 grid grid-cols-4 gap-4">
+        {(showAllCases ? caseData : caseData.slice(0, 2)).map((c) => (
+          <div key={c._id}
+           onClick={() =>  navigate(`/case/${c._id}`)}
+          className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer">
+            <p className="text-blue-600 hover:underline font-medium cursor-pointer ">
+              {c.caseId}
+            </p>
+            <p>Contact Name: {c.contactName}</p>
+            <p>Subject: {c.subject}</p>
+            <p>Priority: {c.priority}</p>
+          </div>
+        ))}
+      </div>
+
+      {caseData.length > 2 && (
+        <div
+          onClick={() => setShowAllCases(!showAllCases)}
+          className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer"
+        >
+          {showAllCases ? "Show Less" : "View All"}
+        </div>
+      )}
+    </div>
 
             {/* Notes & Attachments */}
             <div className="border rounded-b-lg bg-gray-50">
@@ -283,7 +328,10 @@ const AccountView = () => {
                 <h2 className="font-semibold text-sm text-slate-700">
                   Notes & Attachments ({files.length})
                 </h2>
-                <form onSubmit={handleUpload} className="flex items-center gap-3 border rounded px-3 py-2 bg-white shadow-sm">
+                <form
+                  onSubmit={handleUpload}
+                  className="flex items-center gap-3 border rounded px-3 py-2 bg-white shadow-sm"
+                >
                   <label
                     htmlFor="fileUpload"
                     className="px-3 py-1 text-xs font-medium border rounded cursor-pointer bg-blue-50 hover:bg-blue-100 text-blue-700"
@@ -310,44 +358,55 @@ const AccountView = () => {
 
               {/* File list */}
               <div className="p-4 text-sm text-slate-700 space-y-2">
-                {files.length > 0 ? (
-                  files.map((f) => (
-                    <div
-                      key={f.id}
-                      className="flex justify-between items-center pb-1"
-                    >
-                      <span>
-                        {f.filename} ({Math.round(f.length / 1024)} KB)
-                      </span>
-                      <div  className="flex gap-2">
-                        <a  
-                        href={`${apiBase}/${id}/${f.filename}`}  
+                {(showAllFiles ? files : files.slice(0, 3)).map((f) => (
+                  <div
+                    key={f.id}
+                    className="flex justify-between items-center pb-1"
+                  >
+                    <span>
+                      {f.filename} ({Math.round(f.length / 1024)} KB)
+                    </span>
+                    <div className="flex gap-2">
+                      <a
+                        href={`${apiBase}/${id}/${f.filename}`}
                         target="_blank"
                         rel="noreferrer"
                       >
-                        <Eye size={20} className="text-gray-600 hover:text-blue-600" />
+                        <Eye
+                          size={20}
+                          className="text-gray-600 hover:text-blue-600"
+                        />
                       </a>
                       <a
                         href={`${apiBase}/${id}/${f.filename}/download`}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-green-600 hover:underline"
                       >
-                        <ArrowDownToLine size={20} className="text-blue-600 hover:text-blue-800" />
+                        <ArrowDownToLine
+                          size={20}
+                          className="text-blue-600 hover:text-blue-800"
+                        />
                       </a>
-                        <button
-                          onClick={() => handleDelete(f.id)}
-                          className="text-red-600 hover:text-red-500 cursor-pointer" title="Delete"
-                        >
-                         <Trash2 size={20} />
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => handleDelete(f.id)}
+                        className="text-red-600 hover:text-red-500 cursor-pointer"
+                        title="Delete"
+                      >
+                        <Trash2 size={20} />
+                      </button>
                     </div>
-                  ))
-                ) : (
-                  <p>No files uploaded.</p>
-                )}
+                  </div>
+                ))}
+                {files.length === 0 && <p>No files uploaded.</p>}
               </div>
+              {files.length > 3 && (
+                <div
+                  onClick={() => setShowAllFiles(!showAllFiles)}
+                  className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer"
+                >
+                  {showAllFiles ? "Show Less" : "View All"}
+                </div>
+              )}
             </div>
           </div>
         ) : (

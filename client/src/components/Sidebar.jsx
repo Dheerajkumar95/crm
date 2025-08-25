@@ -47,7 +47,6 @@ const Sidebar = ({ isOpen }) => {
               { label: 'Invoices' },
               { label: 'Payments' },
               { label: 'Credit Notes' },
-              { label: 'Items' }
             ]} />
           )}
 
@@ -68,10 +67,10 @@ const Sidebar = ({ isOpen }) => {
           <MenuItem icon={<FaWallet />} label="Expenses" />
           <MenuItem icon={<FaWhatsapp />} label="WhatsBot" expandable open={openMenu === 'whatsbot'} onClick={() => toggleMenu('whatsbot')} />
           <MenuItem icon={<FaFileContract />} label="Contracts" />
-          <MenuItem icon={<FaProjectDiagram />} label="Projects" />
+          <MenuItem icon={<FaProjectDiagram />} label="Product" to="/productlist" />
           <MenuItem icon={<FaUsersCog />} label="HR Payroll" expandable open={openMenu === 'payroll'} onClick={() => toggleMenu('payroll')} />
           <MenuItem icon={<FaTasks />} label="Tasks" />
-          <MenuItem icon={<FaLifeRing />} label="Support" />
+          <MenuItem icon={<FaLifeRing />} label="Support" to="/cases"/>
           <MenuItem icon={<FaFileAlt />} label="Estimate Request" />
           <MenuItem icon={<FaQuestionCircle />} label="Knowledge Base" />
 
@@ -110,7 +109,7 @@ const MenuItem = ({ icon, label, to, active = false, expandable = false, open = 
   return <div>{to ? <Link to={to}>{content}</Link> : content}</div>;
 };
 
-// 🔧 SubMenu component
+
 const SubMenu = ({ items }) => (
   <div className="ml-6 text-sm text-gray-300 space-y-1 py-1">
     {items.map((item, index) => {

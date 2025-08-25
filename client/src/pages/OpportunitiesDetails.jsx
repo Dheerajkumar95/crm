@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Pencil } from "lucide-react";
+import { Pencil,X} from "lucide-react";
 
 const OpportunityDetails = () => {
   const { id } = useParams();
@@ -11,7 +11,7 @@ const OpportunityDetails = () => {
     opportunityName: "",
     source: "",
     leadValue: "",
-    expectedRevenue: "",
+    ExpectedRevenue: "",
     closeDate: "",
     stage: "",
     status: "",
@@ -77,81 +77,109 @@ const OpportunityDetails = () => {
     };
 
     return (
-      <div>
-        <p className="text-sm font-medium text-gray-800 mt-4">{label}</p>
-        <div className="flex items-center justify-between border p-2 rounded-md bg-gray-50">
-          {isEditing ? (
-            <>
-              {type === "date" ? (
-                <div className="flex items-center w-full gap-2 cursor-pointer">
-                  <input
-                    ref={dateInputRef}
-                    type="date"
-                    value={inputValue || ""}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    className="border p-1 text-sm rounded flex-1 cursor-pointer"
-                  />
-                  <button
-                    onClick={handleSaveClick}
-                    className="text-blue-600 text-sm font-semibold cursor-pointer"
-                  >
-                    Save
-                  </button>
-                </div>
-              ) : field === "status" ? (
-                <>
-                  <select
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    className="border p-1 text-sm rounded mr-2 flex-1 cursor-pointer"
-                  >
-                    {statusOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={handleSaveClick}
-                    className="text-blue-600 text-sm font-semibold cursor-pointer"
-                  >
-                    Save
-                  </button>
-                </>
-              ) : (
-                <>
-                  <input
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    className="border p-1 text-sm rounded mr-2 flex-1"
-                  />
-                  <button
-                    onClick={handleSaveClick}
-                    className="text-blue-600 text-sm font-semibold cursor-pointer"
-                  >
-                    Save
-                  </button>
-                </>
-              )}
-            </>
-          ) : (
-            <>
-              <span className="text-sm text-gray-700">
-                {isCurrency && value
-                  ? `₹${parseFloat(value).toLocaleString()}`
-                  : value || "-"}
-              </span>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="ml-2 text-gray-800 hover:text-blue-600"
-              >
-                <Pencil className="h-4 w-4 cursor-pointer" />
-              </button>
-            </>
-          )}
-        </div>
-      </div>
+<div>
+  <p className="text-sm font-medium text-gray-800 mt-4">{label}</p>
+  <div className="flex items-center justify-between border p-2 rounded-md bg-gray-50">
+    {isEditing ? (
+      <>
+        {type === "date" ? (
+          <div className="flex items-center w-full gap-2 cursor-pointer">
+            <input
+              ref={dateInputRef}
+              type="date"
+              value={inputValue || ""}
+              onChange={(e) => setInputValue(e.target.value)}
+              className="border p-1 text-sm rounded flex-1 cursor-pointer"
+            />
+            <button
+              onClick={handleSaveClick}
+              className="text-blue-600 text-sm font-semibold cursor-pointer"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => {
+                setInputValue(value); // reset old value
+                setIsEditing(false); // close edit mode
+              }}
+              className="ml-2 text-gray-500 hover:text-red-500 transition cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        ) : field === "status" ? (
+          <>
+            <select
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className="border p-1 text-sm rounded mr-2 flex-1 cursor-pointer"
+            >
+              {statusOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={handleSaveClick}
+              className="text-blue-600 text-sm font-semibold cursor-pointer"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => {
+                setInputValue(value);
+                setIsEditing(false);
+              }}
+              className="ml-2 text-gray-500 hover:text-red-500 transition cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+          </>
+        ) : (
+          <>
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className="border p-1 text-sm rounded mr-2 flex-1"
+            />
+            <button
+              onClick={handleSaveClick}
+              className="text-blue-600 text-sm font-semibold cursor-pointer"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => {
+                setInputValue(value);
+                setIsEditing(false);
+              }}
+              className="ml-2 text-gray-500 hover:text-red-500 transition cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+          </>
+        )}
+      </>
+    ) : (
+      <>
+        <span className="text-sm text-gray-700">
+          {isCurrency && value
+            ? `₹${parseFloat(value).toLocaleString()}`
+            : value || "-"}
+        </span>
+        <button
+          onClick={() => setIsEditing(true)}
+          className="ml-2 text-gray-800 hover:text-blue-600"
+        >
+          <Pencil className="h-4 w-4 cursor-pointer" />
+        </button>
+      </>
+    )}
+  </div>
+</div>
+
     );
   };
 
@@ -165,11 +193,12 @@ const OpportunityDetails = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
-          <EditableField
-            label="Company"
-            field="company"
-            value={formData.Company}
-          />
+           <div>
+              <p className="text-sm font-medium text-gray-800 mt-4">Company</p>
+              <div className="border p-2 rounded-md bg-gray-100">
+                <span className="text-sm text-gray-700">{formData.Company}</span>
+              </div>
+            </div>
           <EditableField
             label="Opportunity Name"
             field="opportunityName"
@@ -189,7 +218,7 @@ const OpportunityDetails = () => {
           <EditableField
             label="Expected Revenue"
             field="expectedRevenue"
-            value={formData.expectedRevenue}
+            value={formData.ExpectedRevenue}
             isCurrency
           />
           <EditableField

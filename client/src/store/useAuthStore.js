@@ -24,7 +24,6 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  // ------------------
   // Leads
   Lead: async (formData) => {
     try {

@@ -262,7 +262,7 @@ useEffect(() => {
                 >
                   {opp.opportunityName}
                 </p>
-                <p>Amount: {opp.ExpectedRevenue}</p>
+                <p>Amount: {opp.PotentialRevenue}</p>
                 <p>Status: {opp.status}</p>
               </div>
             ))}

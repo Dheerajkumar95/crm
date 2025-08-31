@@ -97,10 +97,7 @@ export const convertLeads = async (req, res) => {
     const leads = await Lead.find({ _id: { $in: leadIds } });
 
     for (const lead of leads) {
-      // Generate new Account ID for each converted lead
       const newAccountId = await generateAccountId();
-
-      // ✅ Account create with overwrite fields
       const account = await Account.create({
         accountId: newAccountId,
         Name: accountData?.accountName || lead.Name,
@@ -117,12 +114,11 @@ export const convertLeads = async (req, res) => {
         Country: lead.Country,
         ZipCode: lead.ZipCode,
         Position: lead.Position,
-        ExpectedRevenue: lead.ExpectedRevenue,
+        PotentialRevenue: lead.PotentialRevenue,
         Description: lead.Description,
         createdAt: lead.createdAt,
       });
 
-      // ✅ Contact create with overwrite fields
       const contact = await Contact.create({
         accountId: newAccountId,
         Company: lead.Company,
@@ -134,12 +130,12 @@ export const convertLeads = async (req, res) => {
         website: lead.website,
       });
 
-      // ✅ Opportunity create if data provided
       if (opportunityData) {
         await Opportunity.create({
           accountId: newAccountId,
           Company: lead.Company,
-          ExpectedRevenue: lead.ExpectedRevenue,
+          PotentialRevenue: lead.PotentialRevenue,
+          source: lead.source,
           status: lead.status,
           opportunityName: opportunityData.opportunityName,
         });

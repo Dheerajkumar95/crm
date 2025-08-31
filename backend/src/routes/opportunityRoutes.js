@@ -2,6 +2,7 @@ import express from "express";
 import Opportunity from "../models/Opportunity.js";
 import Contact from "../models/Contact.js";
 import Account from "../models/Account.js";
+import OpportunityProduct from "../models/OpportunityProduct.js";
 const router = express.Router();
 
 // Get all opportunities
@@ -22,6 +23,22 @@ router.get("/:id", async (req, res) => {
     res.status(200).json(opp);
   } catch (error) {
     res.status(500).json({ message: "Error fetching opportunity" });
+  }
+});
+
+router.get("/opportunity/:opportunityId", async (req, res) => {
+  try {
+    const { opportunityId } = req.params;
+    const products = await OpportunityProduct.find({ opportunityId });
+
+    const totalRevenue = products.reduce(
+      (acc, p) => acc + p.quantity * p.price,
+      0
+    );
+
+    res.json({ totalRevenue, products });
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
   }
 });
 

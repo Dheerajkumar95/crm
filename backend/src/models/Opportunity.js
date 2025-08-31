@@ -5,7 +5,7 @@ const opportunitySchema = new mongoose.Schema(
     Company: { type: String, default: "" },
     opportunityName: { type: String, default: "" },
     source: { type: String, default: "" },
-    ExpectedRevenue: { type: String, default: 0 },
+    PotentialRevenue: { type: String, default: 0 },
     closeDate: { type: String, default: "" },
     stage: { type: String, default: "" },
     status: { type: String, default: "" },

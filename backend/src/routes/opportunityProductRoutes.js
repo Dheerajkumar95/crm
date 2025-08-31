@@ -18,11 +18,8 @@ router.post("/", async (req, res) => {
       });
     }
 
-    // Save opportunity product
     const newProduct = new OpportunityProduct(req.body);
     await newProduct.save();
-
-    // Update product stock
     product.stockQuantity -= quantity;
     await product.save();
 
@@ -42,7 +39,10 @@ router.get("/:opportunityId", async (req, res) => {
   try {
     const products = await OpportunityProduct.find({
       opportunityId: req.params.opportunityId,
+    }).populate({
+      path: "productId",
     });
+
     res.json(products);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch products" });

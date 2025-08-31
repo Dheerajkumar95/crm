@@ -17,7 +17,6 @@ const ContactForm = () => {
     website: "",
   });
 
-  // accountId ke basis par company nikalna
   useEffect(() => {
     const fetchContact = async () => {
       try {
@@ -41,8 +40,6 @@ const ContactForm = () => {
       [e.target.name]: e.target.value,
     });
   };
-
-  // submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -87,8 +84,6 @@ const ContactForm = () => {
           readOnly
           className="w-full border px-3 py-2 rounded-md bg-gray-100 cursor-not-allowed"
         />
-
-        {/* Company Name (readonly) */}
         <input
           type="text"
           name="Company"
@@ -96,8 +91,6 @@ const ContactForm = () => {
           readOnly
           className="w-full border px-3 py-2 rounded-md bg-gray-100 cursor-not-allowed"
         />
-
-        {/* Name */}
         <input
           type="text"
           name="Name"
@@ -106,8 +99,6 @@ const ContactForm = () => {
           placeholder="Contact Name"
           className="w-full border px-3 py-2 rounded-md"
         />
-
-        {/* Email */}
         <input
           type="email"
           name="Email"
@@ -116,8 +107,6 @@ const ContactForm = () => {
           placeholder="Email"
           className="w-full border px-3 py-2 rounded-md"
         />
-
-        {/* Phone */}
         <input
           type="text"
           name="Phone"
@@ -126,8 +115,6 @@ const ContactForm = () => {
           placeholder="Phone"
           className="w-full border px-3 py-2 rounded-md"
         />
-
-        {/* Source */}
         <input
           type="text"
           name="source"
@@ -136,8 +123,6 @@ const ContactForm = () => {
           placeholder="Source"
           className="w-full border px-3 py-2 rounded-md"
         />
-
-        {/* Assigned */}
         <input
           type="text"
           name="assigned"
@@ -146,8 +131,6 @@ const ContactForm = () => {
           placeholder="Assigned To"
           className="w-full border px-3 py-2 rounded-md"
         />
-
-        {/* Website */}
         <input
           type="text"
           name="website"

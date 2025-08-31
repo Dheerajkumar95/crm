@@ -15,7 +15,7 @@ const NewLeads = () => {
     Position: '',
     Company: '',
     website: '',
-    ExpectedRevenue: '',
+    PotentialRevenue: '',
     Description: '',
     Country: 'Nothing selected',
     ZipCode: '',
@@ -241,14 +241,14 @@ const NewLeads = () => {
 
                 
                   <div>
-                    <label htmlFor="ExpectedRevenue" className="block text-sm font-medium text-gray-700 mb-1">
-                      ExpectedRevenue
+                    <label htmlFor="PotentialRevenue" className="block text-sm font-medium text-gray-700 mb-1">
+                      PotentialRevenue
                     </label>
                     <input
                       type="text"
-                      id="ExpectedRevenue"
-                      name="ExpectedRevenue"
-                      value={formData.ExpectedRevenue}
+                      id="PotentialRevenue"
+                      name="PotentialRevenue"
+                      value={formData.PotentialRevenue}
                       onChange={handleChange}
                       className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
                     />
@@ -265,7 +265,7 @@ const NewLeads = () => {
                       name="Address"
                       value={formData.Address}
                       onChange={handleChange}
-                      className="w-full h-10 border border-gray-300 rounded-md focus:outline-none  resize-y"
+                      className="w-full h-10 p-1 border border-gray-300 rounded-md focus:outline-none  resize-y"
                     ></textarea>
                   </div>
                   
@@ -315,7 +315,7 @@ const NewLeads = () => {
                         <option>Nothing selected</option>
                         <option>India</option>
                         <option>USA</option>
-                        <option>Canada</option>
+                        <option>UK</option>
                       </select>
                       <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                     </div>

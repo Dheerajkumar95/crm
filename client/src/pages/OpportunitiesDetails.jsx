@@ -6,6 +6,7 @@ import { Pencil,X} from "lucide-react";
 const OpportunityDetails = () => {
   const { id } = useParams();
   const [opportunity, setOpportunity] = useState(null);
+  const [expectedRevenue, setExpectedRevenue] = useState(0);
   const [formData, setFormData] = useState({
     Company: "",
     opportunityName: "",
@@ -25,7 +26,6 @@ const OpportunityDetails = () => {
     "Closed Won",
     "Closed Lost",
   ];
-
   useEffect(() => {
     const fetchOpportunity = async () => {
       try {
@@ -38,6 +38,18 @@ const OpportunityDetails = () => {
         console.error("Error fetching opportunity:", err);
       }
     };
+
+   const fetchRevenue = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:7000/api/opportunities/opportunity/${id}`
+      );
+      setExpectedRevenue(res.data.totalRevenue);
+    } catch (err) {
+      console.error("Error fetching revenue", err);
+    }
+  };
+    fetchRevenue();
     fetchOpportunity();
   }, [id]);
 
@@ -99,8 +111,8 @@ const OpportunityDetails = () => {
             </button>
             <button
               onClick={() => {
-                setInputValue(value); // reset old value
-                setIsEditing(false); // close edit mode
+                setInputValue(value); 
+                setIsEditing(false); 
               }}
               className="ml-2 text-gray-500 hover:text-red-500 transition cursor-pointer"
             >
@@ -212,15 +224,15 @@ const OpportunityDetails = () => {
           <EditableField
             label="Potential Revenue"
             field="Potential Revenue"
-            value={formData.leadValue}
+            value={formData.PotentialRevenue}
             isCurrency
           />
-          <EditableField
-            label="Expected Revenue"
-            field="expectedRevenue"
-            value={formData.ExpectedRevenue}
-            isCurrency
-          />
+          <div>
+              <p className="text-sm font-medium text-gray-800 mt-4">Expected Revenue</p>
+              <div className="border p-2 rounded-md bg-gray-100">
+                <span className="text-sm text-gray-700">₹{expectedRevenue.toLocaleString()}</span>
+              </div>
+            </div>
           <EditableField
             label="Close Date"
             field="closeDate"

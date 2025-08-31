@@ -18,6 +18,7 @@ export default function App() {
     const [message, setMessage] = useState('');
     const [activeTab, setActiveTab] = useState("relate");
     const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+     const [showDetails, setShowDetails] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -212,44 +213,37 @@ export default function App() {
 
     return (
         <div className="w-full max-w-8xl min-h-screen bg-white p-4 rounded-2xl shadow-2xl">
-            {/* TOP HEADER */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-4 ">
-                <div className="flex items-center space-x-2 p-2 h-10 text-black">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="text-sm text-gray-600 hover:text-blue-600 flex items-center cursor-pointer"
-                    >
-                        <ArrowLeft className="h-5 w-5" />
-                    </button>
-                    <Building size={28} />
-                    <div
-                        className="cursor-pointer"
-                        onClick={() => navigate(`/account/${account._id}`)}
-                    >
-                        <span className="block text-sm opacity-80">Company</span>
-                        <span className="block font-bold text-lg">{leadData.Company}</span>
+           <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center space-x-2 p-2 h-10 text-black">
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="text-sm text-gray-600 hover:text-blue-600 flex items-center cursor-pointer"
+                        >
+                            <ArrowLeft className="h-5 w-5" />
+                        </button>
+                        <Building size={28} className="text-blue-500" />
+                        <div
+                            className="cursor-pointer"
+                            onClick={() => navigate(`/account/${account._id}`)}
+                        >
+                            <span className="block text-sm opacity-80">Company</span>
+                            <span className="block font-bold text-lg">{leadData.Company}</span>
+                        </div>
+                    </div>
+
+                    {/* Right - Account ID */}
+                    <div className="flex items-center space-x-2 p-2 h-10 text-zinc-800">
+                        <User size={28} className="text-blue-500" />
+                        <div
+                            className="cursor-pointer"
+                            onClick={() => navigate(`/account/${account._id}`)}
+                        >
+                            <span className="block text-sm text-zinc-500">Account ID</span>
+                            <span className="block font-semibold text-lg">{leadData.accountId}</span>
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-4 p-5 h-10 text-zinc-800">
-                    <User size={28} className="text-zinc-500" />
-                    <div
-                        className="cursor-pointer"
-                        onClick={() => navigate(`/account/${account._id}`)}
-                    >
-                        <span className="block text-sm text-zinc-500">Account ID</span>
-                        <span className="block font-semibold text-lg">{leadData.accountId}</span>
-                    </div>
-                </div>
-
-                <div className="flex items-center space-x-4 p-5 h-10 text-zinc-800">
-                    <BadgeDollarSign size={28} className="text-zinc-500" />
-                    <div>
-                        <span className="block text-sm text-zinc-500">Potential Revenue</span>
-                        <span className="block font-semibold text-lg">{leadData.leadValue}</span>
-                    </div>
-                </div>
-            </div>
 
             {/* PROGRESS BAR + COMPLETE BUTTON */}
             <div className="flex flex-col sm:flex-row items-center justify-between space-y-1 sm:space-y-0 sm:space-x-8 mb-2 p-1 bg-zinc-100 rounded-xl shadow-inner">
@@ -370,42 +364,94 @@ export default function App() {
                     
                     </div>
                     
-                    <div className="border rounded-b-lg bg-gray-50">
+                   <div className="border rounded-b-lg bg-gray-50">
                     <div className="flex justify-between items-center p-3 border-b bg-gray-100">
                         <h2 className="font-semibold text-sm text-slate-700">
                         Product ({relatedProducts?.length || 0})
                         </h2>
-                        <button 
-                        onClick={() => navigate(`/productlist/${account._id}`)}
-                        className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100">
-                        Add
+                        <div className="flex gap-2">
+                        <button
+                            onClick={() => navigate(`/productlist/${id}`)}
+                            className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100 cursor-pointer"
+                        >
+                            Add
                         </button>
-                    </div>
-                   <div className="p-4 text-sm text-slate-700">
-                    {relatedProducts?.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {relatedProducts.map((product, index) => (
-                            <div
-                            key={index}
-                            className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer"
-                            >
-                            <p className="text-blue-600 font-medium hover:underline">
-                                {product.productName}
-                            </p>
-                            <p className="text-gray-600 text-sm">Category: {product.category}</p>
-                            <p className="text-gray-500 text-xs">ID: {product.productId}</p>
-                            </div>
-                        ))}
+                        <button
+                         onClick={ () => {
+                                navigate(`/proposal/${id}`);
+                            }}
+                        className="px-2 py-1 text-xs font-medium border rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer"
+                        >
+                            Generate Proposal
+                        </button>
                         </div>
-                    ) : (
-                        <p>No Products found.</p>
-                    )}
                     </div>
 
-                    <div className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer">
-                        View All
+                    {/* Product List */}
+                    <div className="p-4 text-sm text-slate-700">
+                        {relatedProducts?.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {relatedProducts.map((product, index) => (
+                            <div
+                                key={index}
+                                className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer"
+                            >
+                                <p className="text-blue-600 font-medium hover:underline">
+                                {product.productName}
+                                </p>
+                                <p className="text-gray-600 text-sm">
+                                Category: {product.category}
+                                </p>
+                                <p className="text-gray-500 text-xs">
+                                ID: {product.productId?.productId}
+                                </p>
+
+                                {showDetails && (
+                                <div className="mt-2 text-xs text-slate-600 border-t pt-2 space-y-1">
+                                    <p>
+                                    <span className="font-semibold">Quantity:</span>{" "}
+                                    {product.quantity}
+                                    </p>
+                                    <p>
+                                    <span className="font-semibold">Price:</span> {product.price}{" "}
+                                    {product.currency}
+                                    </p>
+                                    <p>
+                                    <span className="font-semibold">Total Price:</span>{" "}
+                                    {product.price * product.quantity} {product.currency}
+                                    </p>
+                                    <p>
+                                    <span className="font-semibold">Start Date:</span>{" "}
+                                    {new Date(product.startDate).toLocaleDateString()}
+                                    </p>
+                                    <p>
+                                    <span className="font-semibold">Delivery Date:</span>{" "}
+                                    {new Date(product.deliveryDate).toLocaleDateString()}
+                                    </p>
+                                    <p>
+                                    <span className="font-semibold">Created At:</span>{" "}
+                                    {new Date(product.createdAt).toLocaleString()}
+                                    </p>
+                                </div>
+                                )}
+                            </div>
+                            ))}
+                        </div>
+                        ) : (
+                        <p>No Products found.</p>
+                        )}
                     </div>
-                 </div>
+
+                    {/* See Details Toggle */}
+                    <div
+                        className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer"
+                        onClick={() => setShowDetails(!showDetails)}
+                    >
+                        {showDetails ? "Hide Details" : "See Details"}
+                    </div>
+                    </div>
+
+              
                 </div>
                 )}
                 {activeTab === "activity" && (

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronDown, CalendarDays, Plus, Trash2, Check } from 'lucide-react';
+import { ChevronDown, Plus, Trash2 } from 'lucide-react';
 
-// Item Row Component for the dynamic list
 const ItemRow = ({ item, index, updateItem, removeItem }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -10,7 +9,6 @@ const ItemRow = ({ item, index, updateItem, removeItem }) => {
 
   return (
     <div className="grid grid-cols-12 gap-4 items-start py-3 border-b border-gray-200 last:border-b-0">
-      {/* Item */}
       <div className="col-span-12 sm:col-span-2">
         <input
           type="text"

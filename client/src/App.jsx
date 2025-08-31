@@ -11,7 +11,7 @@ import Sidebar from "./components/Sidebar";
 import Login from "./components/Login";
 import CustomersPage from "./pages/Customers";
 import DashboardPage from "./pages/Dashboard";
-import ProposalPage from "./pages/Proposal";
+import ProposalPages from "./pages/Proposal";
 import NewProposalPage from "./pages/NewProposal";
 import Estimate from "./pages/Estimates";
 import Leads from "./pages/Leads";
@@ -37,8 +37,8 @@ import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/useAuthStore";
 import AddProduct from "./pages/AddProduct";
 import ProductList from "./pages/ProductList";
+import ProposalPage from "./pages/ProposalPage";
 
-// 🔐 Protected Route wrapper
 function ProtectedRoute({ element }) {
   const authenticated = useAuthStore((state) => state.authenticated);
   const loading = useAuthStore((state) => state.loading);
@@ -62,9 +62,9 @@ function AppRoutes() {
 
   useEffect(() => {
     (async () => {
-      setLoading(true); // ✅ loading start
-      await checkAuth(); // backend se cookie check
-      setLoading(false); // ✅ loading finish
+      setLoading(true);
+      await checkAuth();
+      setLoading(false);
     })();
   }, [checkAuth, setLoading, location.pathname]);
 
@@ -91,7 +91,7 @@ function AppRoutes() {
             <Route path="/leadimport" element={<ProtectedRoute element={<LeadImport />} />} />
             <Route path="/contact" element={<ProtectedRoute element={<Contact />} />} />
             <Route path="/contacts/:id" element={<ProtectedRoute element={<ContactDetails />} />} />
-            <Route path="/proposal" element={<ProtectedRoute element={<ProposalPage />} />} />
+            <Route path="/proposal" element={<ProtectedRoute element={<ProposalPages />} />} />
             <Route path="/newproposal" element={<ProtectedRoute element={<NewProposalPage />} />} />
             <Route path="/estimates" element={<ProtectedRoute element={<Estimate />} />} />
             <Route path="/opportunitieslist" element={<ProtectedRoute element={<OpportunitiesList />} />} />
@@ -107,6 +107,7 @@ function AppRoutes() {
             <Route path="/addproduct" element={<ProtectedRoute element={<AddProduct />} />} />
             <Route path="/productlist" element={<ProtectedRoute element={<ProductList />} />} />
             <Route path="/productlist/:id" element={<ProtectedRoute element={<ProductList />} />} />
+            <Route path="/proposal/:id" element={<ProtectedRoute element={<ProposalPage />} />} />
           </Routes>
         </main>
       </div>

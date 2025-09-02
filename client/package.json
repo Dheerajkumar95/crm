@@ -33,7 +33,7 @@
     "react-quill-new": "^3.6.0",
     "react-router-dom": "^7.6.0",
     "react-select": "^5.10.2",
-    "react-signature-canvas": "^1.1.0-alpha.2",
+    "react-signature-canvas": "^1.0.3",
     "socket.io": "^4.8.1",
     "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4.1.6",

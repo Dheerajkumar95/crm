@@ -31,6 +31,7 @@ app.use(
 
 app.use(cookieParser());
 app.use(express.json());
+app.set("trust proxy", true);
 
 await connectDB();
 

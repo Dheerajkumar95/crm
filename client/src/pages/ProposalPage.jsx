@@ -49,32 +49,32 @@ const ProposalPage = () => {
   }, [id]);
 
   const handleClear = () => sigPad.current.clear();
-  const handleAccept = async () => {
-    if (sigPad.current.isEmpty()) {
-      alert("Please sign before accepting!");
-      return;
-    }
+const handleAccept = async () => {
+  if (sigPad.current.isEmpty()) {
+    alert("Please sign before accepting!");
+    return;
+  }
 
-    const signatureData = sigPad.current
-      .getTrimmedCanvas()
-      .toDataURL("image/png");
+  const signatureData = sigPad.current
+  .getTrimmedCanvas()
+  .toDataURL("image/png");
 
-    try {
-      await axios.post(`http://localhost:7000/api/proposals/accept/${id}`, {
-        signature: signatureData,
-      });
-      alert("Proposal Accepted with Signature!");
-    } catch (err) {
-      console.error("Error accepting proposal:", err);
-      alert("Something went wrong!");
-    }
-  };
+  try {
+    await axios.post(`http://localhost:7000/api/proposals/accept/${id}`, {
+  signature: signatureData,
+  });
+    alert("Proposal Accepted with Signature!");
+  } catch (err) {
+    console.error("Error accepting proposal:", err);
+    alert("Something went wrong!");
+  }
+};
+
 
   if (loading) return <p className="text-center mt-6">Loading proposal...</p>;
 
   return (
     <div className="w-full bg-white">
-      {/* Company Info */}
       <section className="h-screen flex flex-col justify-center items-center text-center bg-gradient-to-b from-indigo-100 to-indigo-300">
         <img
           src="/crm.png"
@@ -131,14 +131,12 @@ const ProposalPage = () => {
               )}
             </tbody>
           </table>
-
           <p className="mt-1 text-right text-lg font-bold">
             Grand Total: <span className="text-gray-900">₹{grandTotal}</span>
           </p>
         </div>
       </section>
 
-      {/* Agreement + Signature */}
       <section className="h-screen flex flex-col justify-center items-center px-6 bg-white">
         <div className="max-w-3xl w-full">
           <h2 className="text-2xl font-semibold mb-4 text-center"> 📝 Agreement </h2>

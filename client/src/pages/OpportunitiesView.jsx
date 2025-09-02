@@ -230,8 +230,6 @@ export default function App() {
                             <span className="block font-bold text-lg">{leadData.Company}</span>
                         </div>
                     </div>
-
-                    {/* Right - Account ID */}
                     <div className="flex items-center space-x-2 p-2 h-10 text-zinc-800">
                         <User size={28} className="text-blue-500" />
                         <div
@@ -376,14 +374,28 @@ export default function App() {
                         >
                             Add
                         </button>
-                        <button
-                         onClick={ () => {
-                                navigate(`/proposal/${id}`);
-                            }}
-                        className="px-2 py-1 text-xs font-medium border rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer"
-                        >
-                            Generate Proposal
-                        </button>
+                       <button
+  onClick={async () => {
+    const proposalLink = `${window.location.origin}/proposal/${id}`;
+    navigator.clipboard.writeText(proposalLink);
+    alert("Proposal link copied: " + proposalLink)
+    try {
+      const res = await axios.post("http://localhost:7000/api/proposals/send-proposal", {
+        proposalId: id,
+      });
+      alert(res.data.message);
+    } catch (err) {
+      console.error("Error sending proposal:", err);
+      alert("Failed to send proposal.");
+    }
+    navigate(`/proposal/${id}`);
+  }}
+  className="px-2 py-1 text-xs font-medium border rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer"
+>
+  Generate Proposal
+</button>
+
+
                         </div>
                     </div>
 

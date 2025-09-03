@@ -1,15 +1,31 @@
 import mongoose from "mongoose";
 
-const AgreementSchema = new mongoose.Schema(
-  {
-    proposalId: { type: mongoose.Schema.Types.ObjectId, ref: "Proposal" },
-    opportunityId: { type: mongoose.Schema.Types.ObjectId, ref: "Opportunity" },
-    clientId: { type: mongoose.Schema.Types.ObjectId, ref: "Client" },
-    companyDetails: Object,
-    products: Array,
-    status: { type: String, enum: ["Draft", "Signed"], default: "Draft" },
+const agreementSchema = new mongoose.Schema({
+  proposalId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Proposal",
+    required: true,
   },
-  { timestamps: true }
-);
+  agreementLink: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["Pending", "Sent", "Accepted"],
+    default: "Pending",
+  },
+  sentAt: {
+    type: Date,
+  },
+  acceptedAt: {
+    type: Date,
+  },
+  ipAddress: {
+    type: String,
+  },
+});
 
-export default mongoose.model("Agreement", AgreementSchema);
+const Agreement = mongoose.model("Agreement", agreementSchema);
+
+export default Agreement;

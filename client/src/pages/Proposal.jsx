@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const Proposal = () => {
+  const navigate = useNavigate();
   const [proposals, setProposals] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,14 +48,12 @@ const Proposal = () => {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200" >
             {proposals.length > 0 ? (
               proposals.map((proposal) => (
-                <tr key={proposal._id}>
+                <tr key={proposal._id} onClick={() => navigate(`/proposaldetail/${proposal._id}`)} className="hover:bg-gray-50 cursor-pointer">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    <Link to={`/proposaldetail/${proposal._id}`}>
-  {proposal.proposalId}
-</Link>
+                    {proposal.proposalId}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {proposal.to}

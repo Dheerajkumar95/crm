@@ -39,6 +39,7 @@ import AddProduct from "./pages/AddProduct";
 import ProductList from "./pages/ProductList";
 import ProposalPage from "./pages/ProposalPage";
 import ProposalDetail from "./pages/ProposalDetail";
+import AgreementPage from "./pages/AgreementPage";
 function ProtectedRoute({ element }) {
   const authenticated = useAuthStore((state) => state.authenticated);
   const loading = useAuthStore((state) => state.loading);
@@ -109,6 +110,7 @@ function AppRoutes() {
             <Route path="/productlist/:id" element={<ProtectedRoute element={<ProductList />} />} />
             <Route path="/proposal/:id" element={<ProtectedRoute element={<ProposalPage />} />} />
             <Route path="/proposaldetail/:id" element={<ProtectedRoute element={<ProposalDetail />} />} />
+            <Route path="/agreement/:id" element={<ProtectedRoute element={<AgreementPage />} />} />
           </Routes>
         </main>
       </div>

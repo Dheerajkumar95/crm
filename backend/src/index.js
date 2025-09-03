@@ -18,6 +18,7 @@ import productRoutes from "./routes/productRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import opportunityProductsRoutes from "./routes/opportunityProductRoutes.js";
 import proposalRoutes from "./routes/proposal.js";
+import agreementRoutes from "./routes/agreementRoutes.js";
 dotenv.config();
 const app = express();
 
@@ -49,6 +50,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/opportunitiesactivities", opportunityActivitiesRoutes);
 app.use("/api/opportunityProducts", opportunityProductsRoutes);
 app.use("/api/proposals", proposalRoutes);
+app.use("/api/agreements", agreementRoutes);
 app.use("/api/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 const PORT = process.env.PORT || 7000;

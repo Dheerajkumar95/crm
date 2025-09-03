@@ -1,9 +1,10 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 const ProposalDetail = () => {
-  const { id } = useParams(); // proposal ID
+  const { id } = useParams();
+  const navigate = useNavigate(); // ✅ for navigation
   const [proposal, setProposal] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -57,6 +58,16 @@ const ProposalDetail = () => {
             />
           </div>
         )}
+
+        {/* ✅ New Send Agreement Button */}
+        <div className="mt-6">
+          <button
+            onClick={() => navigate(`/agreement/${proposal._id}`)}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Send Agreement
+          </button>
+        </div>
       </div>
     </div>
   );

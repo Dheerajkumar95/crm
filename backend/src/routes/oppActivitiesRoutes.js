@@ -9,6 +9,6 @@ import {
 const router = express.Router();
 
 router.post("/", protect, addActivitys);
-router.get("/:OpportunitiesId", getActivitiesByOpportunitiesId);
+router.get("/:Id", getActivitiesByOpportunitiesId);
 router.delete("/:id", deleteActivitys);
 export default router;

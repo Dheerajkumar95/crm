@@ -122,7 +122,6 @@ const EditableField = ({ label, field, value, isCurrency = false }) => (
             <EditableField label="Name" field="name" value={account.Name} />
             <EditableField label="Email Address" field="emailAddress" value={account.Email} />
             <EditableField label="Phone" field="phone" value={account.Phone} />
-            <EditableField label="Company" field="company" value={account.Company} />
             <EditableField label="Source" field="source" value={account.source} />
             <EditableField label="Assigned" field="assigned" value={account.assigned} />
             <EditableField label="Website" field="website" value={account.website} />

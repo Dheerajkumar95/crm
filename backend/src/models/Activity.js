@@ -19,18 +19,10 @@ const activitySchema = new mongoose.Schema(
     },
 
     subject: { type: String, required: true },
-
-    // Common fields
     description: { type: String },
     comments: { type: String },
-
-    // Task
     dueDate: { type: Date },
-
-    // Call
     callComments: { type: String },
-
-    // Meeting
     startDateTime: { type: Date },
     endDateTime: { type: Date },
     location: { type: String },

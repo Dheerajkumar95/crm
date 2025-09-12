@@ -44,7 +44,7 @@ export default function RightSideForm({ type, onClose }) {
         return;
       }
 
-      let payload = { type, subject, OpportunitiesId:id };
+      let payload = { type, subject, Id:id };
 
       if (type === "task") {
         payload.description = description || "";

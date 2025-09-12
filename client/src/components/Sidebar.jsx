@@ -43,7 +43,7 @@ const Sidebar = ({ isOpen }) => {
               { label: 'Contact', to: '/contact' },
               { label: 'Opportunities', to: '/opportunitieslist' },
               { label: 'Proposals', to: '/proposal' },
-              { label: 'Contract', to: '/estimates' },
+              { label: 'Agreements', to: '/agreements' },
               { label: 'Invoices' },
               { label: 'Payments' },
               { label: 'Credit Notes' },

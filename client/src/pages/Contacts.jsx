@@ -19,59 +19,56 @@ const Contacts = () => {
   }, []);
 
   return (
-    <div className="px-1">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row items-center justify-between mb-2">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">contacts</h1>
-          <div className="flex items-center space-x-4 mt-2">
-            <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-              {contacts.length} contacts
-            </span>
-            <span className="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">
-              0 Lost contacts - 0.00%
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="w-full overflow-visible">
-        <table className="w-full divide-y divide-gray-200 text-xs">
-          <thead className="bg-gray-50 sticky top-0 z-10">
+    <div className="px-6 py-1">
+      {/* Table Card */}
+      <div className="overflow-hidden rounded shadow-lg bg-white">
+        <table className="w-full text-sm text-left border-collapse">
+          <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <tr>
-              <th className="px-2 py-1 text-left">ACCOUNT ID</th>
-              <th className="px-2 py-1 text-left">Company</th>
-              <th className="px-2 py-1 text-left">Name</th>
-              <th className="px-2 py-1 text-left">Email</th>
-              <th className="px-2 py-1 text-left">Phone</th>
-              <th className="px-2 py-1 text-left">Website</th>
-              <th className="px-2 py-1 text-left">Source</th>
-              <th className="px-2 py-1 text-left">Assigned</th>
-              
+              <th className="px-6 py-3 font-semibold">Account ID</th>
+              <th className="px-6 py-3 font-semibold">Company</th>
+              <th className="px-6 py-3 font-semibold">Name</th>
+              <th className="px-6 py-3 font-semibold">Email</th>
+              <th className="px-6 py-3 font-semibold">Phone</th>
+              <th className="px-6 py-3 font-semibold">Website</th>
+              <th className="px-6 py-3 font-semibold">Source</th>
+              <th className="px-6 py-3 font-semibold">Assigned</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {contacts.map((contact) => (
+          <tbody>
+            {contacts.map((contact, index) => (
               <tr
                 key={contact._id}
-                 onClick={() => navigate(`/contacts/${contact._id}`)}
-                className="hover:bg-gray-50 cursor-pointer transition-colors"
+                onClick={() => navigate(`/contacts/${contact._id}`)}
+                className={`cursor-pointer transition hover:bg-blue-50 ${
+                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                }`}
               >
-                <td className="px-2 py-1 break-words">{contact.accountId}</td>
-                <td className="px-2 py-1 break-words">{contact.Company}</td>
-                <td className="px-2 py-1 break-words">{contact.Name}</td>
-                <td className="px-2 py-1">{contact.Email}</td>
-                <td className="px-2 py-1 text-gray-600">{contact.Phone}</td>
-                <td className="px-2 py-1 text-gray-600">{contact.website}</td>
-                <td className="px-2 py-1 text-gray-600">{contact.source}</td>
-                <td className="px-2 py-1 text-gray-600">{contact.assigned}</td>
+                <td className="px-6 py-3 font-mono text-blue-700 whitespace-nowrap">{contact.accountId}</td>
+                <td className="px-6 py-3 text-gray-800 font-medium">{contact.Company}</td>
+                <td className="px-6 py-3 text-gray-800">{contact.Name}</td>
+                <td className="px-6 py-3 text-gray-700">{contact.Email}</td>
+                <td className="px-6 py-3 text-gray-700">{contact.Phone}</td>
+                <td className="px-6 py-3 text-gray-700">{contact.website}</td>
+                <td className="px-6 py-3 text-gray-700">{contact.source}</td>
+                <td className="px-6 py-3 text-gray-700">{contact.assigned}</td>
               </tr>
             ))}
+
+            {contacts.length === 0 && (
+              <tr>
+                <td
+                  colSpan="8"
+                  className="px-6 py-6 text-center text-gray-500 italic"
+                >
+                  No contacts found
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
-      </div>
+    </div>
   );
 };
 

@@ -2,7 +2,7 @@ import Case from "../models/Case.js";
 
 const generateCaseId = async () => {
   const today = new Date();
-  const dateStr = today.toISOString().split("T")[0].replace(/-/g, ""); // YYYYMMDD
+  const dateStr = today.toISOString().split("T")[0].replace(/-/g, "");
 
   // Find last case created today
   const lastCase = await Case.findOne({

@@ -1,6 +1,7 @@
 import express from "express";
 import Opportunity from "../models/Opportunity.js";
 import Contact from "../models/Contact.js";
+import Proposal from "../models/Proposal.js";
 import Account from "../models/Account.js";
 import OpportunityProduct from "../models/OpportunityProduct.js";
 const router = express.Router();
@@ -15,7 +16,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get single opportunity by ID
 router.get("/:id", async (req, res) => {
   try {
     const opp = await Opportunity.findById(req.params.id);
@@ -130,6 +130,22 @@ router.get("/:opportunitiesMongoId/contact", async (req, res) => {
   } catch (err) {
     console.error("Error fetching contacts:", err);
     res.status(500).json({ message: "Error fetching related contacts" });
+  }
+});
+
+router.get("/proposals/:opportunityId", async (req, res) => {
+  try {
+    const { opportunityId } = req.params;
+    const proposals = await Proposal.find({ opportunityId });
+
+    if (!proposals || proposals.length === 0) {
+      return res.status(404).json({ message: "No proposals found" });
+    }
+
+    res.status(200).json(proposals);
+  } catch (err) {
+    console.error("Error fetching proposals:", err);
+    res.status(500).json({ message: "Error fetching related proposals" });
   }
 });
 

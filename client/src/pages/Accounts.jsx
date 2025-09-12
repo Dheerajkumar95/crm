@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Plus,Upload } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
@@ -25,29 +25,21 @@ const Accounts = () => {
   };
 
   return (
-    <div className="px-4">
+    <div className="px-6 py-1">
       {/* Header */}
-      <div className="flex flex-col md:flex-row items-center justify-between mb-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Accounts</h1>
-          <div className="flex items-center space-x-4 mt-2">
-            <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-              {accounts.length} accounts
-            </span>
-            <span className="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">
-              0 Lost accounts - 0.00%
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center space-x-2 mb-1">
+      <div className="flex flex-col md:flex-row items-end justify-end mb-4">
+        <div className="flex items-end space-x-2 mt-1 md:mt-0">
           <button
             onClick={() => navigate("/newaccount")}
-            className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition cursor-pointer"    
+            className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition shadow-sm"
           >
             <Plus className="w-4 h-4 mr-2" />
             New Account
           </button>
-          <button to="/leadaccount" className="flex items-center px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition cursor-pointer">
+          <button
+            onClick={() => navigate("/leadaccount")}
+            className="flex items-center px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm"
+          >
             <Upload className="w-4 h-4 mr-2" />
             Import Accounts
           </button>
@@ -55,27 +47,48 @@ const Accounts = () => {
       </div>
 
       {/* Table */}
-      <div className="w-full overflow-auto">
-        <table className="w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50 sticky top-0 z-10">
+      <div className="overflow-hidden rounded shadow-lg bg-white">
+        <table className="w-full text-sm text-left border-collapse">
+          <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <tr>
-              <th className="px-4 py-2 text-left">Account ID</th>
-              <th className="px-4 py-2 text-left">Company</th>
-              <th className="px-4 py-2 text-left">Account Owner</th>
+              <th className="px-6 py-3 font-semibold">Account ID</th>
+              <th className="px-6 py-3 font-semibold">Company</th>
+              <th className="px-6 py-3 font-semibold">Account Owner</th>
+              <th className="px-6 py-3 font-semibold">Email</th>
+              <th className="px-6 py-3 font-semibold">Phone</th>
+              <th className="px-6 py-3 font-semibold">Website</th>
+              <th className="px-6 py-3 font-semibold">Source</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {accounts.map((account) => (
+          <tbody>
+            {accounts.map((account, index) => (
               <tr
                 key={account._id}
                 onClick={() => handleRowClick(account._id)}
-                className="hover:bg-gray-100 cursor-pointer transition"
+                className={`cursor-pointer transition hover:bg-blue-50 ${
+                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                }`}
               >
-                <td className="px-4 py-2 break-all font-mono text-blue-700">{account.accountId}</td>
-                <td className="px-4 py-2 text-gray-700">{account.Company}</td>
-                <td className="px-4 py-2 text-gray-700">{account.Name}</td>
+                <td className="px-6 py-3 font-mono text-blue-700 whitespace-nowrap">{account.accountId}</td>
+                <td className="px-6 py-3 text-gray-800 font-medium">{account.Company}</td>
+                <td className="px-6 py-3 text-gray-700">{account.Name}</td>
+                <td className="px-6 py-3 text-gray-700">{account.Email}</td>
+                <td className="px-6 py-3 text-gray-700">{account.Phone}</td>
+                <td className="px-6 py-3 text-gray-700">{account.website}</td>
+                <td className="px-6 py-3 text-gray-700">{account.source}</td>
               </tr>
             ))}
+
+            {accounts.length === 0 && (
+              <tr>
+                <td
+                  colSpan="3"
+                  className="px-6 py-6 text-center text-gray-500 italic"
+                >
+                  No accounts found
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

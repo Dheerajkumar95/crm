@@ -23,6 +23,7 @@ import MessagePage from "./pages/MessagePage";
 import LeadImport from "./pages/LeadImport";
 import Account from "./pages/Accounts";
 import Contact from "./pages/Contacts";
+import ContactView from "./pages/ContactView";
 import ContactDetails from "./pages/ContactDetails";
 import AccountView from "./pages/AccountView";
 import OpportunitiesList from "./pages/OpportunitiesList";
@@ -40,6 +41,8 @@ import ProductList from "./pages/ProductList";
 import ProposalPage from "./pages/ProposalPage";
 import ProposalDetail from "./pages/ProposalDetail";
 import AgreementPage from "./pages/AgreementPage";
+import Agreements from "./pages/Agreements";
+import AgreementDetails from "./pages/AgreementDetail";
 function ProtectedRoute({ element }) {
   const authenticated = useAuthStore((state) => state.authenticated);
   const loading = useAuthStore((state) => state.loading);
@@ -91,7 +94,7 @@ function AppRoutes() {
             <Route path="/messages/:leadId" element={<ProtectedRoute element={<MessagePage />} />} />
             <Route path="/leadimport" element={<ProtectedRoute element={<LeadImport />} />} />
             <Route path="/contact" element={<ProtectedRoute element={<Contact />} />} />
-            <Route path="/contacts/:id" element={<ProtectedRoute element={<ContactDetails />} />} />
+            <Route path="/contacts/:id" element={<ProtectedRoute element={<ContactView />} />} />
             <Route path="/proposal" element={<ProtectedRoute element={<ProposalPages />} />} />
             <Route path="/newproposal" element={<ProtectedRoute element={<NewProposalPage />} />} />
             <Route path="/estimates" element={<ProtectedRoute element={<Estimate />} />} />
@@ -111,6 +114,8 @@ function AppRoutes() {
             <Route path="/proposal/:id" element={<ProtectedRoute element={<ProposalPage />} />} />
             <Route path="/proposaldetail/:id" element={<ProtectedRoute element={<ProposalDetail />} />} />
             <Route path="/agreement/:id" element={<ProtectedRoute element={<AgreementPage />} />} />
+            <Route path="/agreements" element={<ProtectedRoute element={<Agreements />} />} />
+            <Route path="/agreements/:id" element={<ProtectedRoute element={<AgreementDetails />} />} />
           </Routes>
         </main>
       </div>

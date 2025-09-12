@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const activitySchema = new mongoose.Schema(
   {
-    OpportunitiesId: {
+    Id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Account",
       required: true,

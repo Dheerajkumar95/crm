@@ -13,7 +13,7 @@ export const addActivitys = async (req, res) => {
       startDateTime,
       endDateTime,
       location,
-      OpportunitiesId,
+      Id,
     } = req.body;
 
     const activity = new Activity({
@@ -25,7 +25,7 @@ export const addActivitys = async (req, res) => {
       startDateTime,
       endDateTime,
       location,
-      OpportunitiesId,
+      Id,
       user: userId,
     });
 
@@ -37,8 +37,8 @@ export const addActivitys = async (req, res) => {
 };
 export const getActivitiesByOpportunitiesId = async (req, res) => {
   try {
-    const { OpportunitiesId } = req.params;
-    const activities = await Activity.find({ OpportunitiesId })
+    const { Id } = req.params;
+    const activities = await Activity.find({ Id })
       .populate("user", "username")
       .sort({ createdAt: -1 });
 

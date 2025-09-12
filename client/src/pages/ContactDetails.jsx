@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+// ContactDetails.jsx
+import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { Pencil, ArrowLeft, X } from "lucide-react";
+import { Pencil, X } from "lucide-react";
 
 const ContactDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [contact, setContact] = useState(null);
   const [editingField, setEditingField] = useState(null);
-  const [tempValue, setTempValue] = useState("");
+  const [fieldValue, setFieldValue] = useState("");
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const fetchContact = async () => {
@@ -18,102 +19,106 @@ const ContactDetails = () => {
         setContact(res.data);
       } catch (error) {
         console.error("Error fetching contact details:", error);
+        toast.error("Failed to fetch contact details.");
       }
     };
     fetchContact();
   }, [id]);
 
-  const handleEdit = (field) => {
-    setEditingField(field);
-    setTempValue(contact[field] || "");
+  useEffect(() => {
+    if (editingField && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.setSelectionRange(fieldValue.length, fieldValue.length);
+    }
+  }, [editingField, fieldValue]);
+
+  const handleEditClick = (fieldName, currentValue) => {
+    setEditingField(fieldName);
+    setFieldValue(currentValue || "");
   };
 
-  const handleSave = async (field) => {
+  const handleSave = async () => {
+    if (!editingField) return;
     try {
-      const updatedContact = { ...contact, [field]: tempValue };
-      await axios.put(`http://localhost:7000/api/contacts/${id}`, updatedContact);
-      setContact(updatedContact);
+      await axios.patch(`http://localhost:7000/api/contacts/${id}`, {
+        [editingField]: fieldValue,
+      });
+      setContact((prev) => ({ ...prev, [editingField]: fieldValue }));
       setEditingField(null);
-      toast.success(`${field} updated!`);
-    } catch (error) {
-      toast.error("Error updating contact");
+      toast.success("Contact updated successfully!");
+    } catch (err) {
+      console.error("Error updating field:", err);
+      toast.error("Failed to update contact.");
     }
   };
 
-  if (!contact) return <div className="p-4">Loading...</div>;
+  if (!contact) return <div className="p-4 text-center">Loading contact details...</div>;
+
+  // Reusable editable field
+  const EditableField = ({ label, field, value, nonEditable = false }) => (
+    <div>
+      <p className="text-sm font-medium text-gray-800 mt-4">{label}</p>
+      <div className="flex items-center justify-between border p-2 rounded-md bg-gray-50">
+        {nonEditable ? (
+          <span className="text-sm text-gray-700">{value || "—"}</span>
+        ) : editingField === field ? (
+          <>
+            <input
+              type="text"
+              ref={inputRef}
+              value={fieldValue}
+              onChange={(e) => setFieldValue(e.target.value)}
+              className="border p-1 text-sm rounded mr-2 flex-1"
+            />
+            <button
+              onClick={handleSave}
+              className="text-blue-600 text-sm font-semibold cursor-pointer"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => setEditingField(null)}
+              className="ml-2 text-gray-500 hover:text-red-500 transition cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+          </>
+        ) : (
+          <>
+            <span className="text-sm text-gray-700">{value || "—"}</span>
+            <button
+              onClick={() => handleEditClick(field, value)}
+              className="ml-2 text-gray-800 hover:text-blue-600"
+            >
+              <Pencil className="h-4 w-4 cursor-pointer" />
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
 
   return (
-    <div className="w-full mx-auto bg-white shadow-sm rounded-xl p-6">
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center mb-6 text-blue-600 hover:underline font-medium cursor-pointer"
-      >
-        <ArrowLeft className="w-5 h-5 mr-2" />
-      </button>
+    <div className="min-h-screen font-inter antialiased flex justify-center">
+      <div className="bg-white rounded-lg p-4 w-full max-w-6xl">
+        <div className="flex items-center justify-center pb-4 mb-1">
+          <h1 className="text-2xl font-bold text-gray-800">Contact Details</h1>
+        </div>
 
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Contact Details</h1>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {[
-          "accountId",
-          "Company",
-          "Name",
-          "Email",
-          "Phone",
-          "website",
-          "source",
-          "assigned",
-        ].map((field) => {
-          const isNonEditable = field === "accountId" || field === "Company";
-
-          return (
-            <div key={field}>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                {field}
-              </label>
-              <div className="flex items-center border rounded-lg px-3 py-2 bg-gray-50 hover:bg-gray-100 transition">
-                {isNonEditable ? (
-                  <span className="flex-1 text-gray-900 font-medium">
-                    {contact[field] || "—"}
-                  </span>
-                ) : editingField === field ? (
-                  <>
-                    <input
-                      type="text"
-                      value={tempValue}
-                      onChange={(e) => setTempValue(e.target.value)}
-                      className="flex-1 border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                    />
-                    <button
-                      onClick={() => handleSave(field)}
-                      className="ml-2 py-1 text-blue-600 text-sm font-semibold cursor-pointer"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => setEditingField(null)}
-                      className="ml-2 text-gray-500 hover:text-red-500 transition cursor-pointer"
-                    >
-                      <X size={18} />
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <span className="flex-1 text-gray-900">
-                      {contact[field] || "—"}
-                    </span>
-                    <button
-                      onClick={() => handleEdit(field)}
-                      className="text-gray-500 hover:text-blue-600 transition cursor-pointer"
-                    >
-                      <Pencil size={16} />
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          );
-        })}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+          <div className="space-y-0.5">
+            <EditableField label="Account ID" field="accountId" value={contact.accountId} nonEditable />
+            <EditableField label="Name" field="Name" value={contact.Name} />
+            <EditableField label="Phone" field="Phone" value={contact.Phone} />
+            <EditableField label="Email" field="Email" value={contact.Email} />
+          </div>
+          <div className="space-y-0.5">
+            <EditableField label="Company" field="Company" value={contact.Company} nonEditable />
+            <EditableField label="Website" field="website" value={contact.website} />
+            <EditableField label="Source" field="source" value={contact.source} />
+            <EditableField label="Assigned" field="assigned" value={contact.assigned} />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
 // AccountView.jsx
 import React, { useEffect, useState } from "react";
+import { Building,Activity } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
+import ActivityButtons from './OppActivity';
 import {
   ArrowLeft,
   FileText,
@@ -16,19 +18,17 @@ import AccountDetails from "./AccountDetails";
 const AccountView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [account, setAccount] = useState(null);
   const [activeTab, setActiveTab] = useState("relate");
   const [relatedContacts, setRelatedContacts] = useState([]);
   const [relatedOpportunities, setRelatedOpportunities] = useState([]);
   const [files, setFiles] = useState([]);
- const [file, setFile] = useState(null);
-  // Toggle view more
+  const [file, setFile] = useState(null);
   const [showAllContacts, setShowAllContacts] = useState(false);
   const [showAllOpportunities, setShowAllOpportunities] = useState(false);
   const [showAllCases, setShowAllCases] = useState(false);
   const [showAllFiles, setShowAllFiles] = useState(false);
-  const [caseData, setCaseData] =  useState([]);
+  const [caseData, setCaseData] = useState([]);
   const apiBase = "http://localhost:7000/api/files";
 
   useEffect(() => {
@@ -135,29 +135,48 @@ useEffect(() => {
 
   return (
     <div className="p-4 bg-white rounded-lg from-slate-100 to-white min-h-screen">
-      <div className="mb-3 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="text-sm text-gray-600 hover:text-blue-600 flex items-center cursor-pointer"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
+       <div className="mb-3 bg-blue-50 border rounded-lg shadow-sm p-4">
+      {/* Top Row */}
+      <div className="flex justify-between items-start mb-5">
+        {/* Left side - Company info */}
+        <div className="flex items-center gap-1">
+          <Building size={48} className="text-purple-500" />
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">
-              Account Overview
-            </h1>
+            <h1 className="text-sm font-bold text-slate-800">Account</h1>
             {account && (
-              <p className="text-sm text-slate-800">
-                Account ID:{" "}
-                <span className="font-mono text-blue-600">
-                  {account.accountId}
-                </span>
+              <p className="text-xl font-semibold text-slate-800">
+                {account.Company}
               </p>
             )}
           </div>
         </div>
       </div>
+      <div className="grid grid-cols-4 gap-4 px-2">
+        <div>
+          <p className="text-sm font-medium text-gray-600">Phone</p>
+          <p className="text-base text-blue-600">{account?.Phone}</p>
+        </div>
+        <div>
+          <p className="text-sm font-medium text-gray-600">Website</p>
+          <a
+            href={account?.website?.startsWith("http") ? account.website : `https://${account?.website}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-base text-blue-600 cursor-pointer hover:underline"
+          >
+            {account?.website}
+          </a>
+        </div>
+        <div>
+          <p className="text-sm font-medium text-gray-600">Account Owner</p>
+          <p className="text-base text-blue-600">{account?.Name}</p>
+        </div>
+        <div>
+          <p className="text-sm font-medium text-gray-600">Email</p>
+          <p className="text-base text-blue-600">{account?.Email}</p>
+        </div>
+      </div>
+    </div>
 
       {/* Tabs */}
       <div className="bg-white rounded-t-lg shadow-sm overflow-hidden border-b">
@@ -172,6 +191,17 @@ useEffect(() => {
           >
             <User size={18} />
             Related Info
+          </button>
+          <button
+            onClick={() => setActiveTab("activity")}
+            className={`flex items-center gap-2 px-6 py-3 text-sm font-semibold transition-all duration-200 ${
+              activeTab === "activity"
+                ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
+                : "text-gray-600 hover:text-blue-600"
+            }`}
+          >
+            <Activity size={18} />
+            Activity
           </button>
           <button
             onClick={() => setActiveTab("details")}
@@ -283,144 +313,153 @@ useEffect(() => {
 
             </div>
 
-           
-             <div className="border rounded-b-lg bg-gray-50">
-      <div className="flex justify-between items-center p-3 border-b bg-gray-100">
-        <h2 className="font-semibold text-sm text-slate-700">
-          Support Requests ({caseData.length})
-        </h2>
-        <button
-          onClick={() => navigate("/cases/new")}
-          className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100 cursor-pointer"
-        >
-          New
-        </button>
-      </div>
-
-      <div className="p-4 text-sm text-slate-700 grid grid-cols-4 gap-4">
-        {(showAllCases ? caseData : caseData.slice(0, 2)).map((c) => (
-          <div key={c._id}
-           onClick={() =>  navigate(`/case/${c._id}`)}
-          className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer">
-            <p className="text-blue-600 hover:underline font-medium cursor-pointer ">
-              {c.caseId}
-            </p>
-            <p>Contact Name: {c.contactName}</p>
-            <p>Subject: {c.subject}</p>
-            <p>Priority: {c.priority}</p>
+        {/* Support Requests */}
+        <div className="border rounded-b-lg bg-gray-50">
+          <div className="flex justify-between items-center p-3 border-b bg-gray-100">
+            <h2 className="font-semibold text-sm text-slate-700">
+              Support Requests ({caseData.length})
+            </h2>
+            <button
+              onClick={() => navigate("/cases/new")}
+              className="px-2 py-1 text-xs font-medium border rounded hover:bg-blue-100 cursor-pointer"
+            >
+              New
+            </button>
           </div>
-        ))}
-      </div>
 
-      {caseData.length > 2 && (
-        <div
-          onClick={() => setShowAllCases(!showAllCases)}
-          className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer"
-        >
-          {showAllCases ? "Show Less" : "View All"}
+          <div className="p-4 text-sm text-slate-700 grid grid-cols-4 gap-4">
+            {(showAllCases ? caseData : caseData.slice(0, 2)).map((c) => (
+              <div key={c._id}
+              onClick={() =>  navigate(`/case/${c._id}`)}
+              className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer">
+                <p className="text-blue-600 hover:underline font-medium cursor-pointer ">
+                  {c.caseId}
+                </p>
+                <p>Contact Name: {c.contactName}</p>
+                <p>Subject: {c.subject}</p>
+                <p>Priority: {c.priority}</p>
+              </div>
+            ))}
+          </div>
+
+          {caseData.length > 2 && (
+            <div
+              onClick={() => setShowAllCases(!showAllCases)}
+              className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer"
+            >
+              {showAllCases ? "Show Less" : "View All"}
+            </div>
+          )}
         </div>
+
+        {/* Notes & Attachments */}
+        <div className="border rounded-b-lg bg-gray-50">
+          <div className="flex justify-between items-center p-3 border-b bg-gray-100">
+            <h2 className="font-semibold text-sm text-slate-700">
+              Notes & Attachments ({files.length})
+            </h2>
+            <form
+              onSubmit={handleUpload}
+              className="flex items-center gap-3 rounded px-3 py-2 bg-white shadow-sm"
+            >
+              <label
+                htmlFor="fileUpload"
+                className="px-3 py-1 text-xs font-medium border rounded cursor-pointer bg-blue-50 hover:bg-blue-100 text-blue-700"
+              >
+                Choose File
+              </label>
+              <input
+                id="fileUpload"
+                type="file"
+                onChange={(e) => setFile(e.target.files[0])}
+                className="hidden"
+              />
+              <span className="text-xs text-gray-600">
+                {file ? file.name : "No file selected"}
+              </span>
+              <button
+                type="submit"
+                className="px-4 py-1 text-xs font-semibold rounded bg-blue-600 hover:bg-blue-700 text-white transition cursor-pointer"
+              >
+                Upload
+              </button>
+            </form>
+          </div>
+
+          {/* File list */}
+          <div className="p-4 text-sm text-slate-700 space-y-2">
+            {(showAllFiles ? files : files.slice(0, 3)).map((f) => (
+              <div
+                key={f.id}
+                className="flex justify-between items-center pb-1"
+              >
+                <span>
+                  {f.filename} ({Math.round(f.length / 1024)} KB)
+                </span>
+                <div className="flex gap-2">
+                  <a
+                    href={`${apiBase}/${id}/${f.filename}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Eye
+                      size={20}
+                      className="text-gray-600 hover:text-blue-600"
+                    />
+                  </a>
+                  <a
+                    href={`${apiBase}/${id}/${f.filename}/download`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <ArrowDownToLine
+                      size={20}
+                      className="text-blue-600 hover:text-blue-800"
+                    />
+                  </a>
+                  <button
+                    onClick={() => handleDelete(f.id)}
+                    className="text-red-600 hover:text-red-500 cursor-pointer"
+                    title="Delete"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </div>
+              </div>
+            ))}
+            {files.length === 0 && <p>No files uploaded.</p>}
+          </div>
+          {files.length > 3 && (
+            <div
+              onClick={() => setShowAllFiles(!showAllFiles)}
+              className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer"
+            >
+              {showAllFiles ? "Show Less" : "View All"}
+            </div>
+          )}
+        </div>
+      </div>
+    ) : (
+      
+     <div className="text-slate-600">
+      {account ? (
+        <>
+          {activeTab === "activity" && (
+            <div className="space-y-6 p-4">
+              <ActivityButtons />
+            </div>
+          )}
+
+          {activeTab === "details" && <AccountDetails account={account} />}
+        </>
+      ) : (
+        <p>Loading account details...</p>
       )}
     </div>
-
-            {/* Notes & Attachments */}
-            <div className="border rounded-b-lg bg-gray-50">
-              <div className="flex justify-between items-center p-3 border-b bg-gray-100">
-                <h2 className="font-semibold text-sm text-slate-700">
-                  Notes & Attachments ({files.length})
-                </h2>
-                <form
-                  onSubmit={handleUpload}
-                  className="flex items-center gap-3 border rounded px-3 py-2 bg-white shadow-sm"
-                >
-                  <label
-                    htmlFor="fileUpload"
-                    className="px-3 py-1 text-xs font-medium border rounded cursor-pointer bg-blue-50 hover:bg-blue-100 text-blue-700"
-                  >
-                    Choose File
-                  </label>
-                  <input
-                    id="fileUpload"
-                    type="file"
-                    onChange={(e) => setFile(e.target.files[0])}
-                    className="hidden"
-                  />
-                  <span className="text-xs text-gray-600">
-                    {file ? file.name : "No file selected"}
-                  </span>
-                  <button
-                    type="submit"
-                    className="px-4 py-1 text-xs font-semibold rounded bg-blue-600 hover:bg-blue-700 text-white transition cursor-pointer"
-                  >
-                    Upload
-                  </button>
-                </form>
-              </div>
-
-              {/* File list */}
-              <div className="p-4 text-sm text-slate-700 space-y-2">
-                {(showAllFiles ? files : files.slice(0, 3)).map((f) => (
-                  <div
-                    key={f.id}
-                    className="flex justify-between items-center pb-1"
-                  >
-                    <span>
-                      {f.filename} ({Math.round(f.length / 1024)} KB)
-                    </span>
-                    <div className="flex gap-2">
-                      <a
-                        href={`${apiBase}/${id}/${f.filename}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <Eye
-                          size={20}
-                          className="text-gray-600 hover:text-blue-600"
-                        />
-                      </a>
-                      <a
-                        href={`${apiBase}/${id}/${f.filename}/download`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <ArrowDownToLine
-                          size={20}
-                          className="text-blue-600 hover:text-blue-800"
-                        />
-                      </a>
-                      <button
-                        onClick={() => handleDelete(f.id)}
-                        className="text-red-600 hover:text-red-500 cursor-pointer"
-                        title="Delete"
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                {files.length === 0 && <p>No files uploaded.</p>}
-              </div>
-              {files.length > 3 && (
-                <div
-                  onClick={() => setShowAllFiles(!showAllFiles)}
-                  className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer"
-                >
-                  {showAllFiles ? "Show Less" : "View All"}
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="text-slate-600">
-            {account ? (
-              <AccountDetails account={account} />
-            ) : (
-              <p>Loading account details...</p>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    )}
+  </div>
+  </div>
+  );        
 };
 
 export default AccountView;

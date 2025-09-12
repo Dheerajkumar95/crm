@@ -10,20 +10,18 @@ export default function ActivityPage() {
   const {id } = useParams();
   const [activities, setActivities] = useState([]);
   const [activeForm, setActiveForm] = useState(null);
-   const OpportunitiesId=id;
+  const Id=id;
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const res = await axios.get(`http://localhost:7000/api/opportunitiesactivities/${OpportunitiesId}`);
+        const res = await axios.get(`http://localhost:7000/api/opportunitiesactivities/${Id}`);
         setActivities(res.data);
       } catch (error) {
         console.error("Error fetching activities:", error);
       }
     };
     fetchActivities();
-  }, [OpportunitiesId]);
-
-  // Delete function
+  }, [Id]);
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:7000/api/opportunitiesactivities/${id}`);

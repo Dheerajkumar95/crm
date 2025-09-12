@@ -12,13 +12,15 @@ export default function App() {
     const [account, setAccount] = useState(null);
     const [relatedContacts, setRelatedContacts] = useState([]);
     const [relatedProducts, setRelatedProducts] = useState([]);
+    const [relatedProposals, setRelatedProposals] = useState([]);
+
     const [leadData, setLeadData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isComplete, setIsComplete] = useState(false);
     const [message, setMessage] = useState('');
     const [activeTab, setActiveTab] = useState("relate");
     const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
-     const [showDetails, setShowDetails] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -62,6 +64,17 @@ export default function App() {
                     }
                     };
 
+        const fetchProposals = async () => {
+        try {
+            const res = await axios.get(`http://localhost:7000/api/opportunities/proposals/${id}`);
+            setRelatedProposals(res.data);
+        } catch (err) {
+            console.error("Error fetching proposals:", err);
+            setLoading(false);
+        }
+        };
+
+        fetchProposals();
         fetchProducts();
         fetchAccount();
         fetchContacts();
@@ -213,35 +226,47 @@ export default function App() {
 
     return (
         <div className="w-full max-w-8xl min-h-screen bg-white p-4 rounded-2xl shadow-2xl">
-           <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center space-x-2 p-2 h-10 text-black">
-                        <button
-                            onClick={() => navigate(-1)}
-                            className="text-sm text-gray-600 hover:text-blue-600 flex items-center cursor-pointer"
-                        >
-                            <ArrowLeft className="h-5 w-5" />
-                        </button>
-                        <Building size={28} className="text-blue-500" />
-                        <div
-                            className="cursor-pointer"
-                            onClick={() => navigate(`/account/${account._id}`)}
-                        >
-                            <span className="block text-sm opacity-80">Company</span>
-                            <span className="block font-bold text-lg">{leadData.Company}</span>
-                        </div>
+           <div className="mb-3 bg-blue-50 border rounded-lg shadow-sm p-4">
+                 <div className="flex justify-between items-start mb-5">
+                   <div className="flex items-center gap-1">
+                     <Building size={48} className="text-purple-500" />
+                     <div className="cursor-pointer"
+                            onClick={() => navigate(`/account/${account._id}`)}>
+                       <h1 className="text-sm font-bold text-slate-800">Account</h1>
+                       {account && (
+                         <p className="text-xl font-semibold text-slate-800">
+                           {account.Company}
+                         </p>
+                       )}
+                     </div>
+                   </div>
+                 </div>
+                 <div className="grid grid-cols-4 gap-4 px-2">
+                   <div>
+                     <p className="text-sm font-medium text-gray-600">Phone</p>
+                     <p className="text-base text-blue-600">{account?.Phone}</p>
+                   </div>
+                   <div>
+                    <p className="text-sm font-medium text-gray-600">Website</p>
+                    <a
+                        href={account?.website?.startsWith("http") ? account.website : `https://${account?.website}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-base text-blue-600 cursor-pointer hover:underline"
+                    >
+                        {account?.website}
+                    </a>
                     </div>
-                    <div className="flex items-center space-x-2 p-2 h-10 text-zinc-800">
-                        <User size={28} className="text-blue-500" />
-                        <div
-                            className="cursor-pointer"
-                            onClick={() => navigate(`/account/${account._id}`)}
-                        >
-                            <span className="block text-sm text-zinc-500">Account ID</span>
-                            <span className="block font-semibold text-lg">{leadData.accountId}</span>
-                        </div>
-                    </div>
-                </div>
-
+                   <div>
+                     <p className="text-sm font-medium text-gray-600">Account Owner</p>
+                     <p className="text-base text-blue-600">{account?.Name}</p>
+                   </div>
+                   <div>
+                     <p className="text-sm font-medium text-gray-600">Email</p>
+                     <p className="text-base text-blue-600">{account?.Email}</p>
+                   </div>
+                 </div>
+               </div>
 
             {/* PROGRESS BAR + COMPLETE BUTTON */}
             <div className="flex flex-col sm:flex-row items-center justify-between space-y-1 sm:space-y-0 sm:space-x-8 mb-2 p-1 bg-zinc-100 rounded-xl shadow-inner">
@@ -306,7 +331,7 @@ export default function App() {
 
                 <div className="bg-white min-h-[300px] mt-0 rounded-b-2xl">
               {activeTab === "relate" && (
-                <div className="space-y-6 p-4">
+                <div className="space-y-6">
                     <div className="border rounded-b-lg bg-gray-50">
                     <div className="flex justify-between items-center p-3 border-b bg-gray-100">
                         <h2 className="font-semibold text-sm text-slate-700">
@@ -375,27 +400,25 @@ export default function App() {
                             Add
                         </button>
                        <button
-  onClick={async () => {
-    const proposalLink = `${window.location.origin}/proposal/${id}`;
-    navigator.clipboard.writeText(proposalLink);
-    alert("Proposal link copied: " + proposalLink)
-    try {
-      const res = await axios.post("http://localhost:7000/api/proposals/send-proposal", {
-        proposalId: id,
-      });
-      alert(res.data.message);
-    } catch (err) {
-      console.error("Error sending proposal:", err);
-      alert("Failed to send proposal.");
-    }
-    navigate(`/proposal/${id}`);
-  }}
-  className="px-2 py-1 text-xs font-medium border rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer"
->
-  Generate Proposal
-</button>
-
-
+                        onClick={async () => {
+                            const proposalLink = `${window.location.origin}/proposal/${id}`;
+                            navigator.clipboard.writeText(proposalLink);
+                            alert("Proposal link copied: " + proposalLink)
+                            try {
+                            const res = await axios.post("http://localhost:7000/api/proposals/send-proposal", {
+                                proposalId: id,
+                            });
+                            alert(res.data.message);
+                            } catch (err) {
+                            console.error("Error sending proposal:", err);
+                            alert("Failed to send proposal.");
+                            }
+                            navigate(`/proposal/${id}`);
+                        }}
+                        className="px-2 py-1 text-xs font-medium border rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer"
+                        >
+                        Generate Proposal
+                        </button>
                         </div>
                     </div>
 
@@ -454,7 +477,6 @@ export default function App() {
                         )}
                     </div>
 
-                    {/* See Details Toggle */}
                     <div
                         className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer"
                         onClick={() => setShowDetails(!showDetails)}
@@ -462,7 +484,55 @@ export default function App() {
                         {showDetails ? "Hide Details" : "See Details"}
                     </div>
                     </div>
+                 <div className="border rounded-b-lg bg-gray-50">
+                    <div className="flex justify-between items-center p-3 border-b bg-gray-100">
+                        <h2 className="font-semibold text-sm text-slate-700">
+                        Proposal ({relatedProposals?.length || 0})
+                    </h2>
+                    </div>
+                    <div className="p-4 text-sm text-slate-700">
+                        {relatedProposals?.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {relatedProposals.map((proposals, index) => (
+                            <div
+                                key={index}
+                                onClick={() => navigate(`/proposals/${proposals._id}`)}
+                                className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer"
+                            >
+                                <p className="text-blue-600 font-medium hover:underline">
+                                {proposals.Name}
+                                </p>
+                                <p>
+                                Email:{" "}
+                                <a
+                                    href={`mailto:${proposals.Email}`}
+                                    className="text-blue-600"
+                                >
+                                    {proposals.Email}
+                                </a>
+                                </p>
+                                <p>
+                                Phone:{" "}
+                                <a
+                                    href={`tel:${proposals.Phone}`}
+                                    className="text-blue-600"
+                                >
+                                    {proposals.Phone}
+                                </a>
+                                </p>
+                            </div>
+                            ))}
+                        </div>
+                        ) : (
+                        <p>No proposals found.</p>
+                        )}
+                    </div>
 
+                    <div className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer">
+                        View All
+                    </div>
+                    
+                    </div>
               
                 </div>
                 )}

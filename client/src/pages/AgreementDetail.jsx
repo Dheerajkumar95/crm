@@ -1,9 +1,10 @@
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 const AgreementDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [agreement, setAgreement] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -21,6 +22,9 @@ const AgreementDetails = () => {
     fetchAgreement();
   }, [id]);
 
+  const handleGenerateInvoice = () => {
+    navigate(`/invoice/${agreement._id}`);
+  };
   if (loading) return <p className="text-center mt-6">Loading Agreement...</p>;
   if (!agreement) return <p className="text-center mt-6 text-red-500">Agreement not found</p>;
 
@@ -106,6 +110,14 @@ const AgreementDetails = () => {
           ) : (
             <p className="text-gray-500 italic">Not signed</p>
           )}
+        </div>
+         <div>
+          <button
+            onClick={handleGenerateInvoice}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Generate Invoice
+          </button>
         </div>
       </div>
     </div>

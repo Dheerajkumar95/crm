@@ -43,6 +43,7 @@ import ProposalDetail from "./pages/ProposalDetail";
 import AgreementPage from "./pages/AgreementPage";
 import Agreements from "./pages/Agreements";
 import AgreementDetails from "./pages/AgreementDetail";
+import Invoice from "./pages/Invoice";
 function ProtectedRoute({ element }) {
   const authenticated = useAuthStore((state) => state.authenticated);
   const loading = useAuthStore((state) => state.loading);
@@ -116,6 +117,7 @@ function AppRoutes() {
             <Route path="/agreement/:id" element={<ProtectedRoute element={<AgreementPage />} />} />
             <Route path="/agreements" element={<ProtectedRoute element={<Agreements />} />} />
             <Route path="/agreements/:id" element={<ProtectedRoute element={<AgreementDetails />} />} />
+            <Route path="/invoice/:id" element={<ProtectedRoute element={<Invoice />} />} />
           </Routes>
         </main>
       </div>

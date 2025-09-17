@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Plus, Upload } from "lucide-react";
 
 const Proposal = () => {
   const navigate = useNavigate();

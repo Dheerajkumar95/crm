@@ -1,6 +1,7 @@
 import express from "express";
 import nodemailer from "nodemailer";
 import Proposal from "../models/Proposal.js";
+import Account from "../models/Account.js";
 import Contact from "../models/Contact.js";
 import Opportunity from "../models/Opportunity.js";
 import OpportunityProduct from "../models/OpportunityProduct.js";
@@ -12,6 +13,40 @@ router.get("/", async (req, res) => {
   } catch (error) {
     console.error("Error fetching proposals:", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+import mongoose from "mongoose";
+
+router.get("/:id", async (req, res) => {
+  try {
+    const proposal = await Proposal.findById(req.params.id).lean();
+    if (!proposal) {
+      return res.status(404).json({ message: "Proposal not found" });
+    }
+
+    let account = null;
+    if (proposal.opportunityId) {
+      const opportunity = await Opportunity.findById(
+        proposal.opportunityId
+      ).lean();
+      if (opportunity && opportunity.accountId) {
+        if (mongoose.Types.ObjectId.isValid(opportunity.accountId)) {
+          // If it's a real ObjectId, search by _id
+          account = await Account.findById(opportunity.accountId).lean();
+        } else {
+          // Otherwise, search by your custom accountId field
+          account = await Account.findOne({
+            accountId: opportunity.accountId,
+          }).lean();
+        }
+      }
+    }
+
+    res.json({ proposal, account });
+  } catch (err) {
+    console.error("Error fetching proposal:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -62,8 +97,6 @@ router.post("/send-proposal", async (req, res) => {
         .json({ success: false, message: "No contact found for this account" });
     }
     const clientEmail = contact.Email;
-
-    // 3. Calculate grandTotal from opportunityproducts
     const products = await OpportunityProduct.find({
       opportunityId: proposalId,
     });
@@ -243,18 +276,6 @@ router.post("/send-proposal", async (req, res) => {
   } catch (error) {
     console.error("Error sending proposal:", error);
     res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-router.get("/:id", async (req, res) => {
-  try {
-    const proposal = await Proposal.findById(req.params.id);
-    if (!proposal) {
-      return res.status(404).json({ message: "Proposal not found" });
-    }
-    res.json(proposal);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
   }
 });
 

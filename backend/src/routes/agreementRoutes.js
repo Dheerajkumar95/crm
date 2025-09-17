@@ -2,6 +2,10 @@ import express from "express";
 import nodemailer from "nodemailer";
 import Agreement from "../models/Agreement.js";
 import Proposal from "../models/Proposal.js";
+import Opportunity from "../models/Opportunity.js";
+import Account from "../models/Account.js";
+import mongoose from "mongoose";
+
 const router = express.Router();
 
 router.get("/", async (req, res) => {
@@ -11,6 +15,40 @@ router.get("/", async (req, res) => {
   } catch (err) {
     console.error("Error fetching agreements:", err);
     res.status(500).json({ message: "Server error while fetching agreements" });
+  }
+});
+router.get("/:id", async (req, res) => {
+  try {
+    const agreement = await Agreement.findById(req.params.id).lean();
+    if (!agreement) {
+      return res.status(404).json({ message: "Agreement not found" });
+    }
+
+    let account = null;
+
+    // Find proposal linked to this agreement
+    if (agreement.proposalId) {
+      const proposal = await Proposal.findById(agreement.proposalId).lean();
+      if (proposal && proposal.opportunityId) {
+        const opportunity = await Opportunity.findById(
+          proposal.opportunityId
+        ).lean();
+        if (opportunity && opportunity.accountId) {
+          if (mongoose.Types.ObjectId.isValid(opportunity.accountId)) {
+            account = await Account.findById(opportunity.accountId).lean();
+          } else {
+            account = await Account.findOne({
+              accountId: opportunity.accountId,
+            }).lean();
+          }
+        }
+      }
+    }
+
+    res.json({ agreement, account });
+  } catch (err) {
+    console.error("Error fetching agreement:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -158,19 +196,6 @@ router.post("/from-proposal/:proposalId", async (req, res) => {
     });
   } catch (err) {
     console.error("Error creating agreement:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-router.get("/:id", async (req, res) => {
-  try {
-    const agreement = await Agreement.findById(req.params.id).populate(
-      "proposalId"
-    );
-    if (!agreement) {
-      return res.status(404).json({ message: "Agreement not found" });
-    }
-    res.json(agreement);
-  } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 });

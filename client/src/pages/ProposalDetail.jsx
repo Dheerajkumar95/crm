@@ -85,78 +85,100 @@ const ProposalDetail = () => {
           </div>
         </div>
       </div>
-
-      <div className="max-w-full mx-auto bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-2xl font-semibold mb-4">Proposal Details</h2>
-        <div className="space-y-3">
-          <p><strong>Proposal ID:</strong>{proposal.proposalId || proposal._id}</p>
-          <p><strong>To:</strong>{proposal.to}</p>
-          <p><strong>Date:</strong>{proposal.date ? new Date(proposal.date).toLocaleString() : "—"}</p>
-          <p><strong>Total:</strong>₹{proposal.grandTotal?.toLocaleString() ?? "0"}</p>
-          <p>
-            <strong>Status:</strong>{" "}
-            <span
-              className={`px-2 py-0.5 rounded text-sm ${
-                proposal.status === "Accepted"
-                  ? "bg-green-100 text-green-700"
-                  : proposal.status === "Draft"
-                  ? "bg-yellow-100 text-yellow-700"
-                  : proposal.status === "Rejected"
-                  ? "bg-red-100 text-red-700"
-                  : "bg-gray-100 text-gray-700"
-              }`}
-            >
-              {proposal.status}
-            </span>
-          </p>
-          {proposal.acceptedAt && (
-            <p><strong>Accepted At:</strong> {new Date(proposal.acceptedAt).toLocaleString()}</p>
-          )}
-          <p><strong>IP Address:</strong>
-          {proposal.ipAddress || "—"}</p>
-          <p>
-            <strong>Proposal Link:</strong>{" "}
-            {proposal.proposalLink ? (
-              <a
-                href={proposal.proposalLink}
-                className="text-blue-600 underline"
-                target="_blank"
-                rel="noreferrer"
-              >
-                {proposal.proposalLink}
-              </a>
-            ) : (
-              "—"
-            )}
-          </p>
-        </div>
-
-        {proposal.signature && (
-          <div className="mt-6">
-            <h3 className="text-lg font-medium">Signature</h3>
-            <img
-              src={proposal.signature}
-              alt="Signature"
-              className="border mt-2 w-84 h-32 object-contain"
-            />
-          </div>
-        )}
-
-        <div className="mt-6 flex gap-3">
-          <button
-            onClick={handleSendAgreement}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Send Agreement
-          </button>
-          <button
-            onClick={() => navigate(-1)}
-            className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
-          >
-            Back
-          </button>
-        </div>
+      <div className="flex justify-center items-center">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          Proposal Details
+        </h1>
       </div>
+      <div className="max-full mx-auto bg-white shadow-lg rounded p-8 border border-gray-100">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-gray-700">
+    <p>
+      <span className="font-medium text-gray-900"><strong>Proposal ID: </strong></span>{" "}
+      {proposal.proposalId || proposal._id}
+    </p>
+    <p><strong>Status: </strong><span
+      className={`px-3 py-1 rounded text-sm font-medium ${
+        proposal.status === "Accepted"
+          ? "bg-green-100 text-green-700"
+          : proposal.status === "Draft"
+          ? "bg-yellow-100 text-yellow-700"
+          : proposal.status === "Rejected"
+          ? "bg-red-100 text-red-700"
+          : "bg-gray-100 text-gray-700"
+      }`}
+    >
+      {proposal.status}
+    </span></p>
+    <p>
+      <span className="font-medium text-gray-900"><strong>To:</strong></span> {proposal.to}
+    </p>
+    <p>
+      <span className="font-medium text-gray-900"><strong>Date:</strong></span>{" "}
+      {proposal.date ? new Date(proposal.date).toLocaleString() : "—"}
+    </p>
+    <p>
+      <span className="font-medium text-gray-900"><strong>Total:</strong></span>{" "}
+      ₹{proposal.grandTotal?.toLocaleString() ?? "0"}
+    </p>
+    {proposal.acceptedAt && (
+      <p>
+        <span className="font-medium text-gray-900"><strong>Accepted At:</strong></span>{" "}
+        {new Date(proposal.acceptedAt).toLocaleString()}
+      </p>
+    )}
+    <p>
+      <span className="font-medium text-gray-900"><strong>IP Address:</strong></span>{" "}
+      {proposal.ipAddress || "—"}
+    </p>
+    <p className="col-span-2">
+      <span className="font-medium text-gray-900"><strong>Proposal Link:</strong></span>{" "}
+      {proposal.proposalLink ? (
+        <a
+          href={proposal.proposalLink}
+          className="text-blue-600 underline hover:text-blue-800"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {proposal.proposalLink}
+        </a>
+      ) : (
+        "—"
+      )}
+    </p>
+    
+  </div>
+
+  {/* Signature */}
+  {proposal.signature && (
+    <div className="mt-8">
+      <h3 className="text-lg font-semibold text-gray-800">Signature</h3>
+      <div className="mt-3 border rounded p-3 bg-gray-50 flex justify-center">
+        <img
+          src={proposal.signature}
+          alt="Signature"
+          className="h-32 object-contain"
+        />
+      </div>
+    </div>
+  )}
+
+  {/* Actions */}
+  <div className="mt-5 flex gap-4">
+    <button
+      onClick={handleSendAgreement}
+      className="bg-blue-600 text-white px-5 py-1 rounded hover:bg-blue-700 transition"
+    >
+      Send Agreement
+    </button>
+    <button
+      onClick={() => navigate(-1)}
+      className="bg-gray-100 text-gray-800 px-5 py-1 rounded hover:bg-gray-200 transition"
+    >
+      Back
+    </button>
+  </div>
+</div>
+
     </div>
   );
 };

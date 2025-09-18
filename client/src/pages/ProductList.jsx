@@ -16,7 +16,7 @@ const categoryColors = [
 const ProductList = () => {
   const { id } = useParams(); 
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,25 +29,29 @@ const ProductList = () => {
       const res = await axios.get("http://localhost:7000/api/categories");
       const fetched = res.data.map((cat, index) => ({
         name: cat.name,
-        color: categoryColors[index % categoryColors.length], // rotate colors
+        color: categoryColors[index % categoryColors.length],
       }));
       setCategories(fetched);
-      if (fetched.length > 0) setActiveCategory(fetched[0].name); // set default
+      if (fetched.length > 0) setActiveCategory(fetched[0].name);
+      setActiveCategory("All");
     } catch (error) {
       console.error("Error fetching categories", error);
     }
   };
 
   const fetchProducts = async (category) => {
-    try {
-      const res = await axios.get(
-        `http://localhost:7000/api/products/category?category=${category}`
-      );
-      setProducts(res.data);
-    } catch (error) {
-      console.error("Error fetching products", error);
+  try {
+    let url = "http://localhost:7000/api/products";
+    if (category && category !== "All") {
+      url = `http://localhost:7000/api/products/category?category=${category}`;
     }
-  };
+    const res = await axios.get(url);
+    setProducts(res.data);
+  } catch (error) {
+    console.error("Error fetching products", error);
+  }
+};
+
 
   useEffect(() => {
     fetchCategories();
@@ -56,6 +60,7 @@ const ProductList = () => {
   useEffect(() => {
     if (activeCategory) fetchProducts(activeCategory);
   }, [activeCategory]);
+  
 
   const handleToggleStatus = async (productId, currentStatus) => {
     try {
@@ -103,21 +108,32 @@ const ProductList = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6 flex-wrap">
         <div className="flex gap-4 flex-wrap">
-          {categories.map((cat) => (
-            <button
-              key={cat.name}
-              onClick={() => setActiveCategory(cat.name)}
-              className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
-                ${
-                  activeCategory === cat.name
-                    ? `${cat.color} text-white`
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
+  {/* All Button */}
+  <button
+    onClick={() => setActiveCategory("All")}
+    className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
+      ${activeCategory === "All"
+        ? "bg-blue-500 text-white"
+        : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+  >
+    All
+  </button>
+
+  {/* Other Categories */}
+  {categories.map((cat) => (
+    <button
+      key={cat.name}
+      onClick={() => setActiveCategory(cat.name)}
+      className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
+        ${activeCategory === cat.name
+          ? `${cat.color} text-white`
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+    >
+      {cat.name}
+    </button>
+  ))}
+</div>
+
         <div>
           <button
             onClick={() => navigate("/addproduct")}

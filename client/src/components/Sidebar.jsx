@@ -49,7 +49,7 @@ const Sidebar = ({ isOpen }) => {
               { label: 'Credit Notes' },
             ]} />
           )}
-
+          <MenuItem icon={<FaLifeRing />} label="Support" to="/cases"/>
           <MenuItem label="Meeting & Event" expandable open={openMenu === 'appointly'} onClick={() => toggleMenu('appointly')} />
           {openMenu === 'appointly' && (
             <SubMenu
@@ -70,7 +70,6 @@ const Sidebar = ({ isOpen }) => {
           <MenuItem icon={<FaProjectDiagram />} label="Product" to="/productlist" />
           <MenuItem icon={<FaUsersCog />} label="HR Payroll" expandable open={openMenu === 'payroll'} onClick={() => toggleMenu('payroll')} />
           <MenuItem icon={<FaTasks />} label="Tasks" />
-          <MenuItem icon={<FaLifeRing />} label="Support" to="/cases"/>
           <MenuItem icon={<FaFileAlt />} label="Estimate Request" />
           <MenuItem icon={<FaQuestionCircle />} label="Knowledge Base" />
 

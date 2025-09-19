@@ -44,14 +44,12 @@ export default function ActivityPage() {
         return ClipboardList;
     }
   };
-
-  // Split activities
   const meetings = activities.filter((a) => a.type === "meet"); 
   const callsTasks = activities.filter((a) => a.type !== "meet"); 
 
   return (
     <div >
-      {/* Top Buttons */}
+      <div></div>
       <div className="flex gap-2 mb-4">
         <button
           onClick={() => setActiveForm("call")}

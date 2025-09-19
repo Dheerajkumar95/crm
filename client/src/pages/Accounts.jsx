@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Plus, Upload } from "lucide-react";
-
+import ImportButton from "./ImportButton";
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
   const navigate = useNavigate();
@@ -26,7 +26,6 @@ const Accounts = () => {
 
   return (
     <div className="px-6 py-1">
-      {/* Header */}
       <div className="flex flex-col md:flex-row items-end justify-end mb-4">
         <div className="flex items-end space-x-2 mt-1 md:mt-0">
           <button
@@ -36,13 +35,15 @@ const Accounts = () => {
             <Plus className="w-4 h-4 mr-2" />
             New Account
           </button>
-          <button
-            onClick={() => navigate("/leadaccount")}
-            className="flex items-center px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm"
-          >
-            <Upload className="w-4 h-4 mr-2" />
-            Import Accounts
-          </button>
+          <ImportButton
+          onImportSuccess={(resData) => {
+            // make sure importedAccounts exists and is an array
+            if (resData && Array.isArray(resData.importedAccounts)) {
+              setAccounts((prev) => [...prev, ...resData.importedAccounts]);
+            }
+          }}
+          />
+
         </div>
       </div>
 

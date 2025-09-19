@@ -33,9 +33,7 @@ const Login = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Left side login */}
       <div className="flex flex-col w-full md:w-1/2 items-center justify-center px-6 py-12">
-        {/* Logo & CRM Name */}
         <div className="flex flex-col items-center mb-8">
           <img src="/crm.png" alt="SalesTruff Logo" className="w-22 h-20 mb-2" />
           <h1 className="text-2xl font-bold text-gray-800">SalesTruff</h1>
@@ -45,29 +43,35 @@ const Login = () => {
           <h2 className="text-sm text-red-500 text-center mb-4">
             To access this page, you must log in to SalesTruff.
           </h2>
-
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-
-          <button
-            onClick={handleLogin}
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+          <form
+            onSubmit={(e) => {
+              e.preventDefault(); 
+              handleLogin();      
+            }}
           >
-            Log In
-          </button>
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+
+            <button
+              type="submit" 
+              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+            >
+              Log In
+            </button>
+          </form>
 
           <div className="flex items-center mt-4">
             <input type="checkbox" className="mr-2" />
@@ -81,6 +85,7 @@ const Login = () => {
             Forgot Your Password?
           </button>
         </div>
+
 
         <p className="text-xs text-gray-500 mt-6">
           © 2025 SalesTruff. All rights reserved.

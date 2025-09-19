@@ -1,19 +1,23 @@
 import express from "express";
 const router = express.Router();
+import multer from "multer";
 import {
   getAccount,
   getAccountById,
   updateAccountById,
   createAccount,
+  importAccounts,
 } from "../controllers/accountController.js";
 import Contact from "../models/Contact.js";
 import Account from "../models/Account.js";
 import Opportunity from "../models/Opportunity.js";
-
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 router.get("/", getAccount);
 router.get("/:id", getAccountById);
 router.patch("/:id", updateAccountById);
 router.post("/", createAccount);
+router.post("/import", upload.single("file"), importAccounts);
 router.get("/:accountMongoId/contact", async (req, res) => {
   try {
     const { accountMongoId } = req.params;

@@ -19,8 +19,6 @@ export const generateAccountId = async () => {
   while (exists) {
     randomStr = String(Math.floor(100 + Math.random() * 900));
     accountId = `${prefix}-${dateStr}-${randomStr}`;
-
-    // Check if this accountId already exists
     const existingLead = await Lead.findOne({ accountId });
     if (!existingLead) {
       exists = false;
@@ -67,7 +65,6 @@ export const getSingleLead = async (req, res) => {
   }
 };
 
-// Function to update an existing lead
 export const updateLead = async (req, res) => {
   try {
     const { id } = req.params;
@@ -141,8 +138,6 @@ export const convertLeads = async (req, res) => {
         });
       }
     }
-
-    // Delete converted leads
     await Lead.deleteMany({ _id: { $in: leadIds } });
 
     res.status(200).json({
@@ -154,7 +149,6 @@ export const convertLeads = async (req, res) => {
   }
 };
 
-// Import Leads API
 export const importLeads = async (req, res) => {
   try {
     if (!req.file || !req.file.buffer) {
@@ -183,13 +177,13 @@ export const importLeads = async (req, res) => {
           )}`
         );
         continue;
-      } // Check duplicate by email
+      }
 
       const exists = await Lead.findOne({ Email: row.Email });
       if (exists) {
         duplicateCount++;
         continue;
-      } // Save new lead
+      }
 
       try {
         await Lead.create({

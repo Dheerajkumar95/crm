@@ -44,20 +44,12 @@ export default function ImportLeads() {
   const [isLoading, setIsLoading] = useState(false);
   const [simulationResults, setSimulationResults] = useState(null);
   const navigate = useNavigate();
-  // Function to download sample Excel file
   const downloadSampleExcel = () => {
-    // Create a worksheet from data
     const worksheetData = [leadsColumns, sampleData];
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-    // Create a new workbook and append worksheet
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sample Leads");
-
-    // Write workbook to binary array
     const wbout = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-
-    // Create Blob and trigger download
     const blob = new Blob([wbout], {
       type:
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",

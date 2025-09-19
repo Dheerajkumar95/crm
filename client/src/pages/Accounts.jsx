@@ -51,13 +51,13 @@ const Accounts = () => {
         <table className="w-full text-sm text-left border-collapse">
           <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <tr>
-              <th className="px-6 py-3 font-semibold">Account ID</th>
-              <th className="px-6 py-3 font-semibold">Company</th>
-              <th className="px-6 py-3 font-semibold">Account Owner</th>
-              <th className="px-6 py-3 font-semibold">Email</th>
-              <th className="px-6 py-3 font-semibold">Phone</th>
-              <th className="px-6 py-3 font-semibold">Website</th>
-              <th className="px-6 py-3 font-semibold">Source</th>
+              <th className="px-6 py-1 font-semibold">Account ID</th>
+              <th className="px-6 py-1 font-semibold">Company</th>
+              <th className="px-6 py-1 font-semibold">Account Owner</th>
+              <th className="px-6 py-1 font-semibold">Email</th>
+              <th className="px-6 py-1 font-semibold">Phone</th>
+              <th className="px-6 py-1 font-semibold">Website</th>
+              <th className="px-6 py-1 font-semibold">Source</th>
             </tr>
           </thead>
           <tbody>
@@ -69,13 +69,13 @@ const Accounts = () => {
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                <td className="px-6 py-3 font-mono text-blue-700 whitespace-nowrap">{account.accountId}</td>
-                <td className="px-6 py-3 text-gray-800 font-medium">{account.Company}</td>
-                <td className="px-6 py-3 text-gray-700">{account.Name}</td>
-                <td className="px-6 py-3 text-gray-700">{account.Email}</td>
-                <td className="px-6 py-3 text-gray-700">{account.Phone}</td>
-                <td className="px-6 py-3 text-gray-700">{account.website}</td>
-                <td className="px-6 py-3 text-gray-700">{account.source}</td>
+                <td className="px-6 py-1 font-mono text-blue-700 whitespace-nowrap">{account.accountId}</td>
+                <td className="px-6 py-1 text-gray-800 font-medium">{account.Company}</td>
+                <td className="px-6 py-1 text-gray-700">{account.Name}</td>
+                <td className="px-6 py-1 text-gray-700">{account.Email}</td>
+                <td className="px-6 py-1 text-gray-700">{account.Phone}</td>
+                <td className="px-6 py-1 text-gray-700">{account.website}</td>
+                <td className="px-6 py-1 text-gray-700">{account.source}</td>
               </tr>
             ))}
 

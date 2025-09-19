@@ -59,11 +59,6 @@ const fetchAccount = async () => {
   }
 };
 
-useEffect(() => {
-  if (id) {
-    fetchAccount();
-  }
-}, [id]);
 
   const fetchContacts = async () => {
     try {
@@ -136,9 +131,7 @@ useEffect(() => {
   return (
     <div className="p-4 bg-white rounded-lg from-slate-100 to-white min-h-screen">
        <div className="mb-3 bg-blue-50 border rounded-lg shadow-sm p-4">
-      {/* Top Row */}
       <div className="flex justify-between items-start mb-5">
-        {/* Left side - Company info */}
         <div className="flex items-center gap-1">
           <Building size={48} className="text-purple-500" />
           <div>
@@ -237,7 +230,7 @@ useEffect(() => {
                  <div className="p-4 text-sm text-slate-700 grid grid-cols-1 md:grid-cols-4 gap-4">
             {(showAllContacts
               ?  relatedContacts
-              :  relatedContacts.slice(0, 2) 
+              :  relatedContacts.slice(0, 4) 
             ).map((contact, index) => (
               <div key={index} onClick={() =>  navigate(`/contacts/${contact._id}`)}
                className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer">

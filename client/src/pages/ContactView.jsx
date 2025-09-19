@@ -16,6 +16,7 @@ import ContactDetails from "./ContactDetails";
 const ContactView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [account, setAccount] = useState(null);
   const [contact, setcontact] = useState(null);
   const [activeTab, setActiveTab] = useState("relate");
   const [relatedOpportunities, setRelatedOpportunities] = useState([]);
@@ -28,6 +29,7 @@ const ContactView = () => {
   const apiBase = "http://localhost:7000/api/files";
 
   useEffect(() => {
+    fetchAccount();
     fetchcontact();
     fetchOpportunities();
     fetchFiles();
@@ -63,7 +65,14 @@ const fetchcontact = async () => {
       console.error("Error fetching opportunities:", error);
     }
   };
-
+const fetchAccount = async () => {
+            try {
+                const res = await axios.get(`http://localhost:7000/api/contacts/${id}/account`);
+                setAccount(res.data);
+            } catch (error) {
+                console.error("Error fetching account:", error);
+            }
+        };
 
 
 
@@ -113,17 +122,15 @@ const fetchcontact = async () => {
   return (
     <div className="p-4 bg-white rounded-lg from-slate-100 to-white min-h-screen">
        <div className="mb-3 bg-blue-50 border rounded-lg shadow-sm p-4">
-      {/* Top Row */}
       <div className="flex justify-between items-start mb-5">
-        {/* Left side - Company info */}
         <div className="flex items-center gap-1">
           <Building size={48} className="text-purple-500" />
           <div className="cursor-pointer"
-                            onClick={() => navigate(`/contact/${contact._id}`)}>
-            <h1 className="text-sm font-bold text-slate-800">contact</h1>
-            {contact && (
+                            onClick={() => navigate(`/account/${account._id}`)}>
+            <h1 className="text-sm font-bold text-slate-800">Account</h1>
+            {account && (
               <p className="text-xl font-semibold text-slate-800">
-                {contact.Company}
+                {account.Company}
               </p>
             )}
           </div>

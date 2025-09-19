@@ -29,11 +29,12 @@ import AccountView from "./pages/AccountView";
 import OpportunitiesList from "./pages/OpportunitiesList";
 import OpportunitiesView from "./pages/OpportunitiesView";
 import OpportunityForm from "./pages/OpportunityForm";
+import NewOpportunity from "./pages/NewOpportunity";
 import ContactsForm from "./pages/ContactForm";
+import NewContact from "./pages/NewContact";
 import Cases from "./pages/CaseList";
 import CaseForm from "./pages/CaseForm";
 import CaseDetail from "./pages/CaseDetail";
-import Contracts from "./pages/Contracts";
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/useAuthStore";
 import AddProduct from "./pages/AddProduct";
@@ -52,7 +53,6 @@ function ProtectedRoute({ element }) {
   if (loading) return <div className="p-10 text-center">Loading...</div>;
 
   if (!authenticated) {
-    // agar user login nahi hai to /login bhejo aur current location save karo
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
@@ -96,6 +96,7 @@ function AppRoutes() {
             <Route path="/leadimport" element={<ProtectedRoute element={<LeadImport />} />} />
             <Route path="/contact" element={<ProtectedRoute element={<Contact />} />} />
             <Route path="/contacts/:id" element={<ProtectedRoute element={<ContactView />} />} />
+            <Route path="/newcontact" element={<ProtectedRoute element={<NewContact />} />} />
             <Route path="/proposal" element={<ProtectedRoute element={<ProposalPages />} />} />
             <Route path="/newproposal" element={<ProtectedRoute element={<NewProposalPage />} />} />
             <Route path="/estimates" element={<ProtectedRoute element={<Estimate />} />} />
@@ -104,6 +105,7 @@ function AppRoutes() {
             <Route path="/account/:id" element={<ProtectedRoute element={<AccountView />} />} />
             <Route path="/newaccount" element={<ProtectedRoute element={<NewAccount />} />} />
             <Route path="/opportunities/:id" element={<ProtectedRoute element={<OpportunitiesView />} />} />
+            <Route path="/newopportunity" element={<ProtectedRoute element={<NewOpportunity />} />} />
             <Route path="/opportunities/new/:accountId" element={<ProtectedRoute element={<OpportunityForm />} />} />
             <Route path="/contacts/new/:accountId" element={<ProtectedRoute element={<ContactsForm />} />} />
             <Route path="/cases" element={<ProtectedRoute element={<Cases />} />} />

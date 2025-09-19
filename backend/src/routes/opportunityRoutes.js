@@ -5,8 +5,6 @@ import Proposal from "../models/Proposal.js";
 import Account from "../models/Account.js";
 import OpportunityProduct from "../models/OpportunityProduct.js";
 const router = express.Router();
-
-// Get all opportunities
 router.get("/", async (req, res) => {
   try {
     const opps = await Opportunity.find().sort({ createdAt: -1 });
@@ -88,7 +86,6 @@ router.post("/", async (req, res) => {
     res.status(500).json({ message: "Error creating opportunity", error });
   }
 });
-// Delete opportunity (optional)
 router.delete("/:id", async (req, res) => {
   try {
     const deletedOpp = await Opportunity.findByIdAndDelete(req.params.id);

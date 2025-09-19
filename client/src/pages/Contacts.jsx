@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { Plus, Upload } from "lucide-react";
+import NewContact from "./NewContact";
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
   const navigate = useNavigate();
@@ -20,19 +21,36 @@ const Contacts = () => {
 
   return (
     <div className="px-6 py-1">
-      {/* Table Card */}
+      <div className="flex flex-col md:flex-row items-end justify-end mb-4">
+        <div className="flex items-end space-x-2 mt-1 md:mt-0">
+          <button
+            onClick={() => navigate("/newcontact")}
+            className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition shadow-sm"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Contact
+          </button>
+          <button
+            onClick={() => navigate("/leadaccount")}
+            className="flex items-center px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm"
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Import Contact
+          </button>
+        </div>
+      </div>
       <div className="overflow-hidden rounded shadow-lg bg-white">
         <table className="w-full text-sm text-left border-collapse">
           <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <tr>
-              <th className="px-6 py-3 font-semibold">Account ID</th>
-              <th className="px-6 py-3 font-semibold">Company</th>
-              <th className="px-6 py-3 font-semibold">Name</th>
-              <th className="px-6 py-3 font-semibold">Email</th>
-              <th className="px-6 py-3 font-semibold">Phone</th>
-              <th className="px-6 py-3 font-semibold">Website</th>
-              <th className="px-6 py-3 font-semibold">Source</th>
-              <th className="px-6 py-3 font-semibold">Assigned</th>
+              <th className="px-6 py-1 font-semibold">Account ID</th>
+              <th className="px-6 py-1 font-semibold">Company</th>
+              <th className="px-6 py-1 font-semibold">Name</th>
+              <th className="px-6 py-1 font-semibold">Email</th>
+              <th className="px-6 py-1 font-semibold">Phone</th>
+              <th className="px-6 py-1 font-semibold">Website</th>
+              <th className="px-6 py-1 font-semibold">Source</th>
+              <th className="px-6 py-1 font-semibold">Assigned</th>
             </tr>
           </thead>
           <tbody>
@@ -44,14 +62,14 @@ const Contacts = () => {
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                <td className="px-6 py-3 font-mono text-blue-700 whitespace-nowrap">{contact.accountId}</td>
-                <td className="px-6 py-3 text-gray-800 font-medium">{contact.Company}</td>
-                <td className="px-6 py-3 text-gray-800">{contact.Name}</td>
-                <td className="px-6 py-3 text-gray-700">{contact.Email}</td>
-                <td className="px-6 py-3 text-gray-700">{contact.Phone}</td>
-                <td className="px-6 py-3 text-gray-700">{contact.website}</td>
-                <td className="px-6 py-3 text-gray-700">{contact.source}</td>
-                <td className="px-6 py-3 text-gray-700">{contact.assigned}</td>
+                <td className="px-6 py-1 font-mono text-blue-700 whitespace-nowrap">{contact.accountId}</td>
+                <td className="px-6 py-1 text-gray-800 font-medium">{contact.Company}</td>
+                <td className="px-6 py-1 text-gray-800">{contact.Name}</td>
+                <td className="px-6 py-1 text-gray-700">{contact.Email}</td>
+                <td className="px-6 py-1 text-gray-700">{contact.Phone}</td>
+                <td className="px-6 py-1 text-gray-700">{contact.website}</td>
+                <td className="px-6 py-1 text-gray-700">{contact.source}</td>
+                <td className="px-6 py-1 text-gray-700">{contact.assigned}</td>
               </tr>
             ))}
 

@@ -247,22 +247,7 @@ export const simulateImport = async (req, res) => {
           );
         }
         continue;
-      } // Check for duplicate email
-
-      const exists = await Lead.findOne({ Email: row.Email });
-      if (exists) {
-        issueCount++;
-        if (sampleIssues.length < maxSampleIssues) {
-          sampleIssues.push(
-            `Row ${sheetData.indexOf(row) + 2}: Duplicate email '${
-              row.Email
-            }' already exists.`
-          );
-        }
-        continue;
       }
-
-      validCount++;
     }
 
     return res.status(200).json({ validCount, issueCount, sampleIssues });

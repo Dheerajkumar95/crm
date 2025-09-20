@@ -38,9 +38,6 @@ const sampleData = [
 
 export default function ImportLeads() {
   const [csvFile, setCsvFile] = useState(null);
-  const [status, setStatus] = useState("");
-  const [source, setSource] = useState("");
-  const [assigned, setAssigned] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [simulationResults, setSimulationResults] = useState(null);
   const navigate = useNavigate();
@@ -67,9 +64,6 @@ export default function ImportLeads() {
   setIsLoading(true);
   const formData = new FormData();
   formData.append("file", csvFile);
-  formData.append("status", status);
-  formData.append("source", source);
-  formData.append("assigned", assigned);
 
   try {
     const res = await fetch("http://localhost:7000/api/leads/import-leads", {
@@ -103,17 +97,11 @@ export default function ImportLeads() {
       return;
     }
 
-    if (!status || !source) {
-      alert("Please select both Status and Source for simulation");
-      return;
-    }
+
 
     setIsLoading(true);
     const formData = new FormData();
     formData.append("file", csvFile);
-    formData.append("status", status);
-    formData.append("source", source);
-    formData.append("assigned", assigned);
 
     try {
       const res = await fetch("http://localhost:7000/api/leads/simulate-import", {

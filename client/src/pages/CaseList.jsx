@@ -21,16 +21,6 @@ const CaseList = ({ refresh }) => {
     fetchCases();
   }, [refresh]);
 
-  const deleteCase = async (id) => {
-    try {
-      await axios.delete(`http://localhost:7000/api/cases/${id}`);
-      toast.success("Case deleted!");
-      fetchCases();
-    } catch (error) {
-      toast.error("Error deleting case");
-    }
-  };
-
   return (
     <div className="px-4">
       {/* Header */}
@@ -66,7 +56,6 @@ const CaseList = ({ refresh }) => {
               <th className="px-4 py-2 text-left">Subject</th>
               <th className="px-4 py-2 text-left">Priority</th>
               <th className="px-4 py-2 text-left">Status</th>
-              <th className="px-4 py-2 text-left">Action</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -80,18 +69,6 @@ const CaseList = ({ refresh }) => {
                 <td className="px-4 py-2 text-gray-700">{c.subject}</td>
                 <td className="px-4 py-2 text-gray-700">{c.priority}</td>
                 <td className="px-4 py-2 text-gray-700">{c.status}</td>
-                <td className="px-4 py-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); 
-                      deleteCase(c._id);
-                    }}
-                    className="text-red-600 hover:text-red-500 cursor-pointer"
-                    title="Delete"
-                  >
-                    <Trash2 className="w-4 h-4 ml-3"/>
-                  </button>
-                </td>
               </tr>
             ))}
             {cases.length === 0 && (

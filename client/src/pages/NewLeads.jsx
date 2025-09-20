@@ -24,6 +24,7 @@ const NewLeads = () => {
     City: '',
     State: '',
     Address: '',
+    Interest: '',
     status: 'Nothing selected',
     source: 'Nothing selected',
     assigned: 'Super Admin',
@@ -89,12 +90,28 @@ const NewLeads = () => {
           {activeTab === 'Profile' && (
             <form onSubmit={handleSubmit} className="p-6">
               <div className="flex flex-col md:flex-row md:space-x-4 mb-8">
-               {['status', 'source', 'assigned', 'interested'].map((key) => (
+               {['interest','status', 'source', 'assigned'].map((key) => (
                   <div key={key} className="flex-1 mb-4 md:mb-0">
                     <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">
-                      {(key === 'status' || key === 'source') && <span className="text-red-500">*</span>} {key}
+                      {(key === 'status'||key === 'interest' || key === 'source'||key === 'assigned') && <span className="text-red-500">*</span>} {key}
                     </label>
                     <div className="relative">
+                      {key === 'interest' && (
+                      <select
+                        name="Interest"  
+                        value={formData.Interest}  
+                        onChange={handleChange}
+                        className="appearance-none w-full p-2 border border-gray-300 bg-white rounded-md focus:outline-none pr-10 text-gray-700"
+                      >
+                        <option value="">Nothing selected</option>
+                        {categories.map((cat) => (
+                          <option key={cat._id} value={cat.name}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+)}
+
                       {key === 'status' && (
                         <select
                           name={key}
@@ -144,21 +161,6 @@ const NewLeads = () => {
                           <option>User 1</option>
                           <option>User 2</option>
                           <option>User 3</option>
-                        </select>
-                      )}
-                      {key === 'interested' && (
-                        <select
-                          name="category"
-                          value={formData.category}
-                          onChange={handleChange}
-                          className="appearance-none w-full p-2 border border-gray-300 bg-white rounded-md focus:outline-none pr-10 text-gray-700"
-                        >
-                          <option value="">Select Category</option>
-                          {categories.map((cat) => (
-                            <option key={cat._id} value={cat.name}>
-                              {cat.name}
-                            </option>
-                          ))}
                         </select>
                       )}
                       <ChevronDown className="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />

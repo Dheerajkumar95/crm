@@ -15,6 +15,7 @@ const leadSchema = new mongoose.Schema(
     City: String,
     State: String,
     Address: String,
+    Interest: String,
     status: { type: String, default: "" },
     source: { type: String, default: "" },
     assigned: { type: String, default: "" },

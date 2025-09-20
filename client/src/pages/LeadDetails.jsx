@@ -184,7 +184,8 @@ const LeadDetails = () => {
             <EditableField label="Company" field="Company" value={lead.Company} />
             <EditableField label="Position" field="Position" value={lead.Position} />
             <EditableField label="Website" field="website" value={lead.website} />
-            <EditableField label="Lead Value" field="leadValue" value={lead.leadValue} />
+            <EditableField label="PotentialRevenue" field="PotentialRevenue" value={lead.PotentialRevenue} />
+            <EditableField label="Interest" field="Interest" value={lead.Interest} />
             <EditableField label="Description" field="Description" value={lead.Description} />
           </div>
 

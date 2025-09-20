@@ -179,12 +179,6 @@ export const importLeads = async (req, res) => {
         continue;
       }
 
-      const exists = await Lead.findOne({ Email: row.Email });
-      if (exists) {
-        duplicateCount++;
-        continue;
-      }
-
       try {
         await Lead.create({
           ...row,

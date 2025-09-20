@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { X, ChevronDown} from 'lucide-react';
 import { useAuthStore } from "../store/useAuthStore";
@@ -6,6 +7,7 @@ import { useAuthStore } from "../store/useAuthStore";
 const NewLeads = () => {
   const { Lead } = useAuthStore();
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('Profile');
   const [formData, setFormData] = useState({
@@ -26,6 +28,19 @@ const NewLeads = () => {
     source: 'Nothing selected',
     assigned: 'Super Admin',
   });
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get("http://localhost:7000/api/categories");
+      setCategories(res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,8 +71,6 @@ const NewLeads = () => {
               <X className="w-5 h-5 text-gray-600" />
             </button>
           </div>
-
-          {/* Tabs */}
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8 px-4" aria-label="Tabs">
               <button
@@ -73,24 +86,22 @@ const NewLeads = () => {
             </nav>
           </div>
 
-          {/* Form Content */}
           {activeTab === 'Profile' && (
             <form onSubmit={handleSubmit} className="p-6">
-              {/* Status, Source, Assigned on one line */}
               <div className="flex flex-col md:flex-row md:space-x-4 mb-8">
-                {['status', 'source', 'assigned'].map((key) => (
+               {['status', 'source', 'assigned', 'interested'].map((key) => (
                   <div key={key} className="flex-1 mb-4 md:mb-0">
                     <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">
                       {(key === 'status' || key === 'source') && <span className="text-red-500">*</span>} {key}
                     </label>
                     <div className="relative">
-                      <select
-                        name={key}
-                        value={formData[key]}
-                        onChange={handleChange}
-                        className="appearance-none w-full p-2 border border-gray-300 bg-white rounded-md focus:outline-none  pr-10 text-gray-700"
-                      >
-                        {key === 'status' && <>
+                      {key === 'status' && (
+                        <select
+                          name={key}
+                          value={formData[key]}
+                          onChange={handleChange}
+                          className="appearance-none w-full p-2 border border-gray-300 bg-white rounded-md focus:outline-none pr-10 text-gray-700"
+                        >
                           <option>Nothing selected</option>
                           <option>Prospect</option>
                           <option>Qualify</option>
@@ -98,8 +109,15 @@ const NewLeads = () => {
                           <option>Contacted</option>
                           <option>Closed Won</option>
                           <option>Closed Lost</option>
-                        </>}
-                        {key === 'source' && <>
+                        </select>
+                      )}
+                      {key === 'source' && (
+                        <select
+                          name={key}
+                          value={formData[key]}
+                          onChange={handleChange}
+                          className="appearance-none w-full p-2 border border-gray-300 bg-white rounded-md focus:outline-none pr-10 text-gray-700"
+                        >
                           <option>Nothing selected</option>
                           <option>Website</option>
                           <option>Referral</option>
@@ -112,25 +130,46 @@ const NewLeads = () => {
                           <option>Email Campaign</option>
                           <option>Google Ads</option>
                           <option>Other</option>
-                        </>}
-                        {key === 'assigned' && <>
+                        </select>
+                      )}
+                      {key === 'assigned' && (
+                        <select
+                          name={key}
+                          value={formData[key]}
+                          onChange={handleChange}
+                          className="appearance-none w-full p-2 border border-gray-300 bg-white rounded-md focus:outline-none pr-10 text-gray-700"
+                        >
                           <option>Super Admin</option>
                           <option>Admin</option>
                           <option>User 1</option>
                           <option>User 2</option>
                           <option>User 3</option>
-                        </>}
-                      </select>
+                        </select>
+                      )}
+                      {key === 'interested' && (
+                        <select
+                          name="category"
+                          value={formData.category}
+                          onChange={handleChange}
+                          className="appearance-none w-full p-2 border border-gray-300 bg-white rounded-md focus:outline-none pr-10 text-gray-700"
+                        >
+                          <option value="">Select Category</option>
+                          {categories.map((cat) => (
+                            <option key={cat._id} value={cat.name}>
+                              {cat.name}
+                            </option>
+                          ))}
+                        </select>
+                      )}
                       <ChevronDown className="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
                     </div>
                   </div>
                 ))}
+
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Left Column */}
                 <div className="space-y-4">
-                  {/* Name */}
                   <div>
                     <label htmlFor="Name" className="block text-sm font-medium text-gray-700 mb-1">
                       <span className="text-red-500">*</span> Name

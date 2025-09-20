@@ -16,7 +16,7 @@ const Sidebar = ({ isOpen }) => {
 
   return (
     <div
-      className={`bg-[#060000] text-white h-full transition-all duration-300 ${
+      className={`bg-cyan-500 text-white h-full transition-all duration-300 ${
         isOpen ? 'w-64' : 'w-0 overflow-hidden'
       }`}
     >
@@ -27,12 +27,10 @@ const Sidebar = ({ isOpen }) => {
             <img src="/crm.png" alt="Logo" className="w-12 h-10 rounded-full object-cover" />
             <div>
               <div className="font-semibold">Super Admin</div>
-              <div className="text-sm text-gray-400">contact@shivanshitech.com</div>
+              <div className="text-sm text-gray-900">contact@shivanshitech.com</div>
             </div>
           </div>
         </div>
-
-        {/* Navigation */}
         <nav className="flex-1 space-y-1 overflow-y-auto hide-scrollbar">
           <MenuItem icon={<FaClipboard />} label="Dashboard" to="/" />
           <MenuItem icon={<FaBolt />} label="Sales" expandable open={openMenu === 'Sales'} onClick={() => toggleMenu('Sales')} />
@@ -90,13 +88,12 @@ const Sidebar = ({ isOpen }) => {
   );
 };
 
-// 🔧 MenuItem component with routing support
 const MenuItem = ({ icon, label, to, active = false, expandable = false, open = false, onClick }) => {
   const content = (
     <div
       onClick={expandable ? onClick : undefined}
       className={`flex items-center w-full px-3 py-2 rounded-md text-sm font-medium transition cursor-pointer ${
-        active ? 'bg-[#33acff] text-black' : 'hover:bg-[#1e1e1e]'
+        active ? 'bg-[#33acff]' : 'hover:bg-cyan-600 text-white'
       }`}
     >
       {icon && <span className="mr-3">{icon}</span>}
@@ -110,7 +107,7 @@ const MenuItem = ({ icon, label, to, active = false, expandable = false, open = 
 
 
 const SubMenu = ({ items }) => (
-  <div className="ml-6 text-sm text-gray-300 space-y-1 py-1">
+  <div className="ml-6 text-sm text-white space-y-1 py-1">
     {items.map((item, index) => {
       if (typeof item === 'object') {
         return item.to ? (

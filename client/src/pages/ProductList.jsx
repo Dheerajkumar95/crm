@@ -108,31 +108,28 @@ const ProductList = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6 flex-wrap">
         <div className="flex gap-4 flex-wrap">
-  {/* All Button */}
-  <button
-    onClick={() => setActiveCategory("All")}
-    className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
-      ${activeCategory === "All"
-        ? "bg-blue-500 text-white"
-        : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
-  >
-    All
-  </button>
-
-  {/* Other Categories */}
-  {categories.map((cat) => (
-    <button
-      key={cat.name}
-      onClick={() => setActiveCategory(cat.name)}
-      className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
-        ${activeCategory === cat.name
-          ? `${cat.color} text-white`
-          : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
-    >
-      {cat.name}
-    </button>
-  ))}
-</div>
+          <button
+            onClick={() => setActiveCategory("All")}
+            className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
+              ${activeCategory === "All"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+          >
+            All
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat.name}
+              onClick={() => setActiveCategory(cat.name)}
+              className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
+                ${activeCategory === cat.name
+                  ? `${cat.color} text-white`
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
 
         <div>
           <button

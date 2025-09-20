@@ -51,13 +51,6 @@ const OpportunitiesList = () => {
             <Plus className="w-4 h-4 mr-2" />
             New Opportunity
           </button>
-          <button
-            onClick={() => navigate("/leadaccount")}
-            className="flex items-center px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm"
-          >
-            <Upload className="w-4 h-4 mr-2" />
-            Import Accounts
-          </button>
         </div>
       </div>
       <div className="overflow-hidden rounded shadow-lg bg-white">

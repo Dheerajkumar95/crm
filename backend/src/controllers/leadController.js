@@ -148,7 +148,6 @@ export const convertLeads = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 export const importLeads = async (req, res) => {
   try {
     if (!req.file || !req.file.buffer) {
@@ -157,7 +156,7 @@ export const importLeads = async (req, res) => {
         .json({ message: "No file uploaded or file is empty" });
     }
 
-    const { status, source, assigned } = req.body; // Read Excel/CSV from buffer
+    const { status, source, assigned } = req.body;
 
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheetName = workbook.SheetNames[0];
@@ -166,20 +165,32 @@ export const importLeads = async (req, res) => {
     });
 
     let importedCount = 0;
-    let duplicateCount = 0;
+    let skippedCount = 0;
     let errorMessages = [];
 
+    // Track emails in the uploaded file
+    const seenEmails = new Set();
+
     for (let row of sheetData) {
+      // Skip rows with missing required fields
       if (!row.Name || !row.Email || !row.Phone) {
         errorMessages.push(
-          `Skipped row due to missing required fields (Name, Email, Phone): ${JSON.stringify(
-            row
-          )}`
+          `Skipped row due to missing required fields: ${JSON.stringify(row)}`
         );
+        skippedCount++;
         continue;
       }
 
+      // Skip duplicate emails within the uploaded file
+      if (seenEmails.has(row.Email)) {
+        skippedCount++;
+        continue;
+      }
+
+      seenEmails.add(row.Email);
+
       try {
+        // Save to DB (even if DB already has this email)
         await Lead.create({
           ...row,
           status,
@@ -188,65 +199,22 @@ export const importLeads = async (req, res) => {
         });
         importedCount++;
       } catch (dbError) {
-        console.error("Error creating lead from import:", dbError);
+        console.error("Error saving lead:", dbError);
         errorMessages.push(
           `Failed to save lead for email ${row.Email}: ${dbError.message}`
         );
+        skippedCount++;
       }
     }
 
     return res.status(200).json({
       message: "Import completed",
       importedCount,
-      duplicateCount,
+      skippedCount,
       errors: errorMessages,
     });
   } catch (error) {
     console.error("Error importing leads:", error);
-    return res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
-  }
-};
-
-// Simulate Import API
-export const simulateImport = async (req, res) => {
-  try {
-    if (!req.file || !req.file.buffer) {
-      return res
-        .status(400)
-        .json({ message: "No file uploaded or file is empty" });
-    }
-
-    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
-    const sheetName = workbook.SheetNames[0];
-    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-      defval: "",
-    });
-
-    let validCount = 0;
-    let issueCount = 0;
-    let sampleIssues = [];
-    const maxSampleIssues = 5;
-
-    for (let row of sheetData) {
-      // Check for missing required fields
-      if (!row.Name || !row.Email || !row.Phone) {
-        issueCount++;
-        if (sampleIssues.length < maxSampleIssues) {
-          sampleIssues.push(
-            `Row ${
-              sheetData.indexOf(row) + 2
-            }: Missing required fields (Name, Email, or Phone).`
-          );
-        }
-        continue;
-      }
-    }
-
-    return res.status(200).json({ validCount, issueCount, sampleIssues });
-  } catch (error) {
-    console.error("Error simulating import:", error);
     return res
       .status(500)
       .json({ message: "Server error", error: error.message });

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-
+import {X} from 'lucide-react';
 const NewContact = () => {
   const navigate = useNavigate();
   const [accounts, setAccounts] = useState([]);
@@ -16,8 +16,6 @@ const NewContact = () => {
     assigned: "",
     website: "",
   });
-
-  // Fetch accounts
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
@@ -45,9 +43,6 @@ const NewContact = () => {
     setFormData({ ...formData, [name]: value });
   }
 };
-
-
-  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -71,15 +66,22 @@ const NewContact = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8 mt-10">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-        Create New Contact
-      </h2>
+    <div className="max-w-4xl mx-auto bg-white shadow rounded p-8">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-800 text-center flex-1">
+          Create New Contact
+        </h2>
+        <button
+          onClick={() => navigate('/contact')}
+          className="p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
       <form
         onSubmit={handleSubmit}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
-        {/* Select Account */}
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Select Account
@@ -88,7 +90,7 @@ const NewContact = () => {
             name="accountId"
             value={formData.accountId}
             onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border rounded px-3 py-2"
             required
           >
             <option value="">-- Select Account --</option>
@@ -100,8 +102,6 @@ const NewContact = () => {
           </select>
 
         </div>
-
-        {/* Company (auto-filled, read-only) */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Company
@@ -111,7 +111,7 @@ const NewContact = () => {
             name="Company"
             value={formData.Company}
             readOnly
-            className="w-full border bg-gray-100 px-3 py-2 rounded-md"
+            className="w-full border bg-gray-100 px-3 py-2 rounded"
           />
         </div>
 
@@ -126,7 +126,7 @@ const NewContact = () => {
             placeholder="Enter full name"
             value={formData.Name}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border px-3 py-2 rounded"
             required
           />
         </div>
@@ -142,7 +142,7 @@ const NewContact = () => {
             placeholder="Enter email"
             value={formData.Email}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border px-3 py-2 rounded"
           />
         </div>
 
@@ -157,7 +157,7 @@ const NewContact = () => {
             placeholder="Enter phone number"
             value={formData.Phone}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border px-3 py-2 rounded"
           />
         </div>
 
@@ -172,7 +172,7 @@ const NewContact = () => {
             placeholder="Lead source (e.g. Website, Referral)"
             value={formData.source}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border px-3 py-2 rounded"
           />
         </div>
 
@@ -187,7 +187,7 @@ const NewContact = () => {
             placeholder="Assigned user (e.g. Admin)"
             value={formData.assigned}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border px-3 py-2 rounded"
           />
         </div>
 
@@ -202,7 +202,7 @@ const NewContact = () => {
             placeholder="Enter website URL"
             value={formData.website}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border px-3 py-2 rounded"
           />
         </div>
 
@@ -210,7 +210,7 @@ const NewContact = () => {
         <div className="col-span-2">
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition shadow-md"
+            className="w-full bg-blue-600 text-white font-medium py-2 rounded hover:bg-blue-700 transition shadow-md"
           >
             Save Contact
           </button>

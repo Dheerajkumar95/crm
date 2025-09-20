@@ -65,8 +65,6 @@ const LeadDetails = () => {
   useEffect(() => {
     if (editingField && inputRef.current) {
       inputRef.current.focus();
-
-      // Only set selection range if the element supports it (text inputs/textarea)
       if (inputRef.current.setSelectionRange && typeof fieldValue === "string") {
         inputRef.current.setSelectionRange(fieldValue.length, fieldValue.length);
       }

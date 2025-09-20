@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-
+import {X} from 'lucide-react';
 const NewOpportunity = () => {
   const navigate = useNavigate();
   const [accounts, setAccounts] = useState([]);
   const [formData, setFormData] = useState({
     accountId: "",
-    Company: "",              // 🔼 Capital "C"
+    Company: "",              
     opportunityName: "",
     source: "",
-    ExpectedRevenue: "",      // 🔼 Capital "E"
-    PotentialRevenue: "",     // 🔼 Capital "P"
+    ExpectedRevenue: "",
+    PotentialRevenue: "",
     closeDate: "",
     stage: "",
     status: "",
@@ -70,9 +70,17 @@ const NewOpportunity = () => {
 
   return (
     <div className="max-w-4xl mx-auto bg-white shadow rounded p-8 mt-10">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-        Create New Opportunity
-      </h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-800 text-center flex-1">
+          Create New Contact
+        </h2>
+        <button
+          onClick={() => navigate('/opportunitieslist')}
+          className="p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
 
       <form
         onSubmit={handleSubmit}

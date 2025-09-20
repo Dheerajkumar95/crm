@@ -90,13 +90,13 @@ const NewLeads = () => {
           {activeTab === 'Profile' && (
             <form onSubmit={handleSubmit} className="p-6">
               <div className="flex flex-col md:flex-row md:space-x-4 mb-8">
-               {['interest','status', 'source', 'assigned'].map((key) => (
+               {['Product of interest','status', 'source', 'assigned'].map((key) => (
                   <div key={key} className="flex-1 mb-4 md:mb-0">
                     <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">
-                      {(key === 'status'||key === 'interest' || key === 'source'||key === 'assigned') && <span className="text-red-500">*</span>} {key}
+                      {(key === 'status'||key === 'Product of interest' || key === 'source'||key === 'assigned') && <span className="text-red-500">*</span>} {key}
                     </label>
                     <div className="relative">
-                      {key === 'interest' && (
+                      {key === 'Product of interest' && (
                       <select
                         name="Interest"  
                         value={formData.Interest}  

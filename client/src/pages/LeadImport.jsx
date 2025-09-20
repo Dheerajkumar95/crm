@@ -129,7 +129,6 @@ export default function ImportLeads() {
         alert(data.message || "Simulation failed");
       }
     } catch (error) {
-      console.error("Error simulating import:", error);
       alert("Error simulating import");
     } finally {
       setIsLoading(false);
@@ -137,14 +136,13 @@ export default function ImportLeads() {
   };
 
   return (
+    <div> <button
+    onClick={() => navigate(-1)}
+    className="absolute top-18 right-2 p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+  >
+    <X className="w-5 h-5" />
+  </button>
     <div className="relative max-w-6xl mx-auto px-2 sm:px-4 py-4 space-y-4 font-sans">
-      <button
-        onClick={() => navigate(-1)}
-        className="absolute bottom-203 right-1 p-2 rounded-full hover:bg-white transition-colors cursor-pointer"
-      >
-        <X className="w-5 h-5" />
-      </button>
-      {/* Instructions */}
       <div className="bg-gray-50 p-4 sm:p-6 rounded-lg shadow border border-gray-200 text-sm text-gray-700 space-y-3">
         <p>
           <strong>1.</strong> Your CSV data should be in the format below. The
@@ -268,63 +266,6 @@ export default function ImportLeads() {
              file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer"
           />
         </div>
-
-        {/* Status Select */}
-        <div>
-          <label className="block font-semibold mb-1">
-            <span className="text-red-600">*</span> Status (fallback)
-          </label>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="flex-grow rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Nothing selected</option>
-              <option value="New">New</option>
-              <option value="Contacted">Contacted</option>
-              <option value="Qualified">Qualified</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Source Select */}
-        <div>
-          <label className="block font-semibold mb-1">
-            <span className="text-red-600">*</span> Source (fallback)
-          </label>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <select
-              value={source}
-              onChange={(e) => setSource(e.target.value)}
-              className="flex-grow rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Nothing selected</option>
-              <option value="Email Campaign">Email Campaign</option>
-              <option value="Website">Website</option>
-              <option value="Referral">Referral</option>
-            </select>
-          </div>
-        </div>
-
-        {/* assigned Select */}
-        <div>
-          <label className="block font-semibold mb-1">assigned (Assignee)</label>
-          <select
-            value={assigned}
-            onChange={(e) => setAssigned(e.target.value)}
-            className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Nothing selected</option>
-            <option value="User 1">User 1</option>
-            <option value="User 2">User 2</option>
-            <option value="User 3">User 3</option>
-          </select>
-        </div>
-
-        {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-2">
           <button
             type="submit"
@@ -345,6 +286,7 @@ export default function ImportLeads() {
           </button>
         </div>
       </form>
+    </div>
     </div>
   );
 }

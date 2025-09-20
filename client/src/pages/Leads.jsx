@@ -342,7 +342,7 @@ const Leads = () => {
 
        <div className="w-full overflow-visible">
         <table className="w-full divide-y divide-gray-200 text-xs">
-          <thead className="bg-gray-50 sticky top-0 z-10">
+          <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <tr>
               <th className="px-2 py-1"></th>
               <th className="px-2 py-1 text-left">Company</th>

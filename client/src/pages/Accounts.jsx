@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Plus, Upload } from "lucide-react";
-import ImportButton from "./ImportButton";
+import { Plus } from "lucide-react";
+import ImportButton from "./ImportAccountButton";
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
   const navigate = useNavigate();
@@ -37,7 +37,6 @@ const Accounts = () => {
           </button>
           <ImportButton
           onImportSuccess={(resData) => {
-            // make sure importedAccounts exists and is an array
             if (resData && Array.isArray(resData.importedAccounts)) {
               setAccounts((prev) => [...prev, ...resData.importedAccounts]);
             }

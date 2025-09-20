@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Plus, Upload } from "lucide-react";
-import NewContact from "./NewContact";
+import { Plus} from "lucide-react";
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
   const navigate = useNavigate();
@@ -29,13 +28,6 @@ const Contacts = () => {
           >
             <Plus className="w-4 h-4 mr-2" />
             New Contact
-          </button>
-          <button
-            onClick={() => navigate("/leadaccount")}
-            className="flex items-center px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition shadow-sm"
-          >
-            <Upload className="w-4 h-4 mr-2" />
-            Import Contact
           </button>
         </div>
       </div>

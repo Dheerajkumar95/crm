@@ -57,7 +57,7 @@ router.patch("/:id", async (req, res) => {
   try {
     const updated = await Opportunity.findByIdAndUpdate(
       req.params.id,
-      { status: req.body.status },
+      { Status: req.body.Status },
       { new: true }
     );
     if (!updated)

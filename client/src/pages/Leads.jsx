@@ -44,10 +44,10 @@ const Leads = () => {
       Name: lead.Name,
       Email: lead.Email,
       Phone: lead.Phone,
-      LeadValue: lead.leadValue,
-      Status: lead.status,
-      Source: lead.source,
-      Assigned: lead.assigned,
+      PotentialRevenue: lead.PotentialRevenue,
+      Status: lead.Status,
+      Source: lead.Source,
+      Assigned: lead.Assigned,
     }));
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
@@ -133,7 +133,7 @@ const Leads = () => {
               <th className="px-2 py-1 text-left">Name</th>
               <th className="px-2 py-1 text-left">Email</th>
               <th className="px-2 py-1 text-left">Phone</th>
-              <th className="px-2 py-1 text-left">LeadValue</th>
+              <th className="px-2 py-1 text-left">PotentialRevenue</th>
               <th className="px-2 py-1 text-left">Status</th>
               <th className="px-2 py-1 text-left">Source</th>
               <th className="px-2 py-1 text-left">Assigned</th>
@@ -152,14 +152,14 @@ const Leads = () => {
                     className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded cursor-pointer"
                   />
                 </td>
-                <td className="px-2 py-1 break-words">{lead.Company}</td>
+                <td className="px-2 py-1 break-words font-medium">{lead.Company}</td>
                 <td className="px-2 py-1 break-words">{lead.Name}</td>
                 <td className="px-2 py-1 break-words">{lead.Email}</td>
                 <td className="px-2 py-1">{lead.Phone}</td>
-                <td className="px-2 py-1 text-gray-600">{lead.leadValue}</td>
-                <td className="px-2 py-1 text-gray-600">{lead.status}</td>
-                <td className="px-2 py-1 text-gray-600">{lead.source}</td>
-                <td className="px-2 py-1 text-gray-600">{lead.assigned}</td>
+                <td className="px-4 py-1 text-gray-600">{lead.PotentialRevenue}</td>
+                <td className="px-2 py-1 text-gray-600">{lead.Status}</td>
+                <td className="px-2 py-1 text-gray-600">{lead.Source}</td>
+                <td className="px-2 py-1 text-gray-600">{lead.Assigned}</td>
                 <td className="px-2 py-1" onClick={(e) => e.stopPropagation()}>
                   <div className="flex items-center gap-2">
                     <Link to={`/tasks/${lead._id}`} className="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded">

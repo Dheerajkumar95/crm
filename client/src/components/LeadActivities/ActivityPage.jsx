@@ -6,11 +6,9 @@ import RightSideForm from "./RightSideForm";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
-export default function ActivityPage() {
-  const { leadId } = useParams();
+export default function ActivityPage({ leadId }) {
   const [activities, setActivities] = useState([]);
   const [activeForm, setActiveForm] = useState(null);
-
   useEffect(() => {
     const fetchActivities = async () => {
       try {
@@ -22,17 +20,6 @@ export default function ActivityPage() {
     };
     fetchActivities();
   }, [leadId]);
-
-  // Delete function
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:7000/api/activities/${id}`);
-      setActivities(activities.filter((a) => a._id !== id));
-      toast.success("Activity deleted!");
-    } catch (error) {
-      toast.error("Error deleting activity");
-    }
-  };
 
   const getIcon = (type) => {
     switch (type) {
@@ -46,14 +33,11 @@ export default function ActivityPage() {
         return ClipboardList;
     }
   };
-
-  // Split activities
   const meetings = activities.filter((a) => a.type === "meet"); 
   const callsTasks = activities.filter((a) => a.type !== "meet"); 
 
   return (
     <div className="p-4 bg-white min-h-screen rounded-lg shadow-lg">
-      {/* Top Buttons */}
       <div className="flex gap-2 mb-4">
         <button
           onClick={() => setActiveForm("call")}
@@ -77,8 +61,6 @@ export default function ActivityPage() {
           <span className="text-sm font-medium">Meeting</span>
         </button>
       </div>
-
-      {/* Upcoming & Overdue Meetings */}
       {meetings.length > 0 && (
         <div className="mb-6">
           <div className="flex justify-between bg-gray-100 px-10 py-2 font-semibold text-gray-700 rounded">
@@ -104,12 +86,6 @@ export default function ActivityPage() {
                 location={activity.location}
                 type={activity.type}
               />
-              <button
-                onClick={() => handleDelete(activity._id)}
-                className=" bg-white p-5 text-red-500 hover:text-red-700 cursor-pointer"
-              >
-                <Trash2 size={20} />
-              </button>
             </div>
           ))}
         </div>
@@ -148,21 +124,13 @@ export default function ActivityPage() {
                 location={activity.location}
                 type={activity.type}
               />
-              <button
-                onClick={() => handleDelete(activity._id)}
-                className="text-red-500 hover:text-red-700 cursor-pointer"
-              >
-                <Trash2 size={20} />
-              </button>
             </div>
           ))}
         </div>
       )}
-
-      {/* Slide-in Form */}
-      {activeForm && (
-        <RightSideForm type={activeForm} onClose={() => setActiveForm(null)} />
-      )}
+{activeForm && (
+  <RightSideForm type={activeForm} onClose={() => setActiveForm(null)} leadId={leadId} />
+)}
     </div>
   );
 }

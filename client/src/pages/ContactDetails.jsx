@@ -114,9 +114,9 @@ const ContactDetails = () => {
           </div>
           <div className="space-y-0.5">
             <EditableField label="Company" field="Company" value={contact.Company} nonEditable />
-            <EditableField label="Website" field="website" value={contact.website} />
-            <EditableField label="Source" field="source" value={contact.source} />
-            <EditableField label="Assigned" field="assigned" value={contact.assigned} />
+            <EditableField label="Website" field="website" value={contact.Website} />
+            <EditableField label="Source" field="source" value={contact.Source} />
+            <EditableField label="Assigned" field="assigned" value={contact.Assigned} />
           </div>
         </div>
       </div>

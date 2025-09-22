@@ -152,12 +152,12 @@ const fetchAccount = async () => {
         <div>
           <p className="text-sm font-medium text-gray-600">Website</p>
           <a
-            href={account?.website?.startsWith("http") ? account.website : `https://${account?.website}`}
+            href={account?.Website?.startsWith("http") ? account.Website : `https://${account?.Website}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-base text-blue-600 cursor-pointer hover:underline"
           >
-            {account?.website}
+            {account?.Website}
           </a>
         </div>
         <div>
@@ -283,10 +283,10 @@ const fetchAccount = async () => {
                 <p
                   className="text-blue-600 hover:underline cursor-pointer font-medium"
                 >
-                  {opp.opportunityName}
+                  {opp.OpportunityName}
                 </p>
                 <p>Amount: {opp.PotentialRevenue}</p>
-                <p>Status: {opp.status}</p>
+                <p>Status: {opp.Status}</p>
               </div>
             ))}
 

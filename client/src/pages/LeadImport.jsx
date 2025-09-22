@@ -10,11 +10,15 @@ const leadsColumns = [
   "Phone",
   "Position",
   "Company",
-  "website",
-  "leadValue",
+  "Website",
+  "PotentialRevenue",
+  "Interest",
+  "Status",
+  "Source",
+  "Assigned",
   "Description",
   "Country",
-  "Zip Code",
+  "ZipCode",
   "City",
   "State",
   "Address",
@@ -24,6 +28,10 @@ const sampleData = [
   "Sample Data",
   "abc@gmail.com",
   "1234567890",
+  "Sample Data",
+  "Sample Data",
+  "Sample Data",
+  "Sample Data",
   "Sample Data",
   "Sample Data",
   "Sample Data",
@@ -70,7 +78,7 @@ export default function ImportLeads() {
       method: "POST",
       body: formData,
     });
-
+    navigate("/leads");
     const data = await res.json();
     if (res.ok) {
       alert(`${data.message}\nImported: ${data.importedCount}${
@@ -124,9 +132,10 @@ export default function ImportLeads() {
   };
 
   return (
-    <div> <button
+<div>
+  <button
     onClick={() => navigate(-1)}
-    className="absolute top-18 right-2 p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+    className="absolute top-18 right-2 p-2 rounded-full bg-gray-300 hover:bg-gray-500 transition-colors cursor-pointer"
   >
     <X className="w-5 h-5" />
   </button>
@@ -156,8 +165,6 @@ export default function ImportLeads() {
         </ul>
         <p>If you still want to import all leads, uncheck all unique validation field</p>
       </div>
-
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-y-2">
         <h2 className="font-semibold text-lg">Import Leads</h2>
         <button
@@ -168,8 +175,6 @@ export default function ImportLeads() {
           Download Sample
         </button>
       </div>
-
-      {/* Table container */}
       <div className="overflow-x-auto border border-gray-200 rounded shadow-sm mb-4">
         <table className="min-w-[900px] w-full border-collapse text-sm text-gray-700">
           <thead className="bg-gray-100">
@@ -203,8 +208,6 @@ export default function ImportLeads() {
           </tbody>
         </table>
       </div>
-
-      {/* Simulation Results */}
       {simulationResults && (
         <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
           <h3 className="font-semibold text-blue-800 mb-2">Simulation Results</h3>
@@ -234,10 +237,7 @@ export default function ImportLeads() {
           )}
         </div>
       )}
-
-      {/* Form Inputs */}
       <form className="space-y-6 max-w-xl w-full" onSubmit={handleSubmit}>
-        {/* CSV File Input */}
         <div>
           <label className="block font-semibold mb-1">
             <span className="text-red-600">*</span> Choose CSV File

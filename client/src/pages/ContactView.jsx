@@ -144,16 +144,16 @@ const fetchAccount = async () => {
         <div>
           <p className="text-sm font-medium text-gray-600">Website</p>
           <a
-            href={contact?.website?.startsWith("http") ? contact.website : `https://${contact?.website}`}
+            href={contact?.Website?.startsWith("http") ? contact.Website : `https://${contact?.Website}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-base text-blue-600 cursor-pointer hover:underline"
           >
-            {contact?.website}
+            {contact?.Website}
           </a>
         </div>
         <div>
-          <p className="text-sm font-medium text-gray-600">contact Owner</p>
+          <p className="text-sm font-medium text-gray-600">Contact Owner</p>
           <p className="text-base text-blue-600">{contact?.Name}</p>
         </div>
         <div>
@@ -229,10 +229,10 @@ const fetchAccount = async () => {
                 <p
                   className="text-blue-600 hover:underline cursor-pointer font-medium"
                 >
-                  {opp.opportunityName}
+                  {opp.OpportunityName}
                 </p>
                 <p>Amount: {opp.PotentialRevenue}</p>
-                <p>Status: {opp.status}</p>
+                <p>Status: {opp.Status}</p>
               </div>
             ))}
 

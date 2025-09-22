@@ -5,9 +5,9 @@ const contactSchema = new mongoose.Schema({
   Phone: String,
   Email: String,
   Name: String,
-  source: String,
-  assigned: String,
-  website: String,
+  Source: String,
+  Assigned: String,
+  Website: String,
   createdAt: { type: Date, default: Date.now },
 });
 

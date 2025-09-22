@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { X } from "lucide-react";
-import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
-export default function RightSideForm({ type, onClose }) {
+export default function RightSideForm({ type, onClose, leadId }) {
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState(""); 
   const [comments, setComments] = useState("");
@@ -16,7 +15,6 @@ export default function RightSideForm({ type, onClose }) {
   const [location, setLocation] = useState("");
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const { leadId } = useParams();
 
   const getTitle = () => {
     switch (type) {

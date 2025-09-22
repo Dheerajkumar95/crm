@@ -9,20 +9,20 @@ const OpportunityDetails = () => {
   const [expectedRevenue, setExpectedRevenue] = useState(0);
   const [formData, setFormData] = useState({
     Company: "",
-    opportunityName: "",
-    source: "",
+    OpportunityName: "",
+    Source: "",
     leadValue: "",
     ExpectedRevenue: "",
     closeDate: "",
-    stage: "",
-    status: "",
+    Stage: "",
+    Status: "",
   });
 
   const statusOptions = [
     "Prospect",
     "Qualify",
     "Secure",
-    "Contracted",
+    "Contacted",
     "Closed Won",
     "Closed Lost",
   ];
@@ -119,7 +119,7 @@ const OpportunityDetails = () => {
               <X size={18} />
             </button>
           </div>
-        ) : field === "status" ? (
+        ) : field === "Status" ? (
           <>
             <select
               value={inputValue}
@@ -214,12 +214,12 @@ const OpportunityDetails = () => {
           <EditableField
             label="Opportunity Name"
             field="opportunityName"
-            value={formData.opportunityName}
+            value={formData.OpportunityName}
           />
           <EditableField
             label="Source"
             field="source"
-            value={formData.source}
+            value={formData.Source}
           />
           <EditableField
             label="Potential Revenue"
@@ -241,13 +241,13 @@ const OpportunityDetails = () => {
           />
           <EditableField
             label="Stage"
-            field="stage"
-            value={formData.stage}
+            field="Stage"
+            value={formData.Stage}
           />
           <EditableField
             label="Status"
-            field="status"
-            value={formData.status}
+            field="Status"
+            value={formData.Status}
           />
         </div>
       </div>

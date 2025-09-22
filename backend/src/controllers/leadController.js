@@ -89,22 +89,23 @@ export const updateLead = async (req, res) => {
 };
 export const convertLeads = async (req, res) => {
   try {
-    const { leadIds, accountData, contactData, opportunityData } = req.body;
+    const { leadIds, accountData, contactData, OpportunityData } = req.body;
 
     const leads = await Lead.find({ _id: { $in: leadIds } });
 
     for (const lead of leads) {
       const newAccountId = await generateAccountId();
+
       const account = await Account.create({
         accountId: newAccountId,
         Name: accountData?.accountName || lead.Name,
         Email: lead.Email,
         Phone: lead.Phone,
         Company: lead.Company,
-        status: lead.status,
-        source: lead.source,
-        assigned: lead.assigned,
-        website: accountData?.website || lead.website,
+        Status: lead.Status,
+        Source: lead.Source,
+        Assigned: lead.Assigned,
+        Website: accountData?.website || lead.Website,
         Address: accountData?.address || lead.Address,
         City: lead.City,
         State: lead.State,
@@ -122,32 +123,37 @@ export const convertLeads = async (req, res) => {
         Phone: lead.Phone,
         Email: lead.Email,
         Name: contactData?.contactName || lead.Name,
-        source: lead.source,
-        assigned: lead.assigned,
-        website: lead.website,
+        Source: lead.Source,
+        Assigned: lead.Assigned,
+        Website: lead.Website,
+        Interest: lead.Interest,
       });
 
-      if (opportunityData) {
+      // Fix Opportunity creation
+      if (OpportunityData && OpportunityData.OpportunityName) {
         await Opportunity.create({
           accountId: newAccountId,
           Company: lead.Company,
           PotentialRevenue: lead.PotentialRevenue,
-          source: lead.source,
-          status: lead.status,
-          opportunityName: opportunityData.opportunityName,
+          Source: lead.Source,
+          Status: "Prospect", // Or keep lead.Status if needed
+          OpportunityName: OpportunityData.OpportunityName, // Save exactly what user typed
         });
       }
     }
+
     await Lead.deleteMany({ _id: { $in: leadIds } });
 
     res.status(200).json({
-      message: "Leads converted successfully with overwritten fields",
+      message:
+        "Leads converted successfully with user-provided OpportunityName",
     });
   } catch (error) {
     console.error("Error in convertLeads:", error);
     res.status(500).json({ error: error.message });
   }
 };
+
 export const importLeads = async (req, res) => {
   try {
     if (!req.file || !req.file.buffer) {
@@ -155,9 +161,6 @@ export const importLeads = async (req, res) => {
         .status(400)
         .json({ message: "No file uploaded or file is empty" });
     }
-
-    const { status, source, assigned } = req.body;
-
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheetName = workbook.SheetNames[0];
     const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
@@ -167,12 +170,9 @@ export const importLeads = async (req, res) => {
     let importedCount = 0;
     let skippedCount = 0;
     let errorMessages = [];
-
-    // Track emails in the uploaded file
     const seenEmails = new Set();
 
     for (let row of sheetData) {
-      // Skip rows with missing required fields
       if (!row.Name || !row.Email || !row.Phone) {
         errorMessages.push(
           `Skipped row due to missing required fields: ${JSON.stringify(row)}`
@@ -180,8 +180,6 @@ export const importLeads = async (req, res) => {
         skippedCount++;
         continue;
       }
-
-      // Skip duplicate emails within the uploaded file
       if (seenEmails.has(row.Email)) {
         skippedCount++;
         continue;
@@ -190,12 +188,8 @@ export const importLeads = async (req, res) => {
       seenEmails.add(row.Email);
 
       try {
-        // Save to DB (even if DB already has this email)
         await Lead.create({
           ...row,
-          status,
-          source,
-          assigned,
         });
         importedCount++;
       } catch (dbError) {

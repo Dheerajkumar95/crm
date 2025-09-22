@@ -3,12 +3,12 @@ const opportunitySchema = new mongoose.Schema(
   {
     accountId: { type: String, required: true },
     Company: { type: String, default: "" },
-    opportunityName: { type: String, default: "" },
-    source: { type: String, default: "" },
+    OpportunityName: { type: String, default: "" },
+    Source: { type: String, default: "" },
     PotentialRevenue: { type: String, default: 0 },
     closeDate: { type: String, default: "" },
-    stage: { type: String, default: "" },
-    status: { type: String, default: "" },
+    Stage: { type: String, default: "" },
+    Status: { type: String, default: "" },
   },
   { timestamps: true }
 );

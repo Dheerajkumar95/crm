@@ -68,9 +68,9 @@ const Contacts = () => {
                 <td className="px-2 py-1 text-gray-800">{contact.Name}</td>
                 <td className="px-2 py-1 text-gray-700">{contact.Email}</td>
                 <td className="px-2 py-1 text-gray-700">{contact.Phone}</td>
-                <td className="px-2 py-1 text-gray-700">{contact.website}</td>
-                <td className="px-2 py-1 text-gray-700">{contact.source}</td>
-                <td className="px-2 py-1 text-gray-700">{contact.assigned}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.Website}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.Source}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.Assigned}</td>
               </tr>
             ))}
 

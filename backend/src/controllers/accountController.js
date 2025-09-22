@@ -13,10 +13,10 @@ export const createAccount = async (req, res) => {
       Email: lead.Email,
       Phone: lead.Phone,
       Company: lead.Company,
-      status: lead.status,
-      source: lead.source,
-      assigned: lead.assigned,
-      website: lead.website,
+      Status: lead.Status,
+      Source: lead.Source,
+      Assigned: lead.Assigned,
+      Website: lead.Website,
       Address: lead.Address,
       City: lead.City,
       State: lead.State,
@@ -27,25 +27,22 @@ export const createAccount = async (req, res) => {
       Description: lead.Description,
       createdAt: new Date(),
     });
-
-    // 3. Save in Contact collection
     const contact = await Contact.create({
       accountId: newAccountId,
       Company: lead.Company,
       Phone: lead.Phone,
       Email: lead.Email,
       Name: lead.Name,
-      source: lead.source,
-      assigned: lead.assigned,
-      website: lead.website,
+      Source: lead.Source,
+      Assigned: lead.Assigned,
+      Website: lead.Website,
     });
 
-    // 4. Save in Opportunity collection
     const opportunity = await Opportunity.create({
       accountId: newAccountId,
       Company: lead.Company,
       leadValue: lead.leadValue,
-      status: lead.status,
+      Status: lead.Status,
     });
 
     res.status(201).json({
@@ -113,7 +110,6 @@ export const importAccounts = async (req, res) => {
     let importedAccounts = [];
 
     for (let row of sheetData) {
-      // Validate required fields
       if (!row.Company || !row.Name || !row.Email || !row.Phone) {
         errorMessages.push(
           `Skipped row due to missing required fields (Company, Name, Email, Phone): ${JSON.stringify(
@@ -138,15 +134,16 @@ export const importAccounts = async (req, res) => {
           Email: row.Email,
           Phone: row.Phone,
           Company: row.Company,
-          source: row.source || "",
-          assigned: row.assigned || "",
-          website: row.website || "",
+          Source: row.Source || "",
+          Assigned: row.Assigned || "",
+          Website: row.Website || "",
           Address: row.Address || "",
           City: row.City || "",
           State: row.State || "",
           Country: row.Country || "",
           ZipCode: row.ZipCode || "",
           Position: row.Position || "",
+          Interest: row.Interest || "",
           Description: row.Description || "",
         };
 
@@ -164,7 +161,7 @@ export const importAccounts = async (req, res) => {
     res.json({
       success: true,
       message: "Accounts import completed",
-      importedAccounts, // return the array for frontend
+      importedAccounts,
       importedCount,
       duplicateCount,
       errors: errorMessages,

@@ -4,22 +4,18 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 
 const ConvertLeadModal = ({ open, onClose, selectedLeadIds, refreshLeads }) => {
-  // Account options
   const [accountOption, setAccountOption] = useState("new"); // "new" | "existing"
   const [accountName, setAccountName] = useState("");
   const [address, setAddress] = useState("");
   const [website, setWebsite] = useState("");
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("");
-
-  // Contact options
   const [contactOption, setContactOption] = useState("new"); 
   const [contactName, setContactName] = useState("");
   const [contacts, setContacts] = useState([]);
   const [selectedContact, setSelectedContact] = useState("");
-
   const [createOpportunity, setCreateOpportunity] = useState(false);
-  const [opportunityName, setOpportunityName] = useState("");
+  const [OpportunityName, setOpportunityName] = useState("");
 
  useEffect(() => {
   if (!open) return;
@@ -38,7 +34,6 @@ const ConvertLeadModal = ({ open, onClose, selectedLeadIds, refreshLeads }) => {
     }
   })();
 
-  // 🔹 Auto-fill Contact Name from Lead when modal opens
   if (selectedLeadIds?.length > 0 && contactOption === "new") {
     (async () => {
       try {
@@ -47,7 +42,7 @@ const ConvertLeadModal = ({ open, onClose, selectedLeadIds, refreshLeads }) => {
         );
         const lead = leadRes.data;
         if (lead?.Name) {
-          setContactName(lead.Name); // auto-fill but still editable
+          setContactName(lead.Name);
         }
       } catch (err) {
         console.error("Failed to fetch lead details:", err);
@@ -56,13 +51,11 @@ const ConvertLeadModal = ({ open, onClose, selectedLeadIds, refreshLeads }) => {
   }
 }, [open, selectedLeadIds, contactOption]);
 
-
-  // Simple validations
   const missingAccountNew = accountOption === "new" && !accountName.trim();
   const missingAccountExisting = accountOption === "existing" && !selectedAccount;
   const missingContactNew = contactOption === "new" && !contactName.trim();
   const missingContactExisting = contactOption === "existing" && !selectedContact;
-  const missingOpportunity = createOpportunity && !opportunityName.trim();
+  const missingOpportunity = createOpportunity && !OpportunityName.trim();
 
   const canSubmit =
     selectedLeadIds?.length > 0 &&
@@ -72,7 +65,7 @@ const ConvertLeadModal = ({ open, onClose, selectedLeadIds, refreshLeads }) => {
     !missingContactExisting &&
     !missingOpportunity;
 
-  const handleConvert = async () => {
+const handleConvert = async () => {
   if (!canSubmit) {
     toast.error("Please complete required fields.");
     return;
@@ -86,56 +79,54 @@ const ConvertLeadModal = ({ open, onClose, selectedLeadIds, refreshLeads }) => {
       createOpportunity,
       opportunityOption: createOpportunity ? "new" : "skip",
     };
-    if (createOpportunity && opportunityName.trim()) {
-      payload.opportunityData = {
-        opportunityName: opportunityName.trim(),
-        status: "Prospect",
-      };
-    }
 
-    // Account data
+    // Account payload
     if (accountOption === "new") {
-      payload.accountData = {};
-      if (accountName.trim()) payload.accountData.accountName = accountName.trim();
-      if (address.trim()) payload.accountData.address = address.trim();
-      if (website.trim()) payload.accountData.website = website.trim();
+      payload.accountData = {
+        accountName: accountName.trim(),
+        address: address.trim(),
+        website: website.trim(),
+      };
     } else {
       payload.accountData = { accountId: selectedAccount };
     }
 
-    // Contact data
+    // Contact payload
     if (contactOption === "new") {
-      payload.contactData = {};
-      if (contactName.trim()) payload.contactData.contactName = contactName.trim();
+      payload.contactData = { contactName: contactName.trim() };
     } else {
       payload.contactData = { contactId: selectedContact };
     }
 
-    await axios.post("http://localhost:7000/api/leads/convert", payload);
+    // Opportunity payload
+    if (createOpportunity) {
+      payload.OpportunityData = {
+        OpportunityName: OpportunityName.trim(),
+        Status: "Prospect", // optional: backend can also default
+      };
+    }
 
+    await axios.post("http://localhost:7000/api/leads/convert", payload);
     toast.success("Lead converted successfully!");
     await refreshLeads?.();
     onClose?.();
   } catch (err) {
-    console.error("Error converting lead:", err);
     toast.error(err?.response?.data?.message || "Lead conversion failed!");
   }
 };
+
 
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-xs bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white w-full max-w-2xl rounded shadow-lg p-6 overflow-y-auto max-h-[90vh]">
-        {/* Header */}
         <div className="flex justify-between items-center border-b pb-3 mb-4">
           <h2 className="text-xl font-bold text-gray-800">Convert Lead</h2>
           <button onClick={onClose} aria-label="Close curs" className="cursor-pointer">
             <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
-
-        {/* Account Section */}
         <div className="border rounded-lg p-4 mb-4">
           <h3 className="font-semibold text-gray-700 mb-2">Account</h3>
           <div className="flex gap-6">
@@ -261,7 +252,7 @@ const ConvertLeadModal = ({ open, onClose, selectedLeadIds, refreshLeads }) => {
               <input
                 type="text"
                 placeholder="Opportunity Name *"
-                value={opportunityName}
+                value={OpportunityName}
                 onChange={(e) => setOpportunityName(e.target.value)}
                 className={`w-full p-2 border rounded mt-3 ${
                   missingOpportunity ? "border-red-400" : ""
@@ -270,8 +261,6 @@ const ConvertLeadModal = ({ open, onClose, selectedLeadIds, refreshLeads }) => {
             )}
           </div>
         </div>
-
-        {/* Footer */}
         <div className="flex justify-end gap-3 mt-4">
           <button
             onClick={onClose}

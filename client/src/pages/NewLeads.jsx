@@ -16,7 +16,7 @@ const NewLeads = () => {
     Phone: '',
     Position: '',
     Company: '',
-    website: '',
+    Website: '',
     PotentialRevenue: '',
     Description: '',
     Country: 'Nothing selected',
@@ -25,9 +25,9 @@ const NewLeads = () => {
     State: '',
     Address: '',
     Interest: '',
-    status: 'Nothing selected',
-    source: 'Nothing selected',
-    assigned: 'Super Admin',
+    Status: 'Nothing selected',
+    Source: 'Nothing selected',
+    Assigned: 'Super Admin',
   });
 
   useEffect(() => {
@@ -90,13 +90,13 @@ const NewLeads = () => {
           {activeTab === 'Profile' && (
             <form onSubmit={handleSubmit} className="p-6">
               <div className="flex flex-col md:flex-row md:space-x-4 mb-8">
-               {['Product of interest','status', 'source', 'assigned'].map((key) => (
+               {['Product of Interest','Status', 'Source', 'Assigned'].map((key) => (
                   <div key={key} className="flex-1 mb-4 md:mb-0">
                     <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">
-                      {(key === 'status'||key === 'Product of interest' || key === 'source'||key === 'assigned') && <span className="text-red-500">*</span>} {key}
+                      {(key === 'Status'||key === 'Product of Interest' || key === 'Source'||key === 'Assigned') && <span className="text-red-500">*</span>} {key}
                     </label>
                     <div className="relative">
-                      {key === 'Product of interest' && (
+                      {key === 'Product of Interest' && (
                       <select
                         name="Interest"  
                         value={formData.Interest}  
@@ -112,7 +112,7 @@ const NewLeads = () => {
                       </select>
 )}
 
-                      {key === 'status' && (
+                      {key === 'Status' && (
                         <select
                           name={key}
                           value={formData[key]}
@@ -128,7 +128,7 @@ const NewLeads = () => {
                           <option>Closed Lost</option>
                         </select>
                       )}
-                      {key === 'source' && (
+                      {key === 'Source' && (
                         <select
                           name={key}
                           value={formData[key]}
@@ -149,7 +149,7 @@ const NewLeads = () => {
                           <option>Other</option>
                         </select>
                       )}
-                      {key === 'assigned' && (
+                      {key === 'Assigned' && (
                         <select
                           name={key}
                           value={formData[key]}
@@ -249,14 +249,14 @@ const NewLeads = () => {
                   
                   {/* Website */}
                  <div>
-                    <label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="Website" className="block text-sm font-medium text-gray-700 mb-1">
                       Website
                     </label>
                     <input
                       type="text"
-                      id="website"
-                      name="website"
-                      value={formData.website}
+                      id="Website"
+                      name="Website"
+                      value={formData.Website}
                       onChange={handleChange}
                       className="w-full p-2 border border-gray-300 rounded-md focus:outline-none "
                     />
@@ -384,13 +384,13 @@ const NewLeads = () => {
                 <button
                   type="button"
                   onClick={() => { setIsOpen(false); navigate('/leads'); }}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition-colors shadow-sm cursor-pointer"
+                  className="px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition-colors shadow-sm cursor-pointer"
                 >
                   Close
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-sm cursor-pointer"
+                  className="px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-sm cursor-pointer"
                 >
                   Save
                 </button>

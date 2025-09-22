@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Plus } from "lucide-react";
-import ImportButton from "./ImportAccountButton";
+import { Plus,Upload } from "lucide-react";
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
   const navigate = useNavigate();
@@ -43,54 +42,51 @@ const Accounts = () => {
       <Plus className="w-4 h-4 mr-2" />
       New Account
     </button>
-    <ImportButton
-      onImportSuccess={(resData) => {
-        if (resData && Array.isArray(resData.importedAccounts)) {
-          setAccounts((prev) => [...prev, ...resData.importedAccounts]);
-        }
-      }}
-    />
+    <button
+      onClick={() => navigate("/accountimport")}
+      className="flex items-center px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition cursor-pointer"
+    >
+      <Upload className="w-4 h-4 mr-2" />
+      Import Accounts
+    </button>
   </div>
 </div>
-
-
-      {/* Table */}
-      <div className="overflow-hidden rounded shadow-lg bg-white">
+ <div className="overflow-hidden rounded shadow-lg bg-white">
         <table className="w-full text-sm text-left border-collapse">
           <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <tr>
               <th className="px-6 py-1 font-semibold">Account ID</th>
-              <th className="px-6 py-1 font-semibold">Company</th>
-              <th className="px-6 py-1 font-semibold">Account Owner</th>
-              <th className="px-6 py-1 font-semibold">Email</th>
-              <th className="px-6 py-1 font-semibold">Phone</th>
-              <th className="px-6 py-1 font-semibold">Website</th>
-              <th className="px-6 py-1 font-semibold">Source</th>
+              <th className="px-2 py-1 font-semibold">Company</th>
+              <th className="px-2 py-1 font-semibold">Account Owner</th>
+              <th className="px-2 py-1 font-semibold">Email</th>
+              <th className="px-2 py-1 font-semibold">Phone</th>
+              <th className="px-2 py-1 font-semibold">Website</th>
+              <th className="px-2 py-1 font-semibold">Source</th>
             </tr>
           </thead>
           <tbody>
-            {accounts.map((account, index) => (
+            {accounts.map((contact, index) => (
               <tr
-                key={account._id}
-                onClick={() => handleRowClick(account._id)}
+                key={contact._id}
+                onClick={() => navigate(`/account/${contact._id}`)}
                 className={`cursor-pointer transition hover:bg-blue-50 ${
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                <td className="px-6 py-1 font-mono text-blue-700 whitespace-nowrap">{account.accountId}</td>
-                <td className="px-6 py-1 text-gray-800 font-medium">{account.Company}</td>
-                <td className="px-6 py-1 text-gray-700">{account.Name}</td>
-                <td className="px-6 py-1 text-gray-700">{account.Email}</td>
-                <td className="px-6 py-1 text-gray-700">{account.Phone}</td>
-                <td className="px-6 py-1 text-gray-700">{account.website}</td>
-                <td className="px-6 py-1 text-gray-700">{account.source}</td>
+                <td className="px-6 py-1 font-mono text-blue-700 whitespace-nowrap">{contact.accountId}</td>
+                <td className="px-2 py-1 text-gray-800 font-medium">{contact.Company}</td>
+                <td className="px-2 py-1 text-gray-800">{contact.Name}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.Email}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.Phone}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.Website}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.Source}</td>
               </tr>
             ))}
 
             {accounts.length === 0 && (
               <tr>
                 <td
-                  colSpan="3"
+                  colSpan="8"
                   className="px-6 py-6 text-center text-gray-500 italic"
                 >
                   No accounts found

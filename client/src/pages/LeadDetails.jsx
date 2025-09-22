@@ -163,18 +163,17 @@ const LeadDetails = () => {
   );
 
   return (
-    <div className="min-h-screen font-inter antialiased flex justify-center p-6">
-      <div className="bg-white rounded-lg p-4 w-full max-w-4xl">
-        <div className="flex items-center justify-between pb-4 mb-1">
-          <h1 className="text-2xl font-bold text-gray-800">Lead Details</h1>
+    <div className="min-h-screen font-inter antialiased flex justify-center">
+      <div className="bg-white rounded-lg p-6 w-full">
+        <div className="relative pb-4 mb-4">
+          <h1 className="text-2xl font-bold text-gray-800 text-center">Lead Details</h1>
           <button
             onClick={() => navigate('/leads')}
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
           >
-            <X className="h-5 w-5 inline-block mr-1" />
+            <X className="h-5 w-5" />
           </button>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
           {/* Left Column */}
           <div className="space-y-0.5">
@@ -183,7 +182,7 @@ const LeadDetails = () => {
             <EditableField label="Phone" field="Phone" value={lead.Phone} />
             <EditableField label="Company" field="Company" value={lead.Company} />
             <EditableField label="Position" field="Position" value={lead.Position} />
-            <EditableField label="Website" field="website" value={lead.website} />
+            <EditableField label="Website" field="Website" value={lead.Website} />
             <EditableField label="PotentialRevenue" field="PotentialRevenue" value={lead.PotentialRevenue} />
             <EditableField label="Interest" field="Interest" value={lead.Interest} />
             <EditableField label="Description" field="Description" value={lead.Description} />
@@ -191,9 +190,9 @@ const LeadDetails = () => {
 
           {/* Right Column */}
           <div className="space-y-4">
-            <EditableField label="Status" field="status" value={lead.status} options={statusOptions} />
-            <EditableField label="Source" field="source" value={lead.source} options={sourceOptions} />
-            <EditableField label="Assigned" field="assigned" value={lead.assigned} options={assignedOptions} />
+            <EditableField label="Status" field="Status" value={lead.Status} options={statusOptions} />
+            <EditableField label="Source" field="Source" value={lead.Source} options={sourceOptions} />
+            <EditableField label="Assigned" field="Assigned" value={lead.Assigned} options={assignedOptions} />
             <EditableField label="Address" field="Address" value={lead.Address} />
             <EditableField label="City" field="City" value={lead.City} />
             <EditableField label="State" field="State" value={lead.State} />

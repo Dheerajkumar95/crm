@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { Plus,Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const CaseList = ({ refresh }) => {
   const [cases, setCases] = useState([]);

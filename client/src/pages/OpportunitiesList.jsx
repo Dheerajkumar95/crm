@@ -21,8 +21,8 @@ const OpportunitiesList = () => {
   const handleRowClick = (id) => {
     navigate(`/opportunities/${id}`);
   };
-  const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
+  const getStatusColor = (Status) => {
+    switch (Status?.toLowerCase()) {
       case "prospect":
         return "bg-blue-300 text-blue-700";
       case "qualify":
@@ -31,10 +31,10 @@ const OpportunitiesList = () => {
         return "bg-purple-300 text-purple-700";
       case "contacted":
         return "bg-cyan-300 text-cyan-700";
-      case "closed won":
+      case "close won":
         return "bg-green-300 text-green-700";
-      case "closed lost":
-        return "bg-red-300 text-red-700";
+      case "close lost":
+        return "bg-red-200 text-red-700";
       default:
         return "bg-gray-300 text-gray-700";
     }
@@ -66,9 +66,9 @@ const OpportunitiesList = () => {
           <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <tr>
               <th className="px-6 py-1 font-semibold">Opportunity ID</th>
-              <th className="px-2 py-1 font-semibold">Company</th>
-              <th className="px-2 py-1 font-semibold">Opportunity Name</th>
-              <th className="px-2 py-1 font-semibold">Status</th>
+              <th className="px-4 py-1 font-semibold">Company</th>
+              <th className="px-1 py-1 font-semibold">Opportunity Name</th>
+              <th className="px-6 py-1 font-semibold">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -82,14 +82,14 @@ const OpportunitiesList = () => {
               >
                 <td className="px-6 py-2 font-mono text-blue-700 whitespace-nowrap">{opp.accountId}</td>
                 <td className="px-2 py-2 text-gray-800 font-medium">{opp.Company}</td>
-                <td className="px-2 py-2 text-gray-800">{opp.opportunityName}</td>
+                <td className="px-2 py-2 text-gray-800">{opp.OpportunityName}</td>
                 <td className="px-2 py-2">
                   <span
                     className={`px-3 py-1 rounded-lg text-xs font-semibold ${getStatusColor(
-                      opp.status
+                      opp.Status
                     )}`}
                   >
-                    {opp.status}
+                    {opp.Status}
                   </span>
                 </td>
               </tr>

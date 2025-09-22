@@ -6,6 +6,8 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { useAuthStore } from "./store/useAuthStore";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Login from "./components/Login";
@@ -16,6 +18,7 @@ import NewProposalPage from "./pages/NewProposal";
 import Estimate from "./pages/Estimates";
 import Leads from "./pages/Leads";
 import NewLeads from "./pages/NewLeads";
+import LeadView from "./pages/LeadView";
 import NewAccount from "./pages/NewAccount";
 import LeadDetails from "./pages/LeadDetails";
 import TaskPage from "./pages/TaskPage";
@@ -24,8 +27,8 @@ import LeadImport from "./pages/LeadImport";
 import Account from "./pages/Accounts";
 import Contact from "./pages/Contacts";
 import ContactView from "./pages/ContactView";
-import ContactDetails from "./pages/ContactDetails";
 import AccountView from "./pages/AccountView";
+import AccountImport from "./pages/AccountImport";
 import OpportunitiesList from "./pages/OpportunitiesList";
 import OpportunitiesView from "./pages/OpportunitiesView";
 import OpportunityForm from "./pages/OpportunityForm";
@@ -35,8 +38,6 @@ import NewContact from "./pages/NewContact";
 import Cases from "./pages/CaseList";
 import CaseForm from "./pages/CaseForm";
 import CaseDetail from "./pages/CaseDetail";
-import { Toaster } from "react-hot-toast";
-import { useAuthStore } from "./store/useAuthStore";
 import AddProduct from "./pages/AddProduct";
 import ProductList from "./pages/ProductList";
 import ProposalPage from "./pages/ProposalPage";
@@ -90,7 +91,7 @@ function AppRoutes() {
             <Route path="/customers" element={<ProtectedRoute element={<CustomersPage />} />} />
             <Route path="/leads" element={<ProtectedRoute element={<Leads />} />} />
             <Route path="/newleads" element={<ProtectedRoute element={<NewLeads />} />} />
-            <Route path="/leads/:id" element={<ProtectedRoute element={<LeadDetails />} />} />
+            <Route path="/leads/:id" element={<ProtectedRoute element={<LeadView />} />} />
             <Route path="/tasks/:leadId" element={<ProtectedRoute element={<TaskPage />} />} />
             <Route path="/messages/:leadId" element={<ProtectedRoute element={<MessagePage />} />} />
             <Route path="/leadimport" element={<ProtectedRoute element={<LeadImport />} />} />
@@ -104,6 +105,7 @@ function AppRoutes() {
             <Route path="/account" element={<ProtectedRoute element={<Account />} />} />
             <Route path="/account/:id" element={<ProtectedRoute element={<AccountView />} />} />
             <Route path="/newaccount" element={<ProtectedRoute element={<NewAccount />} />} />
+            <Route path="/accountimport" element={<ProtectedRoute element={<AccountImport />} />} />
             <Route path="/opportunities/:id" element={<ProtectedRoute element={<OpportunitiesView />} />} />
             <Route path="/newopportunity" element={<ProtectedRoute element={<NewOpportunity />} />} />
             <Route path="/opportunities/new/:accountId" element={<ProtectedRoute element={<OpportunityForm />} />} />

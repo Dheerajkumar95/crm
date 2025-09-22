@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { BadgeDollarSign, Building, User, CheckCircle, Activity, FileText, ArrowLeft } from 'lucide-react';
+import {Building, User, CheckCircle, Activity, FileText, ArrowLeft } from 'lucide-react';
 import OpportunitiesDetails from "./OpportunitiesDetails";
 import ActivityButtons from './OppActivity';
 
@@ -13,7 +13,6 @@ export default function App() {
     const [relatedContacts, setRelatedContacts] = useState([]);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [relatedProposals, setRelatedProposals] = useState([]);
-
     const [leadData, setLeadData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isComplete, setIsComplete] = useState(false);
@@ -28,7 +27,7 @@ export default function App() {
             try {
                 const res = await axios.get(`http://localhost:7000/api/opportunities/${id}`);
                 setLeadData(res.data);
-                if (res.data.status?.toLowerCase() === "completed") {
+                if (res.data.Status?.toLowerCase() === "completed") {
                     setIsComplete(true);
                 }
             } catch (error) {
@@ -82,12 +81,12 @@ export default function App() {
     }, [id]);
 
     const handleMarkComplete = async () => {
-        if (leadData.status?.toLowerCase() === "completed") return;
+        if (leadData.Status?.toLowerCase() === "completed") return;
         setLoading(true);
         try {
-            const res = await axios.patch(`http://localhost:7000/api/opportunities/${id}`, { status: "Completed" });
+            const res = await axios.patch(`http://localhost:7000/api/opportunities/${id}`, { Status: "Completed" });
             if (res.status === 200) {
-                setLeadData((prev) => ({ ...prev, status: "Completed" }));
+                setLeadData((prev) => ({ ...prev, Status: "Completed" }));
                 setIsComplete(true);
                 setMessage('Lead successfully marked as complete!');
             }
@@ -101,7 +100,7 @@ export default function App() {
     };
 
     const handleStageClick = (newStage) => {
-        if (leadData.status?.toLowerCase() === "completed") return;
+        if (leadData.Status?.toLowerCase() === "completed") return;
         if (newStage === "Closed") {
             setIsCloseModalOpen(true);
         } else {
@@ -111,19 +110,20 @@ export default function App() {
 
     const updateStage = async (newStage) => {
         try {
-            const res = await axios.patch(`http://localhost:7000/api/opportunities/${id}`, { status: newStage });
+            const res = await axios.patch(`http://localhost:7000/api/opportunities/${id}`, { Status: newStage });
             if (res.status === 200) {
-                setLeadData((prev) => ({ ...prev, status: newStage }));
-                setMessage(`Status updated to "${newStage}"`);
-                setTimeout(() => setMessage(''), 3000);
-            }
+    setLeadData((prev) => ({ ...prev, Status: newStage }));
+    setMessage(`Status updated to "${newStage}"`);
+    setTimeout(() => setMessage(''), 3000);
+}
+
         } catch (error) {
             console.error("Failed to update status", error);
         }
     };
 
-    const handleCloseStatusSelect = (status) => {
-        updateStage(status);
+    const handleCloseStatusSelect = (Status) => {
+        updateStage(Status);
         setIsCloseModalOpen(false);
     };
 
@@ -143,50 +143,64 @@ export default function App() {
         );
     }
 
-    const ProgressBar = ({ currentStage }) => {
-        const stages = ["Prospect", "Qualify", "Secure", "Contacted", "Closed"];
-        const currentIndex = stages.findIndex(stage => stage.toLowerCase() === currentStage?.toLowerCase());
-        const isCompleted = currentStage?.toLowerCase() === "completed";
+  const ProgressBar = ({ currentStage }) => {
+  const stages = ["Prospect", "Qualify", "Secure", "Contacted", "Closed"];
+
+  const currentIndex = stages.findIndex(
+    (stage) => stage.toLowerCase() === currentStage?.toLowerCase()
+  );
+  const effectiveIndex = currentIndex === -1 ? 0 : currentIndex;
+
+  const isCompleted = currentStage?.toLowerCase() === "completed";
+
+  return (
+    <div className="flex">
+      {stages.map((stage, index) => {
+        let stageColor = "";
+        let displayText = stage;
+
+        // handle Close Won / Close Lost separately
+        if (currentStage === "Close Won") {
+          stageColor = "bg-green-600 text-white";
+          if (stage === "Closed") displayText = "Close Won";
+        } else if (currentStage === "Close Lost") {
+          stageColor =
+            index < stages.length - 1
+              ? "bg-gray-400 text-white"
+              : "bg-red-600 text-white";
+          if (stage === "Closed") displayText = "Close Lost";
+        } else if (isCompleted) {
+          stageColor = "bg-green-500 text-white";
+        } else if (index <= effectiveIndex) {
+          stageColor = "bg-green-600 text-white";
+        } else {
+          stageColor = "bg-zinc-300 text-zinc-700";
+        }
 
         return (
-            <div className="flex">
-                {stages.map((stage, index) => {
-                    let stageColor = '';
-                    let displayText = stage;
-
-                    if (currentStage === "Close Won") {
-                        stageColor = 'bg-green-600 text-white';
-                        if (stage === "Closed") displayText = "Close Won";
-                    } else if (currentStage === "Close Lost") {
-                        stageColor = index < stages.length - 1 ? 'bg-gray-400 text-white' : 'bg-red-600 text-white';
-                        if (stage === "Closed") displayText = "Close Lost";
-                    } else if (isCompleted) {
-                        stageColor = 'bg-green-500 text-white';
-                    } else if (index <= currentIndex) {
-                        stageColor = 'bg-green-600 text-white';
-                    } else {
-                        stageColor = 'bg-zinc-300 text-zinc-700';
-                    }
-
-                    return (
-                        <div
-                            key={stage}
-                            onClick={() => handleStageClick(stage)}
-                            className={`relative flex-grow h-8 flex items-center justify-center text-xs font-bold cursor-pointer transition ${stageColor}
-                                ${index === 0 ? 'rounded-l-lg' : '-ml-2'}
-                                ${index === stages.length - 1 ? 'rounded-r-lg' : ''}
-                                hover:scale-105 hover:brightness-105`}
-                            style={{
-                                clipPath: `polygon(0 0, ${index === stages.length - 1 ? '100%' : 'calc(100% - 1rem)'} 0, 100% 50%, ${index === stages.length - 1 ? '100%' : 'calc(100% - 1rem)'} 100%, 0 100%, ${index === 0 ? '0' : '1rem'} 50%)`
-                            }}
-                        >
-                            <span className="z-10">{displayText}</span>
-                        </div>
-                    );
-                })}
-            </div>
+          <div
+            key={stage}
+            onClick={() => handleStageClick(stage)}
+            className={`relative flex-grow h-8 flex items-center justify-center text-xs font-bold cursor-pointer transition ${stageColor}
+              ${index === 0 ? "rounded-l-lg" : "-ml-2"}
+              ${index === stages.length - 1 ? "rounded-r-lg" : ""}
+              hover:scale-105 hover:brightness-105`}
+            style={{
+              clipPath: `polygon(0 0, ${
+                index === stages.length - 1 ? "100%" : "calc(100% - 1rem)"
+              } 0, 100% 50%, ${
+                index === stages.length - 1 ? "100%" : "calc(100% - 1rem)"
+              } 100%, 0 100%, ${index === 0 ? "0" : "1rem"} 50%)`,
+            }}
+          >
+            <span className="z-10">{displayText}</span>
+          </div>
         );
-    };
+      })}
+    </div>
+  );
+};
+
 
     const CloseStatusModal = ({ isOpen, onClose, onSelect }) => {
         if (!isOpen) return null;
@@ -203,11 +217,11 @@ export default function App() {
                     <div className="flex flex-col space-y-3">
                         <button
                             className={`px-4 py-2 rounded text-white ${
-                                leadData.status === "Close Lost" 
+                                leadData.Status === "Close Lost" 
                                     ? 'bg-gray-400 cursor-not-allowed' 
                                     : 'bg-green-600 hover:bg-green-700'
                             }`}
-                            disabled={leadData.status === "Close Lost"}
+                            disabled={leadData.Status === "Close Lost"}
                             onClick={() => onSelect("Close Won")}
                         >
                             Close Won
@@ -249,12 +263,12 @@ export default function App() {
                    <div>
                     <p className="text-sm font-medium text-gray-600">Website</p>
                     <a
-                        href={account?.website?.startsWith("http") ? account.website : `https://${account?.website}`}
+                        href={account?.Website?.startsWith("http") ? account.Website : `https://${account?.Website}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-base text-blue-600 cursor-pointer hover:underline"
                     >
-                        {account?.website}
+                        {account?.Website}
                     </a>
                     </div>
                    <div>
@@ -271,7 +285,7 @@ export default function App() {
             {/* PROGRESS BAR + COMPLETE BUTTON */}
             <div className="flex flex-col sm:flex-row items-center justify-between space-y-1 sm:space-y-0 sm:space-x-8 mb-2 p-1 bg-zinc-100 rounded-xl shadow-inner">
                 <div className="flex-grow w-full">
-                    <ProgressBar currentStage={leadData.status} />
+                    <ProgressBar currentStage={leadData.Status} />
                 </div>
 
                 {!isComplete && (

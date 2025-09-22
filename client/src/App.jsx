@@ -20,8 +20,6 @@ import Leads from "./pages/Leads";
 import NewLeads from "./pages/NewLeads";
 import LeadView from "./pages/LeadView";
 import NewAccount from "./pages/NewAccount";
-import LeadDetails from "./pages/LeadDetails";
-import TaskPage from "./pages/TaskPage";
 import MessagePage from "./pages/MessagePage";
 import LeadImport from "./pages/LeadImport";
 import Account from "./pages/Accounts";
@@ -83,16 +81,12 @@ function AppRoutes() {
         {!isLoginPage && <Header setSidebarOpen={setSidebarOpen} />}
         <main className="flex-1 p-6 bg-gray-100 overflow-y-auto">
           <Routes>
-            {/* Public Route */}
             <Route path="/login" element={<Login />} />
-
-            {/* Protected Routes */}
             <Route path="/" element={<ProtectedRoute element={<DashboardPage />} />} />
             <Route path="/customers" element={<ProtectedRoute element={<CustomersPage />} />} />
             <Route path="/leads" element={<ProtectedRoute element={<Leads />} />} />
             <Route path="/newleads" element={<ProtectedRoute element={<NewLeads />} />} />
             <Route path="/leads/:id" element={<ProtectedRoute element={<LeadView />} />} />
-            <Route path="/tasks/:leadId" element={<ProtectedRoute element={<TaskPage />} />} />
             <Route path="/messages/:leadId" element={<ProtectedRoute element={<MessagePage />} />} />
             <Route path="/leadimport" element={<ProtectedRoute element={<LeadImport />} />} />
             <Route path="/contact" element={<ProtectedRoute element={<Contact />} />} />

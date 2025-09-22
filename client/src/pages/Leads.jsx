@@ -162,7 +162,7 @@ const Leads = () => {
                 <td className="px-2 py-1 text-gray-600">{lead.Assigned}</td>
                 <td className="px-2 py-1" onClick={(e) => e.stopPropagation()}>
                   <div className="flex items-center gap-2">
-                    <Link to={`/tasks/${lead._id}`} className="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded">
+                    <Link to={`/leads/${lead._id}`} className="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded">
                       <ListTodo className="h-4 w-4" />
                     </Link>
                   </div>

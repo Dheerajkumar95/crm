@@ -78,56 +78,55 @@ const Leads = () => {
     </div>
   ) : (
     <div className="px-1">
-      <div className="flex flex-col md:flex-row items-center justify-between mb-2">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Leads</h1>
-          <div className="flex items-center space-x-4 mt-2">
-            <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-              {leads.length} Customers
-            </span>
-            <span className="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">
-              0 Lost Leads - 0.00%
-            </span>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-2 mb-1">
-          {selectedLeadIds.length > 0 && (
-            <button
-              onClick={handleConvertClick}
-              className="flex items-center px-4 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition cursor-pointer"
-            >
-              Convert
-            </button>
-          )}
-          <button
-            onClick={exportToExcel}
-            className="flex items-center px-4 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition cursor-pointer"
-          >
-            <Download className="w-4 h-4 mr-2" />
-            Export
-          </button>
-
-          <Link
-            to="/newleads"
-            className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            New Lead
-          </Link>
-          <Link
-            to="/leadimport"
-            className="flex items-center px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition cursor-pointer"
-          >
-            <Upload className="w-4 h-4 mr-2" />
-            Import Leads
-          </Link>
-        </div>
+      <div className="flex items-center justify-between mb-2 relative">
+      <div className="flex items-center space-x-4">
+        <span className="bg-cyan-400 text-purple-800 text-sm font-medium px-3 py-1 rounded">
+          {leads.length} Customers
+        </span>
+        <span className="bg-red-200 text-red-800 text-sm font-medium px-3 py-1 rounded">
+          0 Lost Leads - 0.00%
+        </span>
       </div>
+      <h1 className="absolute left-1/2 mb-10 transform -translate-x-1/2 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 to-red-500 drop-shadow-lg tracking-wide">
+       Leads
+      </h1>
+        <div className="flex items-center space-x-2">
+        {selectedLeadIds.length > 0 && (
+          <button
+            onClick={handleConvertClick}
+            className="flex items-center px-4 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition cursor-pointer"
+          >
+            Convert
+          </button>
+        )}
+        <button
+          onClick={exportToExcel}
+          className="flex items-center px-4 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition cursor-pointer"
+        >
+          <Download className="w-4 h-4 mr-2" />
+          Export
+        </button>
 
-       <div className="w-full overflow-visible">
+        <Link
+          to="/newleads"
+          className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          New Lead
+        </Link>
+
+        <Link
+          to="/leadimport"
+          className="flex items-center px-4 py-1 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition cursor-pointer"
+        >
+          <Upload className="w-4 h-4 mr-2" />
+          Import Leads
+        </Link>
+      </div>
+    </div>
+    <div className="overflow-hidden rounded shadow-lg bg-white ">
         <table className="w-full divide-y divide-gray-200 text-xs">
-          <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+          <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded text-white">
             <tr>
               <th className="px-2 py-1"></th>
               <th className="px-2 py-1 text-left">Company</th>

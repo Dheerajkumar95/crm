@@ -13,31 +13,49 @@ const ConvertLeadModal = ({ open, onClose, selectedLeadIds, refreshLeads }) => {
   const [selectedAccount, setSelectedAccount] = useState("");
 
   // Contact options
-  const [contactOption, setContactOption] = useState("new"); // "new" | "existing"
+  const [contactOption, setContactOption] = useState("new"); 
   const [contactName, setContactName] = useState("");
   const [contacts, setContacts] = useState([]);
   const [selectedContact, setSelectedContact] = useState("");
 
-  // ✅ Checkbox + Opportunity Name
   const [createOpportunity, setCreateOpportunity] = useState(false);
   const [opportunityName, setOpportunityName] = useState("");
 
-  useEffect(() => {
-    if (!open) return;
+ useEffect(() => {
+  if (!open) return;
+
+  (async () => {
+    try {
+      const [accRes, conRes] = await Promise.all([
+        axios.get("http://localhost:7000/api/accounts"),
+        axios.get("http://localhost:7000/api/contacts"),
+      ]);
+      setAccounts(accRes.data || []);
+      setContacts(conRes.data || []);
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to load Accounts/Contacts");
+    }
+  })();
+
+  // 🔹 Auto-fill Contact Name from Lead when modal opens
+  if (selectedLeadIds?.length > 0 && contactOption === "new") {
     (async () => {
       try {
-        const [accRes, conRes] = await Promise.all([
-          axios.get("http://localhost:7000/api/accounts"),
-          axios.get("http://localhost:7000/api/contacts"),
-        ]);
-        setAccounts(accRes.data || []);
-        setContacts(conRes.data || []);
-      } catch (e) {
-        console.error(e);
-        toast.error("Failed to load Accounts/Contacts");
+        const leadRes = await axios.get(
+          `http://localhost:7000/api/leads/${selectedLeadIds[0]}`
+        );
+        const lead = leadRes.data;
+        if (lead?.Name) {
+          setContactName(lead.Name); // auto-fill but still editable
+        }
+      } catch (err) {
+        console.error("Failed to fetch lead details:", err);
       }
     })();
-  }, [open]);
+  }
+}, [open, selectedLeadIds, contactOption]);
+
 
   // Simple validations
   const missingAccountNew = accountOption === "new" && !accountName.trim();
@@ -68,8 +86,6 @@ const ConvertLeadModal = ({ open, onClose, selectedLeadIds, refreshLeads }) => {
       createOpportunity,
       opportunityOption: createOpportunity ? "new" : "skip",
     };
-
-    // Add opportunity only if filled
     if (createOpportunity && opportunityName.trim()) {
       payload.opportunityData = {
         opportunityName: opportunityName.trim(),
@@ -232,7 +248,6 @@ const ConvertLeadModal = ({ open, onClose, selectedLeadIds, refreshLeads }) => {
             </select>
           )}
 
-          {/* ✅ Opportunity checkbox + input */}
           <div className="mt-4">
             <label className="flex items-center gap-2">
               <input

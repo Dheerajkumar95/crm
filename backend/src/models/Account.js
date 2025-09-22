@@ -15,6 +15,7 @@ const accountSchema = new mongoose.Schema(
     Country: String,
     ZipCode: String,
     Position: String,
+    Interest: String,
     Description: String,
     createdAt: { type: Date, default: Date.now },
   },

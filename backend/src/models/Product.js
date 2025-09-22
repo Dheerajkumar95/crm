@@ -37,21 +37,21 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
     price: {
-      type: Number,
+      type: String,
       required: true,
     },
     costPrice: {
-      type: Number,
+      type: String,
     },
     sellingPrice: {
-      type: Number,
+      type: String,
     },
     currency: {
       type: String,
       default: "INR",
     },
     stockQuantity: {
-      type: Number,
+      type: String,
       default: 0,
     },
     warehouse: {

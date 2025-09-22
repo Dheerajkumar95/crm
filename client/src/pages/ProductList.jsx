@@ -105,52 +105,55 @@ const ProductList = () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6 flex-wrap">
-        <div className="flex gap-4 flex-wrap">
-          <button
-            onClick={() => setActiveCategory("All")}
-            className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
-              ${activeCategory === "All"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
-          >
-            All
-          </button>
-          {categories.map((cat) => (
-            <button
-              key={cat.name}
-              onClick={() => setActiveCategory(cat.name)}
-              className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
-                ${activeCategory === cat.name
-                  ? `${cat.color} text-white`
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
+    <div className="px-1">
+  <div className="relative flex justify-between items-center mb-2 flex-wrap">
+  <h1 className="absolute left-1/2 mb-15  transform -translate-x-1/2 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 drop-shadow-lg tracking-wide">
+    Products
+  </h1>
+  <div className="flex gap-4 flex-wrap mt-10 md:mt-10">
+    <button
+      onClick={() => setActiveCategory("All")}
+      className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
+        ${activeCategory === "All"
+          ? "bg-blue-500 text-white"
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+    >
+      All
+    </button>
+    {categories.map((cat) => (
+      <button
+        key={cat.name}
+        onClick={() => setActiveCategory(cat.name)}
+        className={`px-2 py-1 rounded-md font-medium shadow-md transition cursor-pointer
+          ${activeCategory === cat.name
+            ? `${cat.color} text-white`
+            : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+      >
+        {cat.name}
+      </button>
+    ))}
+  </div>
+  <div className="mt-4 md:mt-10">
+    <button
+      onClick={() => navigate("/addproduct")}
+      className="flex items-center px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition cursor-pointer"
+    >
+      <Plus className="w-4 h-4 mr-2" />
+      Add New Product
+    </button>
+  </div>
+</div>
 
-        <div>
-          <button
-            onClick={() => navigate("/addproduct")}
-            className="flex items-center px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition cursor-pointer"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add New Product
-          </button>
-        </div>
-      </div>
-      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+      <div className="rounded shadow overflow-hidden border border-gray-200">
         <table className="w-full border-collapse">
-          <thead className="bg-gray-50 text-black text-sm">
+          <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <tr>
-              <th className="p-3 text-left">Product ID</th>
-              <th className="p-1 text-left">Product Name</th>
-              <th className="p-1 text-left">Product Quality</th>
-              <th className="p-1 text-left">Price</th>
-              <th className="p-1 text-left">Status</th>
-              <th className="p-1 text-left">Add</th>
+              <th className="px-3 py-1 text-left">Product ID</th>
+              <th className="px-3 py-1 text-left">Product Name</th>
+              <th className="px-3 py-1 text-left">Product Quality</th>
+              <th className="px-3 py-1 text-left">Price</th>
+              <th className="px-3 py-1 text-left">Status</th>
+              <th className="px-3 py-1 text-left">Add</th>
             </tr>
           </thead>
           <tbody>
@@ -160,11 +163,11 @@ const ProductList = () => {
                   key={product._id}
                   className="border-b-gray-600 border-t hover:bg-gray-50 transition"
                 >
-                  <td className="px-3 font-semibold">{product.productId}</td>
-                  <td className="p-1">{product.productName}</td>
-                  <td className="p-1">{product.productQuality}</td>
-                  <td className="p-1">{product.price}</td>
-                  <td className="p-1">
+                  <td className="px-3 py-1 font-semibold">{product.productId}</td>
+                  <td className="px-3 py-1">{product.productName}</td>
+                  <td className="px-3 py-1">{product.productQuality}</td>
+                  <td className="px-3 py-1">{product.price}</td>
+                  <td className="px-3 py-1">
                     <button
                       onClick={() =>
                         handleToggleStatus(product._id, product.status)
@@ -184,7 +187,7 @@ const ProductList = () => {
                       />
                     </button>
                   </td>
-                <td className="p-1">
+                <td className="px-3 py-1">
             <button
               onClick={() => {
                 if (!id) {
@@ -276,30 +279,30 @@ const ProductList = () => {
         />
       </div>
      <div className="flex  sm:flex-row justify-start gap-2 mt-4">
-  <div className="flex-1">
-    <label className="block text-sm font-medium mb-1">
-      Starting Date
-    </label>
-    <input
-      type="date"
-      value={startDate}
-      onChange={(e) => setStartDate(e.target.value)}
-      className="w-full p-2.5 border  rounded  outline-none transition"
-    />
-  </div>
+        <div className="flex-1">
+          <label className="block text-sm font-medium mb-1">
+            Starting Date
+          </label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="w-full p-2.5 border  rounded  outline-none transition"
+          />
+        </div>
 
-  <div className="flex-1">
-    <label className="block text-sm font-medium mb-1">
-      Delivery Date
-    </label>
-    <input
-      type="date"
-      value={deliveryDate}
-      onChange={(e) => setDeliveryDate(e.target.value)}
-      className="w-full p-2.5 border  rounded  outline-none transition"
-    />
-  </div>
-</div>
+        <div className="flex-1">
+          <label className="block text-sm font-medium mb-1">
+            Delivery Date
+          </label>
+          <input
+            type="date"
+            value={deliveryDate}
+            onChange={(e) => setDeliveryDate(e.target.value)}
+            className="w-full p-2.5 border  rounded  outline-none transition"
+          />
+        </div>
+      </div>
       <div className="flex justify-end gap-2 mt-6">
         <button
           onClick={() => setIsModalOpen(false)}

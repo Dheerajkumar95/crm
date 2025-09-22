@@ -111,7 +111,7 @@ export const convertLeads = async (req, res) => {
         Country: lead.Country,
         ZipCode: lead.ZipCode,
         Position: lead.Position,
-        PotentialRevenue: lead.PotentialRevenue,
+        Interest: lead.Interest,
         Description: lead.Description,
         createdAt: lead.createdAt,
       });

@@ -24,43 +24,51 @@ const OpportunitiesList = () => {
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case "prospect":
-        return "bg-blue-100 text-blue-700";
+        return "bg-blue-300 text-blue-700";
       case "qualify":
-        return "bg-amber-100 text-amber-700";
+        return "bg-amber-300 text-amber-700";
       case "secure":
-        return "bg-purple-100 text-purple-700";
+        return "bg-purple-300 text-purple-700";
       case "contacted":
-        return "bg-cyan-100 text-cyan-700";
+        return "bg-cyan-300 text-cyan-700";
       case "closed won":
-        return "bg-green-100 text-green-700";
+        return "bg-green-300 text-green-700";
       case "closed lost":
-        return "bg-red-100 text-red-700";
+        return "bg-red-300 text-red-700";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-gray-300 text-gray-700";
     }
   };
 
   return (
-    <div className="px-6 py-1">
-      <div className="flex flex-col md:flex-row items-end justify-end mb-4">
-        <div className="flex items-end space-x-2 mt-1 md:mt-0">
-          <button
-            onClick={() => navigate("/newopportunity")}
-            className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition shadow-sm"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            New Opportunity
-          </button>
+    <div className="px-1">
+        <div className="flex items-center justify-between mb-4 relative">
+          <div>
+            <span className="bg-cyan-400 text-purple-800 text-sm font-medium px-4 py-1 rounded shadow-sm">
+              {opps.length} Opportunities
+            </span>
+          </div>
+          <h1 className="absolute left-1/2 mb-10 transform -translate-x-1/2 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 to-red-500 drop-shadow-lg tracking-wide">
+            Opportunities
+          </h1>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => navigate("/newopportunity")}
+              className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition shadow-sm"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              New Opportunity
+            </button>
+          </div>
         </div>
-      </div>
       <div className="overflow-hidden rounded shadow-lg bg-white">
         <table className="w-full text-sm text-left border-collapse">
           <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <tr>
               <th className="px-6 py-1 font-semibold">Opportunity ID</th>
-              <th className="px-6 py-1 font-semibold">Company</th>
-              <th className="px-6 py-1 font-semibold">Opportunity Name</th>
-              <th className="px-6 py-1 font-semibold">Status</th>
+              <th className="px-2 py-1 font-semibold">Company</th>
+              <th className="px-2 py-1 font-semibold">Opportunity Name</th>
+              <th className="px-2 py-1 font-semibold">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -72,12 +80,12 @@ const OpportunitiesList = () => {
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                <td className="px-6 py-1 font-mono text-blue-700 whitespace-nowrap">{opp.accountId}</td>
-                <td className="px-6 py-1 text-gray-800 font-medium">{opp.Company}</td>
-                <td className="px-6 py-1 text-gray-800">{opp.opportunityName}</td>
-                <td className="px-6 py-1">
+                <td className="px-6 py-2 font-mono text-blue-700 whitespace-nowrap">{opp.accountId}</td>
+                <td className="px-2 py-2 text-gray-800 font-medium">{opp.Company}</td>
+                <td className="px-2 py-2 text-gray-800">{opp.opportunityName}</td>
+                <td className="px-2 py-2">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold ${getStatusColor(
                       opp.status
                     )}`}
                   >

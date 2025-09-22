@@ -16,13 +16,12 @@ const Sidebar = ({ isOpen }) => {
 
   return (
     <div
-      className={`bg-cyan-500 text-white h-full transition-all duration-300 ${
+      className={`bg-cyan-400 text-black h-full transition-all duration-300 ${
         isOpen ? 'w-64' : 'w-0 overflow-hidden'
       }`}
     >
       <div className="flex flex-col h-full px-4 py-6">
-        {/* Profile */}
-        <div className="mb-8 border-b border-amber-50 pb-2">
+        <div className="mb-8 border-b border-black pb-2">
           <div className="flex items-center space-x-3">
             <img src="/crm.png" alt="Logo" className="w-12 h-10 rounded-full object-cover" />
             <div>
@@ -93,7 +92,7 @@ const MenuItem = ({ icon, label, to, active = false, expandable = false, open = 
     <div
       onClick={expandable ? onClick : undefined}
       className={`flex items-center w-full px-3 py-2 rounded-md text-sm font-medium transition cursor-pointer ${
-        active ? 'bg-[#33acff]' : 'hover:bg-cyan-600 text-white'
+        active ? 'bg-[#33acff]' : 'hover:bg-cyan-600 text-black'
       }`}
     >
       {icon && <span className="mr-3">{icon}</span>}
@@ -107,27 +106,27 @@ const MenuItem = ({ icon, label, to, active = false, expandable = false, open = 
 
 
 const SubMenu = ({ items }) => (
-  <div className="ml-6 text-sm text-white space-y-1 py-1">
+  <div className="ml-6 text-sm text-black space-y-1 py-1">
     {items.map((item, index) => {
       if (typeof item === 'object') {
         return item.to ? (
           <Link
             key={index}
             to={item.to}
-            className="flex items-center gap-2 hover:text-white"
+            className="flex items-center gap-2 hover:text-gray-500"
           >
             {item.icon && <span>{item.icon}</span>}
             <span>{item.label}</span>
           </Link>
         ) : (
-          <div key={index} className="flex items-center gap-2 hover:text-white cursor-pointer">
+          <div key={index} className="flex items-center gap-2 hover:text-gray-500 cursor-pointer">
             {item.icon && <span>{item.icon}</span>}
             <span>{item.label}</span>
           </div>
         );
       }
       return (
-        <div key={index} className="hover:text-white cursor-pointer">
+        <div key={index} className="hover:text-gray-500 cursor-pointer">
           {item}
         </div>
       );

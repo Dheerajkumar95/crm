@@ -25,26 +25,34 @@ const Accounts = () => {
   };
 
   return (
-    <div className="px-6 py-1">
-      <div className="flex flex-col md:flex-row items-end justify-end mb-4">
-        <div className="flex items-end space-x-2 mt-1 md:mt-0">
-          <button
-            onClick={() => navigate("/newaccount")}
-            className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition shadow-sm"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            New Account
-          </button>
-          <ImportButton
-          onImportSuccess={(resData) => {
-            if (resData && Array.isArray(resData.importedAccounts)) {
-              setAccounts((prev) => [...prev, ...resData.importedAccounts]);
-            }
-          }}
-          />
+    <div className="px-1">
+<div className="flex items-center justify-between mb-2 relative">
+  <div>
+    <span className="bg-cyan-400 text-purple-800 text-sm font-medium px-4 py-1 rounded shadow-sm">
+      {accounts.length} Accounts
+    </span>
+  </div>
+  <h1 className="absolute left-1/2 mb-10 transform -translate-x-1/2 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 to-red-500 drop-shadow-lg tracking-wide">
+    Accounts
+  </h1>
+  <div className="flex items-center space-x-2">
+    <button
+      onClick={() => navigate("/newaccount")}
+      className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition shadow-sm"
+    >
+      <Plus className="w-4 h-4 mr-2" />
+      New Account
+    </button>
+    <ImportButton
+      onImportSuccess={(resData) => {
+        if (resData && Array.isArray(resData.importedAccounts)) {
+          setAccounts((prev) => [...prev, ...resData.importedAccounts]);
+        }
+      }}
+    />
+  </div>
+</div>
 
-        </div>
-      </div>
 
       {/* Table */}
       <div className="overflow-hidden rounded shadow-lg bg-white">

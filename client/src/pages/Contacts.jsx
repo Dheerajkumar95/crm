@@ -19,30 +19,39 @@ const Contacts = () => {
   }, []);
 
   return (
-    <div className="px-6 py-1">
-      <div className="flex flex-col md:flex-row items-end justify-end mb-4">
-        <div className="flex items-end space-x-2 mt-1 md:mt-0">
-          <button
-            onClick={() => navigate("/newcontact")}
-            className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition shadow-sm"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            New Contact
-          </button>
-        </div>
+    <div className="px-1">
+    <div className="flex items-center justify-between mb-2 relative">
+      <div>
+        <span className="bg-cyan-400 text-purple-800 text-sm font-medium px-4 py-1 rounded shadow-sm">
+          {contacts.length} Contacts
+        </span>
       </div>
+      <h1 className="absolute left-1/2 mb-10 transform -translate-x-1/2 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 to-red-500 drop-shadow-lg tracking-wide">
+        Contacts
+      </h1>
+      <div className="flex items-center space-x-2">
+        <button
+          onClick={() => navigate("/newcontact")}
+          className="flex items-center px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition shadow-sm"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          New Contact
+        </button>
+      </div>
+    </div>
+
       <div className="overflow-hidden rounded shadow-lg bg-white">
         <table className="w-full text-sm text-left border-collapse">
           <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <tr>
               <th className="px-6 py-1 font-semibold">Account ID</th>
-              <th className="px-6 py-1 font-semibold">Company</th>
-              <th className="px-6 py-1 font-semibold">Name</th>
-              <th className="px-6 py-1 font-semibold">Email</th>
-              <th className="px-6 py-1 font-semibold">Phone</th>
-              <th className="px-6 py-1 font-semibold">Website</th>
-              <th className="px-6 py-1 font-semibold">Source</th>
-              <th className="px-6 py-1 font-semibold">Assigned</th>
+              <th className="px-2 py-1 font-semibold">Company</th>
+              <th className="px-2 py-1 font-semibold">Name</th>
+              <th className="px-2 py-1 font-semibold">Email</th>
+              <th className="px-2 py-1 font-semibold">Phone</th>
+              <th className="px-2 py-1 font-semibold">Website</th>
+              <th className="px-2 py-1 font-semibold">Source</th>
+              <th className="px-2 py-1 font-semibold">Assigned</th>
             </tr>
           </thead>
           <tbody>
@@ -55,13 +64,13 @@ const Contacts = () => {
                 }`}
               >
                 <td className="px-6 py-1 font-mono text-blue-700 whitespace-nowrap">{contact.accountId}</td>
-                <td className="px-6 py-1 text-gray-800 font-medium">{contact.Company}</td>
-                <td className="px-6 py-1 text-gray-800">{contact.Name}</td>
-                <td className="px-6 py-1 text-gray-700">{contact.Email}</td>
-                <td className="px-6 py-1 text-gray-700">{contact.Phone}</td>
-                <td className="px-6 py-1 text-gray-700">{contact.website}</td>
-                <td className="px-6 py-1 text-gray-700">{contact.source}</td>
-                <td className="px-6 py-1 text-gray-700">{contact.assigned}</td>
+                <td className="px-2 py-1 text-gray-800 font-medium">{contact.Company}</td>
+                <td className="px-2 py-1 text-gray-800">{contact.Name}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.Email}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.Phone}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.website}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.source}</td>
+                <td className="px-2 py-1 text-gray-700">{contact.assigned}</td>
               </tr>
             ))}
 

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const productSchema = new mongoose.Schema(
   {
     productId: {
@@ -24,47 +25,44 @@ const productSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    productQuality: {
-      type: String,
-      default: "Standard",
-    },
-    unitOfMeasure: {
-      type: String,
-      default: "Piece",
-    },
     hsnCode: {
       type: String,
       trim: true,
     },
     price: {
-      type: String,
+      type: Number,
       required: true,
     },
     costPrice: {
-      type: String,
+      type: Number,
     },
     sellingPrice: {
-      type: String,
+      type: Number,
     },
-    currency: {
+    currency: { type: String, default: "INR" },
+    productQuality: {
       type: String,
-      default: "INR",
+      enum: [
+        "Standard",
+        "Service",
+        "Subscription",
+        "Bundle/Kit",
+        "Configurable",
+      ],
+      required: true,
     },
-    stockQuantity: {
-      type: String,
-      default: 0,
-    },
-    warehouse: {
-      type: String,
-      trim: true,
-    },
-    supplier: {
-      type: String,
-      trim: true,
-    },
-    productImage: {
-      type: String,
-    },
+    unitOfMeasure: { type: String },
+    stockQuantity: { type: Number },
+    warehouse: { type: String },
+    supplier: { type: String },
+    serviceDuration: { type: String },
+    serviceProvider: { type: String },
+    subscriptionPeriod: { type: String },
+    renewalPrice: { type: Number },
+    bundleItems: { type: String },
+    configOptions: { type: String },
+
+    productImage: { type: String },
     status: {
       type: String,
       enum: ["Active", "Inactive"],

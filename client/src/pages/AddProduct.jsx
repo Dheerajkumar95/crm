@@ -1,9 +1,118 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { ArrowLeft,Plus,Trash } from "lucide-react";
+import { ArrowLeft, Plus, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+/* ---------------- Standard Product Form ---------------- */
+const StandardForm = ({ formData, handleChange }) => (
+  <>
+    <select
+      name="unitOfMeasure"
+      value={formData.unitOfMeasure}
+      onChange={handleChange}
+      className="border p-2 rounded"
+    >
+      <option value="Piece">Piece</option>
+      <option value="Kg">Kg</option>
+      <option value="Litre">Litre</option>
+      <option value="Pack">Pack</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <input
+      name="stockQuantity"
+      type="number"
+      placeholder="Stock Quantity"
+      value={formData.stockQuantity}
+      onChange={handleChange}
+      className="border p-2 rounded"
+    />
+    <input
+      name="warehouse"
+      placeholder="Warehouse Location"
+      value={formData.warehouse}
+      onChange={handleChange}
+      className="border p-2 rounded"
+    />
+    <input
+      name="supplier"
+      placeholder="Supplier / Vendor"
+      value={formData.supplier}
+      onChange={handleChange}
+      className="border p-2 rounded"
+    />
+  </>
+);
+
+/* ---------------- Service Product Form ---------------- */
+const ServiceForm = ({ formData, handleChange }) => (
+  <>
+    <input
+      name="serviceDuration"
+      placeholder="Service Duration (e.g. 3 Months)"
+      value={formData.serviceDuration || ""}
+      onChange={handleChange}
+      className="border p-2 rounded"
+    />
+    <input
+      name="serviceProvider"
+      placeholder="Service Provider"
+      value={formData.serviceProvider || ""}
+      onChange={handleChange}
+      className="border p-2 rounded"
+    />
+  </>
+);
+
+/* ---------------- Subscription Product Form ---------------- */
+const SubscriptionForm = ({ formData, handleChange }) => (
+  <>
+    <input
+      name="subscriptionPeriod"
+      placeholder="Subscription Period (e.g. Monthly/Yearly)"
+      value={formData.subscriptionPeriod || ""}
+      onChange={handleChange}
+      className="border p-2 rounded"
+    />
+    <input
+      name="renewalPrice"
+      type="number"
+      placeholder="Renewal Price"
+      value={formData.renewalPrice || ""}
+      onChange={handleChange}
+      className="border p-2 rounded"
+    />
+  </>
+);
+
+/* ---------------- Bundle/Kit Product Form ---------------- */
+const BundleForm = ({ formData, handleChange }) => (
+  <>
+    <input
+      name="bundleItems"
+      placeholder="Enter bundle items separated by commas"
+      value={formData.bundleItems || ""}
+      onChange={handleChange}
+      className="border p-2 rounded"
+    />
+  </>
+);
+
+/* ---------------- Configurable Product Form ---------------- */
+const ConfigurableForm = ({ formData, handleChange }) => (
+  <>
+    <input
+      name="configOptions"
+      placeholder="Configuration Options (e.g. Size, Color)"
+      value={formData.configOptions || ""}
+      onChange={handleChange}
+      className="border p-2 rounded"
+    />
+  </>
+);
+
+/* ---------------- Main Add Product ---------------- */
 const AddProduct = () => {
   const navigate = useNavigate();
 
@@ -12,16 +121,22 @@ const AddProduct = () => {
     productName: "",
     productDescription: "",
     brand: "",
-    productQuality: "Standard",
-    unitOfMeasure: "Piece",
+    productQuality: "",
     hsnCode: "",
     price: "",
     costPrice: "",
     sellingPrice: "",
     currency: "INR",
+    unitOfMeasure: "",
     stockQuantity: "",
     warehouse: "",
     supplier: "",
+    serviceDuration: "",
+    serviceProvider: "",
+    subscriptionPeriod: "",
+    renewalPrice: "",
+    bundleItems: "",
+    configOptions: "",
     productImage: "",
     status: "Active",
   };
@@ -45,12 +160,10 @@ const AddProduct = () => {
     }
   };
 
-  // handle change in form inputs
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // handle product submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -63,21 +176,19 @@ const AddProduct = () => {
     }
   };
 
-const handleAddCategory = async () => {
-  if (!newCategory.trim()) return;
-  try {
-    await axios.post("http://localhost:7000/api/categories", { name: newCategory });
-    toast.success("Category added");
-    setNewCategory("");
-    await fetchCategories(); // ensure latest categories aaye
-  } catch (error) {
-    console.error(error);
-    toast.error("Error adding category");
-  }
-};
+  const handleAddCategory = async () => {
+    if (!newCategory.trim()) return;
+    try {
+      await axios.post("http://localhost:7000/api/categories", { name: newCategory });
+      toast.success("Category added");
+      setNewCategory("");
+      await fetchCategories();
+    } catch (error) {
+      console.error(error);
+      toast.error("Error adding category");
+    }
+  };
 
-
-  // delete category
   const handleDeleteCategory = async (id) => {
     try {
       await axios.delete(`http://localhost:7000/api/categories/${id}`);
@@ -119,16 +230,17 @@ const handleAddCategory = async () => {
           >
             <option value="">Select Category</option>
             {categories.map((cat) => (
-              <option key={cat._id} value={cat.name} className="bg-blue-300">
+              <option key={cat._id} value={cat.name}>
                 {cat.name}
               </option>
             ))}
           </select>
-          <button 
-          type="button"
-          onClick={() => setShowModal(true)}
-          className="flex items-center justify-center w-6 h-6 rounded-full border border-blue-800 text-blue-700 bg-white hover:bg-gray-100 transition cursor-pointer">
-            <Plus size={24} />
+          <button
+            type="button"
+            onClick={() => setShowModal(true)}
+            className="flex items-center justify-center w-6 h-6 rounded-full border border-blue-800 text-blue-700 bg-white hover:bg-gray-100 transition cursor-pointer"
+          >
+            <Plus size={20} />
           </button>
         </div>
 
@@ -153,24 +265,22 @@ const handleAddCategory = async () => {
           onChange={handleChange}
           className="border p-2 rounded"
         >
-          <option value="Premium">Premium</option>
+          <option value="">Select Product Type</option>
           <option value="Standard">Standard</option>
-          <option value="A">Grade A</option>
-          <option value="B">Grade B</option>
-          <option value="C">Grade C</option>
+          <option value="Service">Service</option>
+          <option value="Subscription">Subscription</option>
+          <option value="Bundle/Kit">Bundle/Kit</option>
+          <option value="Configurable">Configurable</option>
         </select>
 
         <select
-          name="unitOfMeasure"
-          value={formData.unitOfMeasure}
+          name="currency"
+          value={formData.currency}
           onChange={handleChange}
           className="border p-2 rounded"
         >
-          <option value="Piece">Piece</option>
-          <option value="Kg">Kg</option>
-          <option value="Litre">Litre</option>
-          <option value="Pack">Pack</option>
-          <option value="Other">Other</option>
+          <option value="INR">INR</option>
+          <option value="USD">USD</option>
         </select>
 
         <input
@@ -189,7 +299,6 @@ const handleAddCategory = async () => {
           onChange={handleChange}
           className="border p-2 rounded"
         />
-
         <input
           name="sellingPrice"
           type="number"
@@ -198,38 +307,22 @@ const handleAddCategory = async () => {
           onChange={handleChange}
           className="border p-2 rounded"
         />
-        <select
-          name="currency"
-          value={formData.currency}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        >
-          <option value="INR">INR</option>
-          <option value="USD">USD</option>
-        </select>
+        {formData.productQuality === "Standard" && (
+          <StandardForm formData={formData} handleChange={handleChange} />
+        )}
+        {formData.productQuality === "Service" && (
+          <ServiceForm formData={formData} handleChange={handleChange} />
+        )}
+        {formData.productQuality === "Subscription" && (
+          <SubscriptionForm formData={formData} handleChange={handleChange} />
+        )}
+        {formData.productQuality === "Bundle/Kit" && (
+          <BundleForm formData={formData} handleChange={handleChange} />
+        )}
+        {formData.productQuality === "Configurable" && (
+          <ConfigurableForm formData={formData} handleChange={handleChange} />
+        )}
 
-        <input
-          name="stockQuantity"
-          type="number"
-          placeholder="Stock Quantity"
-          value={formData.stockQuantity}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        />
-        <input
-          name="warehouse"
-          placeholder="Warehouse Location"
-          value={formData.warehouse}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        />
-        <input
-          name="supplier"
-          placeholder="Supplier / Vendor"
-          value={formData.supplier}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        />
         <select
           name="status"
           value={formData.status}
@@ -239,6 +332,7 @@ const handleAddCategory = async () => {
           <option value="Active">Active</option>
           <option value="Inactive">Inactive</option>
         </select>
+
         <input
           name="productImage"
           placeholder="Product Image URL"
@@ -246,6 +340,7 @@ const handleAddCategory = async () => {
           onChange={handleChange}
           className="border p-2 rounded col-span-2"
         />
+
         <textarea
           name="productDescription"
           placeholder="Product Description"
@@ -253,6 +348,7 @@ const handleAddCategory = async () => {
           onChange={handleChange}
           className="border p-2 rounded col-span-2"
         />
+
         <button
           type="submit"
           className="col-span-2 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
@@ -292,7 +388,7 @@ const handleAddCategory = async () => {
                     onClick={() => handleDeleteCategory(cat._id)}
                     className="text-red-600 text-sm cursor-pointer"
                   >
-                  <Trash className="w-4 h-6"/>
+                    <Trash className="w-4 h-6" />
                   </button>
                 </div>
               ))}

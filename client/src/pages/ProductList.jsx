@@ -218,34 +218,40 @@ const ProductList = () => {
           </tbody>
         </table>
       </div>
-      {isModalOpen && selectedProduct && (
+{isModalOpen && selectedProduct && (
   <div className="fixed inset-0 flex items-center justify-center z-50">
+    {/* Overlay */}
     <div
       className="absolute inset-0 bg-black opacity-50"
       onClick={() => setIsModalOpen(false)}
     ></div>
 
-    <div className="bg-white rounded-lg shadow-lg z-10 p-6 w-[600px] max-h-[90vh] overflow-y-auto">
-      <h2 className="text-lg font-bold mb-4">Product Details</h2>
+    {/* Modal */}
+    <div className="bg-white rounded-lg shadow-xl z-10 p-6 w-[600px] max-h-[90vh] overflow-y-auto">
+      <h2 className="text-2xl font-bold mb-4 text-center">
+        {selectedProduct.productName}
+      </h2>
+
+      {/* Product Image & Basic Info */}
       <div className="flex gap-4 mb-4">
         <img
           src={selectedProduct.productImage}
           alt={selectedProduct.productName}
           className="w-32 h-32 object-cover rounded border"
         />
-        <div>
-          <p className="text-xl font-semibold">{selectedProduct.productName}</p>
-          <p className="text-gray-600 text-sm">{selectedProduct.productDescription}</p>
-          <p className="text-sm mt-1">
-            <span className="font-semibold">Category:</span> {selectedProduct.category}
+        <div className="flex-1">
+          <p className="text-gray-700 text-sm mb-1">
+            {selectedProduct.productDescription}
           </p>
-          <p className="text-sm">
-            <span className="font-semibold">Brand:</span> {selectedProduct.brand}
-          </p>
-          <p className="text-sm">
-            <span className="font-semibold">Status:</span>{" "}
+          <div className="flex flex-wrap gap-2">
+            <span className="px-2 py-0.5 bg-gray-100 rounded text-xs font-medium">
+              Category: {selectedProduct.category}
+            </span>
+            <span className="px-2 py-0.5 bg-gray-100 rounded text-xs font-medium">
+              Brand: {selectedProduct.brand || "-"}
+            </span>
             <span
-              className={`px-2 py-0.5 rounded text-xs ${
+              className={`px-2 py-0.5 rounded text-xs font-medium ${
                 selectedProduct.status === "Active"
                   ? "bg-green-100 text-green-700"
                   : "bg-gray-100 text-gray-700"
@@ -253,66 +259,107 @@ const ProductList = () => {
             >
               {selectedProduct.status}
             </span>
-          </p>
+          </div>
         </div>
       </div>
+
+      {/* Dynamic Product Type Fields */}
       <div className="grid grid-cols-2 gap-4 text-sm">
-        <p><span className="font-semibold">Product ID:</span> {selectedProduct.productId}</p>
-        <p><span className="font-semibold">Quality:</span> {selectedProduct.productQuality}</p>
-        <p><span className="font-semibold">Unit:</span> {selectedProduct.unitOfMeasure}</p>
-        <p><span className="font-semibold">HSN Code:</span> {selectedProduct.hsnCode}</p>
+        <p>
+          <span className="font-semibold">Product ID:</span> {selectedProduct.productId}
+        </p>
+        <p>
+          <span className="font-semibold">Quality:</span> {selectedProduct.productQuality}
+        </p>
+
+        {/* Standard */}
+        {selectedProduct.productQuality === "Standard" && (
+          <>
+            <p><span className="font-semibold">Unit:</span> {selectedProduct.unitOfMeasure}</p>
+            <p><span className="font-semibold">Stock Qty:</span> {selectedProduct.stockQuantity}</p>
+            <p><span className="font-semibold">Warehouse:</span> {selectedProduct.warehouse}</p>
+            <p><span className="font-semibold">Supplier:</span> {selectedProduct.supplier}</p>
+          </>
+        )}
+
+        {/* Service */}
+        {selectedProduct.productQuality === "Service" && (
+          <>
+            <p><span className="font-semibold">Service Duration:</span> {selectedProduct.serviceDuration}</p>
+            <p><span className="font-semibold">Service Provider:</span> {selectedProduct.serviceProvider}</p>
+          </>
+        )}
+
+        {/* Subscription */}
+        {selectedProduct.productQuality === "Subscription" && (
+          <>
+            <p><span className="font-semibold">Period:</span> {selectedProduct.subscriptionPeriod}</p>
+            <p><span className="font-semibold">Renewal Price:</span> {selectedProduct.renewalPrice} {selectedProduct.currency}</p>
+          </>
+        )}
+
+        {/* Bundle/Kit */}
+        {selectedProduct.productQuality === "Bundle/Kit" && (
+          <p><span className="font-semibold">Bundle Items:</span> {selectedProduct.bundleItems}</p>
+        )}
+
+        {/* Configurable */}
+        {selectedProduct.productQuality === "Configurable" && (
+          <p><span className="font-semibold">Config Options:</span> {selectedProduct.configOptions}</p>
+        )}
+
+        {/* Common Prices */}
         <p><span className="font-semibold">Price:</span> {selectedProduct.price} {selectedProduct.currency}</p>
-        <p><span className="font-semibold">Cost Price:</span> {selectedProduct.costPrice} {selectedProduct.currency}</p>
-        <p><span className="font-semibold">Selling Price:</span> {selectedProduct.sellingPrice} {selectedProduct.currency}</p>
-        <p><span className="font-semibold">Stock Qty:</span> {selectedProduct.stockQuantity}</p>
-        <p><span className="font-semibold">Warehouse:</span> {selectedProduct.warehouse}</p>
-        <p><span className="font-semibold">Supplier:</span> {selectedProduct.supplier}</p>
+        <p><span className="font-semibold">Cost Price:</span> {selectedProduct.costPrice || "-"} {selectedProduct.currency}</p>
+        <p><span className="font-semibold">Selling Price:</span> {selectedProduct.sellingPrice || "-"} {selectedProduct.currency}</p>
+        <p><span className="font-semibold">HSN Code:</span> {selectedProduct.hsnCode || "-"}</p>
       </div>
-      <div className="mt-4">
-        <label className="block text-sm font-medium mb-1">Quantity</label>
-        <input
-          type="number"
-          min="1"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-          className="w-full p-2 border rounded"
-        />
-      </div>
-     <div className="flex  sm:flex-row justify-start gap-2 mt-4">
-        <div className="flex-1">
-          <label className="block text-sm font-medium mb-1">
-            Starting Date
-          </label>
+
+      {/* Quantity & Dates */}
+      <div className="mt-4 grid sm:grid-cols-2 gap-4">
+          {(selectedProduct.productQuality !== "Service" && selectedProduct.productQuality !== "Subscription") && (
+          <div className="sm:col-span-1">
+            <label className="block text-sm font-medium mb-1">Quantity</label>
+            <input
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              className="w-full p-2 border rounded outline-none"
+            />
+          </div>
+        )}
+        <div className="sm:col-span-1">
+          <label className="block text-sm font-medium mb-1">Start Date</label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full p-2.5 border  rounded  outline-none transition"
+            className="w-full p-2 border rounded outline-none"
           />
         </div>
-
-        <div className="flex-1">
-          <label className="block text-sm font-medium mb-1">
-            Delivery Date
-          </label>
+        <div className="sm:col-span-1">
+          <label className="block text-sm font-medium mb-1">Delivery Date</label>
           <input
             type="date"
             value={deliveryDate}
             onChange={(e) => setDeliveryDate(e.target.value)}
-            className="w-full p-2.5 border  rounded  outline-none transition"
+            className="w-full p-2 border rounded outline-none"
           />
         </div>
       </div>
+
+      {/* Modal Actions */}
       <div className="flex justify-end gap-2 mt-6">
         <button
           onClick={() => setIsModalOpen(false)}
-          className="px-3 py-1 border rounded hover:bg-gray-100"
+          className="px-4 py-2 border rounded hover:bg-gray-100 transition"
         >
           Cancel
         </button>
         <button
-           onClick={handleSave}
-          className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={handleSave}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
           Done
         </button>
@@ -320,6 +367,7 @@ const ProductList = () => {
     </div>
   </div>
 )}
+
 
 
     </div>

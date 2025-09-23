@@ -1,24 +1,22 @@
 import Product from "../models/Product.js";
 
+// ✅ Generate Product ID
 export const generateProductId = async () => {
   const prefix = "P";
   const now = new Date();
   const dd = String(now.getDate()).padStart(2, "0");
   const mm = String(now.getMonth() + 1).padStart(2, "0");
   const yy = String(now.getFullYear()).slice(-2);
-  const dateStr = `${dd}${mm}${yy}`; // e.g., 220825
+  const dateStr = `${dd}${mm}${yy}`;
 
-  let randomStr;
   let productId;
   let exists = true;
 
   while (exists) {
-    randomStr = String(Math.floor(100 + Math.random() * 900));
+    const randomStr = String(Math.floor(100 + Math.random() * 900));
     productId = `${prefix}-${dateStr}-${randomStr}`;
     const existingProduct = await Product.findOne({ productId });
-    if (!existingProduct) {
-      exists = false;
-    }
+    if (!existingProduct) exists = false;
   }
 
   return productId;
@@ -27,8 +25,69 @@ export const generateProductId = async () => {
 export const addProduct = async (req, res) => {
   try {
     const productId = await generateProductId();
-    const newProduct = new Product({ ...req.body, productId });
+    const { productQuality } = req.body;
+
+    let productData = { ...req.body, productId };
+
+    // Remove irrelevant fields based on product type
+    if (productQuality === "Standard") {
+      delete productData.serviceDuration;
+      delete productData.serviceProvider;
+      delete productData.subscriptionPeriod;
+      delete productData.renewalPrice;
+      delete productData.bundleItems;
+      delete productData.configOptions;
+    }
+
+    if (productQuality === "Service") {
+      delete productData.unitOfMeasure;
+      delete productData.stockQuantity;
+      delete productData.warehouse;
+      delete productData.supplier;
+      delete productData.subscriptionPeriod;
+      delete productData.renewalPrice;
+      delete productData.bundleItems;
+      delete productData.configOptions;
+    }
+
+    if (productQuality === "Subscription") {
+      delete productData.unitOfMeasure;
+      delete productData.stockQuantity;
+      delete productData.warehouse;
+      delete productData.supplier;
+      delete productData.serviceDuration;
+      delete productData.serviceProvider;
+      delete productData.bundleItems;
+      delete productData.configOptions;
+    }
+
+    if (productQuality === "Bundle/Kit") {
+      delete productData.unitOfMeasure;
+      delete productData.stockQuantity;
+      delete productData.warehouse;
+      delete productData.supplier;
+      delete productData.serviceDuration;
+      delete productData.serviceProvider;
+      delete productData.subscriptionPeriod;
+      delete productData.renewalPrice;
+      delete productData.configOptions;
+    }
+
+    if (productQuality === "Configurable") {
+      delete productData.unitOfMeasure;
+      delete productData.stockQuantity;
+      delete productData.warehouse;
+      delete productData.supplier;
+      delete productData.serviceDuration;
+      delete productData.serviceProvider;
+      delete productData.subscriptionPeriod;
+      delete productData.renewalPrice;
+      delete productData.bundleItems;
+    }
+
+    const newProduct = new Product(productData);
     await newProduct.save();
+
     res.status(201).json(newProduct);
   } catch (error) {
     console.error("Error in addProduct:", error);

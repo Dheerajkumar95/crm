@@ -462,12 +462,13 @@ export default function App() {
                                     {product.quantity}
                                     </p>
                                     <p>
-                                    <span className="font-semibold">Price:</span> {product.price}{" "}
+                                    <span className="font-semibold">Price:</span> {product.sellingPrice}{" "}
                                     {product.currency}
                                     </p>
                                     <p>
                                     <span className="font-semibold">Total Price:</span>{" "}
-                                    {product.price * product.quantity} {product.currency}
+                                    <span>{product.quantity? product.sellingPrice * product.quantity: product.sellingPrice}{" "}{product.currency}
+</span>
                                     </p>
                                     <p>
                                     <span className="font-semibold">Start Date:</span>{" "}

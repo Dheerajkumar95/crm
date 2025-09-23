@@ -80,29 +80,37 @@ const ProductList = () => {
     }
   };
 
-  const handleSave = async () => {
-    try {
-      await axios.post("http://localhost:7000/api/opportunityProducts", {
-        opportunityId: id,
-        productId: selectedProduct._id,
-        productName: selectedProduct.productName,
-        category: selectedProduct.category,
-        quantity,
-        price: selectedProduct.price,
-        currency: selectedProduct.currency,
-        startDate,
-        deliveryDate,
-      });
-      setIsModalOpen(false);
-      toast.success("Product added successfully!");
-    } catch (error) {
-       if (error.response?.data?.error) {
-      toast.success(error.response.data.error);
-    } else {
-      toast.error("Failed to save product");
+const handleSave = async () => {
+  try {
+    const payload = {
+      opportunityId: id,
+      productId: selectedProduct._id,
+      productName: selectedProduct.productName,
+      category: selectedProduct.category,
+      price: selectedProduct.price,
+      costPrice:selectedProduct.costPrice,
+      sellingPrice:selectedProduct.sellingPrice,
+      currency: selectedProduct.currency,
+    };
+    if (selectedProduct.productQuality === "Standard" || selectedProduct.productQuality === "Bundle/Kit") {
+      payload.quantity = quantity;
+      payload.startDate = startDate;
+      payload.deliveryDate = deliveryDate;
     }
+    if (["Service", "Subscription", "Configurable"].includes(selectedProduct.productQuality)) {
+      payload.startDate = startDate;
+      payload.deliveryDate = deliveryDate;
     }
-  };
+
+    const res = await axios.post("http://localhost:7000/api/opportunityProducts", payload);
+    setIsModalOpen(false);
+    toast.success(res.data.message || "Product added successfully!");
+  } catch (error) {
+    const errMsg = error.response?.data?.error || "Failed to save product";
+    toast.error(errMsg);
+  }
+};
+
 
   return (
     <div className="px-1">
@@ -220,19 +228,14 @@ const ProductList = () => {
       </div>
 {isModalOpen && selectedProduct && (
   <div className="fixed inset-0 flex items-center justify-center z-50">
-    {/* Overlay */}
     <div
       className="absolute inset-0 bg-black opacity-50"
       onClick={() => setIsModalOpen(false)}
     ></div>
-
-    {/* Modal */}
     <div className="bg-white rounded-lg shadow-xl z-10 p-6 w-[600px] max-h-[90vh] overflow-y-auto">
       <h2 className="text-2xl font-bold mb-4 text-center">
         {selectedProduct.productName}
       </h2>
-
-      {/* Product Image & Basic Info */}
       <div className="flex gap-4 mb-4">
         <img
           src={selectedProduct.productImage}
@@ -262,8 +265,6 @@ const ProductList = () => {
           </div>
         </div>
       </div>
-
-      {/* Dynamic Product Type Fields */}
       <div className="grid grid-cols-2 gap-4 text-sm">
         <p>
           <span className="font-semibold">Product ID:</span> {selectedProduct.productId}
@@ -271,8 +272,6 @@ const ProductList = () => {
         <p>
           <span className="font-semibold">Quality:</span> {selectedProduct.productQuality}
         </p>
-
-        {/* Standard */}
         {selectedProduct.productQuality === "Standard" && (
           <>
             <p><span className="font-semibold">Unit:</span> {selectedProduct.unitOfMeasure}</p>
@@ -281,41 +280,29 @@ const ProductList = () => {
             <p><span className="font-semibold">Supplier:</span> {selectedProduct.supplier}</p>
           </>
         )}
-
-        {/* Service */}
         {selectedProduct.productQuality === "Service" && (
           <>
             <p><span className="font-semibold">Service Duration:</span> {selectedProduct.serviceDuration}</p>
             <p><span className="font-semibold">Service Provider:</span> {selectedProduct.serviceProvider}</p>
           </>
         )}
-
-        {/* Subscription */}
         {selectedProduct.productQuality === "Subscription" && (
           <>
             <p><span className="font-semibold">Period:</span> {selectedProduct.subscriptionPeriod}</p>
             <p><span className="font-semibold">Renewal Price:</span> {selectedProduct.renewalPrice} {selectedProduct.currency}</p>
           </>
         )}
-
-        {/* Bundle/Kit */}
         {selectedProduct.productQuality === "Bundle/Kit" && (
           <p><span className="font-semibold">Bundle Items:</span> {selectedProduct.bundleItems}</p>
         )}
-
-        {/* Configurable */}
         {selectedProduct.productQuality === "Configurable" && (
           <p><span className="font-semibold">Config Options:</span> {selectedProduct.configOptions}</p>
         )}
-
-        {/* Common Prices */}
         <p><span className="font-semibold">Price:</span> {selectedProduct.price} {selectedProduct.currency}</p>
         <p><span className="font-semibold">Cost Price:</span> {selectedProduct.costPrice || "-"} {selectedProduct.currency}</p>
         <p><span className="font-semibold">Selling Price:</span> {selectedProduct.sellingPrice || "-"} {selectedProduct.currency}</p>
         <p><span className="font-semibold">HSN Code:</span> {selectedProduct.hsnCode || "-"}</p>
       </div>
-
-      {/* Quantity & Dates */}
       <div className="mt-4 grid sm:grid-cols-2 gap-4">
           {(selectedProduct.productQuality !== "Service" && selectedProduct.productQuality !== "Subscription") && (
           <div className="sm:col-span-1">
@@ -353,13 +340,13 @@ const ProductList = () => {
       <div className="flex justify-end gap-2 mt-6">
         <button
           onClick={() => setIsModalOpen(false)}
-          className="px-4 py-2 border rounded hover:bg-gray-100 transition"
+          className="px-4 py-1 border rounded hover:bg-gray-100 transition"
         >
           Cancel
         </button>
         <button
           onClick={handleSave}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
           Done
         </button>

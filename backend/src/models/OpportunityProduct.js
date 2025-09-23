@@ -14,11 +14,13 @@ const opportunityProductSchema = new mongoose.Schema(
     },
     productName: { type: String, required: true },
     category: { type: String, required: true },
-    quantity: { type: Number, required: true },
+    quantity: { type: Number },
     price: { type: Number, required: true },
+    costPrice: { type: Number },
+    sellingPrice: { type: Number },
     currency: { type: String, default: "INR" },
-    startDate: { type: Date, required: true },
-    deliveryDate: { type: Date, required: true },
+    startDate: { type: Date },
+    deliveryDate: { type: Date },
   },
   { timestamps: true }
 );

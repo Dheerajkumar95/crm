@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import {toast} from 'react-hot-toast'
 import {Building, User, CheckCircle, Activity, FileText, ArrowLeft } from 'lucide-react';
 import OpportunitiesDetails from "./OpportunitiesDetails";
 import ActivityButtons from './OppActivity';
@@ -20,6 +21,20 @@ export default function App() {
     const [activeTab, setActiveTab] = useState("relate");
     const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
+    const [productEdits, setProductEdits] = useState({});
+    useEffect(() => {
+  if (relatedProducts.length > 0) {
+    const edits = {};
+    relatedProducts.forEach((product) => {
+      edits[product._id] = {
+        sellingPrice: product.sellingPrice,
+        startDate: product.startDate ? new Date(product.startDate).toISOString().split("T")[0] : "",
+        deliveryDate: product.deliveryDate ? new Date(product.deliveryDate).toISOString().split("T")[0] : "",
+      };
+    });
+    setProductEdits(edits);
+  }
+}, [relatedProducts]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -79,6 +94,18 @@ export default function App() {
         fetchContacts();
         fetchData();
     }, [id]);
+    const handleSave = async (productId, sellingPrice, startDate, deliveryDate) => {
+  try {
+    await axios.put(`http://localhost:7000/api/opportunityProducts/${productId}`, {
+      sellingPrice,
+      startDate,
+      deliveryDate
+    });
+    toast.success("Product updated successfully!");
+  } catch (error) {
+    toast.error("Failed to update product");
+  }
+};
 
     const handleMarkComplete = async () => {
         if (leadData.Status?.toLowerCase() === "completed") return;
@@ -436,61 +463,124 @@ export default function App() {
                         </div>
                     </div>
 
-                    {/* Product List */}
                     <div className="p-4 text-sm text-slate-700">
-                        {relatedProducts?.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {relatedProducts.map((product, index) => (
-                            <div
-                                key={index}
-                                className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer"
-                            >
-                                <p className="text-blue-600 font-medium hover:underline">
-                                {product.productName}
-                                </p>
-                                <p className="text-gray-600 text-sm">
-                                Category: {product.category}
-                                </p>
-                                <p className="text-gray-500 text-xs">
-                                ID: {product.productId?.productId}
-                                </p>
+                {relatedProducts?.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {relatedProducts.map((product, index) => (
+                        <div
+                        key={index}
+                        className="p-3 rounded shadow-sm hover:shadow-md bg-white cursor-pointer"
+                        >
+                        <p className="text-blue-600 font-medium hover:underline">
+                            {product.productName}
+                        </p>
+                        <p className="text-gray-600 text-sm">
+                            Category: {product.category}
+                        </p>
+                        <p className="text-gray-500 text-xs">
+                            ID: {product.productId?.productId}
+                        </p>
 
-                                {showDetails && (
-                                <div className="mt-2 text-xs text-slate-600 border-t pt-2 space-y-1">
-                                    <p>
-                                    <span className="font-semibold">Quantity:</span>{" "}
-                                    {product.quantity}
-                                    </p>
-                                    <p>
-                                    <span className="font-semibold">Price:</span> {product.sellingPrice}{" "}
-                                    {product.currency}
-                                    </p>
-                                    <p>
-                                    <span className="font-semibold">Total Price:</span>{" "}
-                                    <span>{product.quantity? product.sellingPrice * product.quantity: product.sellingPrice}{" "}{product.currency}
-</span>
-                                    </p>
-                                    <p>
-                                    <span className="font-semibold">Start Date:</span>{" "}
-                                    {new Date(product.startDate).toLocaleDateString()}
-                                    </p>
-                                    <p>
-                                    <span className="font-semibold">Delivery Date:</span>{" "}
-                                    {new Date(product.deliveryDate).toLocaleDateString()}
-                                    </p>
-                                    <p>
-                                    <span className="font-semibold">Created At:</span>{" "}
-                                    {new Date(product.createdAt).toLocaleString()}
-                                    </p>
-                                </div>
+                        {showDetails && (
+                            <div className="mt-2 text-xs text-slate-600 border-t pt-2 space-y-1">
+                                {product.productQuality === "Standard" && (
+                                <p>
+                                    <span className="font-semibold">Quantity:</span> {product.quantity}
+                                </p>
                                 )}
+                            <p>
+                                <span className="font-semibold">Selling Price:</span>
+                                <input
+                                type="number"
+                                value={productEdits[product._id]?.sellingPrice || ""}
+                                onChange={(e) =>
+                                    setProductEdits({
+                                    ...productEdits,
+                                    [product._id]: {
+                                        ...productEdits[product._id],
+                                        sellingPrice: Number(e.target.value),
+                                    },
+                                    })
+                                }
+                                className="ml-1 border px-1 py-0.5 rounded w-20 text-xs"
+                                />{" "}
+                                {product.currency}
+                            </p>
+
+                            <p>
+                                <span className="font-semibold">Total Price:</span>{" "}
+                                <span>
+                                {product.quantity
+                                    ? (productEdits[product._id]?.sellingPrice || product.sellingPrice) * product.quantity
+                                    : productEdits[product._id]?.sellingPrice || product.sellingPrice}{" "}
+                                {product.currency}
+                                </span>
+                            </p>
+
+                            <p>
+                                <span className="font-semibold">Start Date:</span>
+                                <input
+                                type="date"
+                                value={productEdits[product._id]?.startDate || ""}
+                                onChange={(e) =>
+                                    setProductEdits({
+                                    ...productEdits,
+                                    [product._id]: {
+                                        ...productEdits[product._id],
+                                        startDate: e.target.value,
+                                    },
+                                    })
+                                }
+                                className="ml-1 border px-1 py-0.5 rounded text-xs"
+                                />
+                            </p>
+
+                            <p>
+                                <span className="font-semibold">Delivery Date:</span>
+                                <input
+                                type="date"
+                                value={productEdits[product._id]?.deliveryDate || ""}
+                                onChange={(e) =>
+                                    setProductEdits({
+                                    ...productEdits,
+                                    [product._id]: {
+                                        ...productEdits[product._id],
+                                        deliveryDate: e.target.value,
+                                    },
+                                    })
+                                }
+                                className="ml-1 border px-1 py-0.5 rounded text-xs"
+                                />
+                            </p>
+
+                            <p>
+                                <span className="font-semibold">Created At:</span>{" "}
+                                {new Date(product.createdAt).toLocaleString()}
+                            </p>
+
+                            <button
+                                onClick={() =>
+                                handleSave(
+                                    product._id,
+                                    productEdits[product._id].sellingPrice,
+                                    productEdits[product._id].startDate,
+                                    productEdits[product._id].deliveryDate
+                                )
+                                }
+                                className="mt-1 px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                            >
+                                Save
+                            </button>
                             </div>
-                            ))}
-                        </div>
-                        ) : (
-                        <p>No Products found.</p>
                         )}
+                        </div>
+                    ))}
                     </div>
+                ) : (
+                    <p>No Products found.</p>
+                )}
+                </div>
+
 
                     <div
                         className="px-4 py-2 text-sm text-blue-600 hover:underline cursor-pointer"

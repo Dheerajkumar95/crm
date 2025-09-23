@@ -19,6 +19,7 @@ const opportunityProductSchema = new mongoose.Schema(
     costPrice: { type: Number },
     sellingPrice: { type: Number },
     currency: { type: String, default: "INR" },
+    productQuality: { type: String },
     startDate: { type: Date },
     deliveryDate: { type: Date },
   },

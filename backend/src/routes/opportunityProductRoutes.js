@@ -35,6 +35,7 @@ router.post("/", async (req, res) => {
       )
         ? req.body.deliveryDate
         : undefined,
+      productQuality: req.body.productQuality,
       startDate: req.body.startDate,
       deliveryDate: req.body.deliveryDate,
     };
@@ -53,7 +54,26 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get products by opportunityId
+router.put("/:productId", async (req, res) => {
+  const { productId } = req.params;
+  const { sellingPrice, startDate, deliveryDate } = req.body;
+
+  try {
+    const product = await OpportunityProduct.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    if (sellingPrice !== undefined) product.sellingPrice = sellingPrice;
+    if (startDate) product.startDate = new Date(startDate);
+    if (deliveryDate) product.deliveryDate = new Date(deliveryDate);
+
+    await product.save();
+    res.status(200).json({ message: "Product updated successfully", product });
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({ message: "Failed to update product", error });
+  }
+});
 router.get("/:opportunityId", async (req, res) => {
   try {
     const products = await OpportunityProduct.find({

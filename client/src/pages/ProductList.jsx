@@ -87,6 +87,7 @@ const handleSave = async () => {
       productId: selectedProduct._id,
       productName: selectedProduct.productName,
       category: selectedProduct.category,
+      productQuality:selectedProduct.productQuality,
       price: selectedProduct.price,
       costPrice:selectedProduct.costPrice,
       sellingPrice:selectedProduct.sellingPrice,
